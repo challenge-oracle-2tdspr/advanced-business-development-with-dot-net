@@ -7,7 +7,8 @@ namespace AgroTech.Domain.Enums
         Ph,
         Luminosity,
         Rain,
-        Wind
+        Wind,
+        Light
     }
 
 }

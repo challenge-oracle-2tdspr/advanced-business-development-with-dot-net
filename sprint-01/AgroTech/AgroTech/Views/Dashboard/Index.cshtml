@@ -4,7 +4,7 @@
     ViewData["Title"] = "Dashboard";
 }
 
-<h1>Dashboard de Sensores</h1>
+<h2>Dashboard</h2>
 
 <table class="table table-striped">
     <thead>
@@ -12,7 +12,7 @@
         <th>Nome</th>
         <th>Tipo</th>
         <th>Valor</th>
-        <th>Última Atualização</th>
+        <th>Timestamp</th>
     </tr>
     </thead>
     <tbody>
@@ -22,7 +22,7 @@
             <td>@sensor.Name</td>
             <td>@sensor.Type</td>
             <td>@sensor.Value</td>
-            <td>@sensor.Timestamp.ToString("g")</td>
+            <td>@sensor.Timestamp.ToString("yyyy-MM-dd HH:mm:ss")</td>
         </tr>
     }
     </tbody>
