@@ -1,6 +1,9 @@
-namespace AgroTech.AgroTech.Domain.Interfaces;
+using AgroTech.Domain.Entities;
 
-public class ISensorRepository
+namespace AgroTech.Domain.Interfaces
 {
-    
+    public interface ISensorRepository : IRepository<Sensor>
+    {
+        Task<IEnumerable<Sensor>> GetByFarmIdAsync(Guid farmId);
+    }
 }
