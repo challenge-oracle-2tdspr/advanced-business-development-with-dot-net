@@ -4,9 +4,9 @@
     ViewData["Title"] = "Dashboard";
 }
 
-<h2>Dashboard</h2>
+<h2>Dashboard AgroTech</h2>
 
-<table class="table table-striped">
+<table class="table table-striped table-bordered">
     <thead>
     <tr>
         <th>Nome</th>
@@ -18,7 +18,31 @@
     <tbody>
     @foreach (var sensor in Model)
     {
-        <tr>
+        var alertClass = "";
+        
+        // Alertas por tipo de sensor
+        if(sensor.Type == "Temperature" && sensor.Value > 35)
+        {
+            alertClass = "table-danger"; // vermelho
+        }
+        else if(sensor.Type == "Humidity" && sensor.Value < 30)
+        {
+            alertClass = "table-warning"; // amarelo
+        }
+        else if(sensor.Type == "Ph" && (sensor.Value < 5 || sensor.Value > 8))
+        {
+            alertClass = "table-info"; // azul
+        }
+        else if (sensor.Type == "Light" && sensor.Value < 300)
+        {
+            alertClass = "table-secondary"; // cinza
+        }
+        else if (sensor.Type == "Wind" && sensor.Value > 20)
+        {
+            alertClass = "table-primary"; // azul escuro
+        }
+        
+        <tr class="@alertClass">
             <td>@sensor.Name</td>
             <td>@sensor.Type</td>
             <td>@sensor.Value</td>

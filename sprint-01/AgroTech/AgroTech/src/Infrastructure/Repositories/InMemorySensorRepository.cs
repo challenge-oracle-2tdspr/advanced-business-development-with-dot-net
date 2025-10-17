@@ -6,12 +6,13 @@ namespace AgroTech.Infrastructure.Repositories
     public class InMemorySensorRepository : ISensorRepository
     {
         private readonly List<Sensor> _sensors = new();
-        
+
+        internal List<Sensor> _items = new();
         public InMemorySensorRepository()
         {
             _sensors.Add(new Sensor { Name = "Sensor Temp", Type = Domain.Enums.SensorType.Temperature, Value = 25.3 });
             _sensors.Add(new Sensor { Name = "Sensor Umidade", Type = Domain.Enums.SensorType.Humidity, Value = 78.5 });
-            _sensors.Add(new Sensor { Name = "Sensor PH", Type = Domain.Enums.SensorType.Ph, Value = 6.8 });
+            _sensors.Add(new Sensor { Name = "Sensor Ph", Type = Domain.Enums.SensorType.Ph, Value = 6.8 });
         }
 
 

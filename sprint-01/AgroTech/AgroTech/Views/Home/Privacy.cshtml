@@ -1,6 +1,184 @@
 ﻿@{
-    ViewData["Title"] = "Privacy Policy";
+    ViewData["Title"] = "Projeto AgroTech - Arquitetura e Solução";
 }
-<h1>@ViewData["Title"]</h1>
 
-<p>Use this page to detail your site's privacy policy.</p>
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewData["Title"]</title>
+    <style>
+        /* Estilo geral */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f7f6;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+        }
+
+        header {
+            background-color: #2c6e49;
+            color: white;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 2.2rem;
+        }
+
+        header p {
+            margin-top: 0.5rem;
+            font-weight: 300;
+        }
+
+        main {
+            max-width: 1000px;
+            margin: auto;
+            padding: 2rem;
+        }
+
+        section {
+            margin-bottom: 2rem;
+        }
+
+        h2 {
+            color: #2c6e49;
+            border-bottom: 2px solid #a3d9a5;
+            padding-bottom: 0.3rem;
+            margin-bottom: 1rem;
+        }
+
+        ul {
+            list-style-type: disc;
+            padding-left: 2rem;
+        }
+
+        li {
+            margin-bottom: 0.5rem;
+        }
+
+        .tech-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .tech-item {
+            background-color: #a3d9a5;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            color: #2c6e49;
+            font-weight: bold;
+        }
+
+        footer {
+            text-align: center;
+            padding: 1.5rem;
+            background-color: #2c6e49;
+            color: white;
+            margin-top: 2rem;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>@ViewData["Title"]</h1>
+        <p>Solução integrada de gestão agrícola inteligente</p>
+    </header>
+
+<main>
+    <section>
+        <h2>Objetivo do Projeto</h2>
+        <p>
+            O AgroTech é uma solução integrada de gestão agrícola inteligente, projetada para monitorar plantações e safras por meio de sensores IoT, análise de dados ambientais, automação de irrigação e controle de produtividade. 
+            O sistema visa conectar campo e gestão, possibilitando decisões em tempo real baseadas em dados precisos.
+        </p>
+    </section>
+
+    <section>
+        <h2>Escopo do Sistema</h2>
+        <ul>
+            <li>Backend Java (Spring Boot) para gerenciamento agrícola, usuários e sensores.</li>
+            <li>Módulo .NET (C#) para integração com dispositivos, segurança e dashboards.</li>
+            <li>Banco de Dados Oracle Cloud para persistência.</li>
+            <li>Camada IoT com ESP32 para coleta de dados ambientais.</li>
+            <li>Aplicativo Mobile com TypeScript/Ionic para produtores e técnicos.</li>
+            <li>Módulo de IA Oracle para análise preditiva e alertas.</li>
+        </ul>
+    </section>
+
+    <section>
+        <h2>Requisitos Funcionais</h2>
+        <ul>
+            <li>Cadastro e autenticação de usuários.</li>
+            <li>Registro de propriedades, campos e safras.</li>
+            <li>Coleta integrada de dados dos sensores.</li>
+            <li>Visualização de relatórios de produtividade.</li>
+            <li>Alertas automáticos via IA.</li>
+            <li>Acompanhamento em tempo real pelo aplicativo.</li>
+            <li>Gerenciamento de permissões por perfil.</li>
+        </ul>
+    </section>
+
+    <section>
+        <h2>Requisitos Não Funcionais</h2>
+        <ul>
+            <li>Arquitetura limpa e desacoplada.</li>
+            <li>Disponibilidade mínima de 99,5% em nuvem.</li>
+            <li>Segurança com autenticação JWT e criptografia AES-256.</li>
+            <li>Resposta da API em menos de 300 ms.</li>
+            <li>Compatibilidade entre módulos Java, .NET e Oracle.</li>
+        </ul>
+    </section>
+
+    <section>
+        <h2>Arquitetura</h2>
+        <ul>
+            <li>Apresentação (Controllers, DTOs)</li>
+            <li>Aplicação (Services, Use Cases)</li>
+            <li>Domínio (Entities, Models)</li>
+            <li>Infraestrutura (Repositories, Configurações)</li>
+        </ul>
+        <p>Essa estrutura facilita a manutenção, testes, independência tecnológica e substituição de frameworks.</p>
+    </section>
+
+    <section>
+        <h2>Integração IoT e Inteligência Artificial</h2>
+        <ul>
+            <li>Sensores ESP32 coletam temperatura, umidade, pH, luminosidade, chuva e vento em tempo real.</li>
+            <li>Dados são enviados via MQTT ou HTTP REST ao backend para armazenamento e análise.</li>
+            <li>Oracle AI Services aplicam modelos preditivos para produtividade e alertas.</li>
+            <li>Dashboards Oracle APEX e Power BI exibem métricas de desempenho da lavoura.</li>
+        </ul>
+    </section>
+
+    <section>
+        <h2>Garantia da Qualidade (QA)</h2>
+        <ul>
+            <li>Público-alvo: cooperativas, agrônomos, produtores médios e grandes.</li>
+            <li>Solução modular, integrável e acessível, focada em produtores médios.</li>
+            <li>Mercado global esperado em US$ 55 bilhões até 2030.</li>
+            <li>MVP contempla coleta real de dados, dashboard funcional e integração básica cloud.</li>
+        </ul>
+    </section>
+
+    <section>
+        <h2>Tecnologias Principais</h2>
+        <div class="tech-list">
+            <span class="tech-item">Java 21 + Spring Boot 3</span>
+            <span class="tech-item">C# .NET 8</span>
+            <span class="tech-item">Oracle Database Cloud, APEX, AI Services</span>
+            <span class="tech-item">TypeScript + Ionic Mobile</span>
+            <span class="tech-item">ESP32 (IoT)</span>
+            <span class="tech-item">Swagger / OpenAPI 3.0</span>
+            <span class="tech-item">Docker & OCI</span>
+        </div>
+    </section>
+</main>
+</body>
+</html>

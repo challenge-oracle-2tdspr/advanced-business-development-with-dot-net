@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "+B4gIBXwkE31J8JQ3SPMJ/ax4Fyg6btAjwS346ssUU8=",
+  "Hash": "+0d7HTniG/bUa3nbWDn1a8mDEPaVhD61Jey9zy53VTg=",
   "Source": "AgroTech",
   "BasePath": "_content/AgroTech",
   "Mode": "Default",
@@ -91,6 +91,25 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot/favicon.ico"
+    },
+    {
+      "Identity": "/home/ruan/Área de trabalho/challenge-2025/advanced-business-develpment-with-dotnet/sprint-01/AgroTech/AgroTech/wwwroot/images/agrotech-iot.jpg",
+      "SourceId": "AgroTech",
+      "SourceType": "Discovered",
+      "ContentRoot": "/home/ruan/Área de trabalho/challenge-2025/advanced-business-develpment-with-dotnet/sprint-01/AgroTech/AgroTech/wwwroot/",
+      "BasePath": "_content/AgroTech",
+      "RelativePath": "images/agrotech-iot.jpg",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot/images/agrotech-iot.jpg"
     },
     {
       "Identity": "/home/ruan/Área de trabalho/challenge-2025/advanced-business-develpment-with-dotnet/sprint-01/AgroTech/AgroTech/wwwroot/js/site.js",

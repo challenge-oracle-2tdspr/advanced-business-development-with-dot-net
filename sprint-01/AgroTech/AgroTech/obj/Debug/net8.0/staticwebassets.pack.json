@@ -13,6 +13,10 @@
       "PackagePath": "staticwebassets/favicon.ico"
     },
     {
+      "Id": "/home/ruan/Área de trabalho/challenge-2025/advanced-business-develpment-with-dotnet/sprint-01/AgroTech/AgroTech/wwwroot/images/agrotech-iot.jpg",
+      "PackagePath": "staticwebassets/images/agrotech-iot.jpg"
+    },
+    {
       "Id": "/home/ruan/Área de trabalho/challenge-2025/advanced-business-develpment-with-dotnet/sprint-01/AgroTech/AgroTech/wwwroot/js/site.js",
       "PackagePath": "staticwebassets/js/site.js"
     },
