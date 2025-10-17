@@ -9,6 +9,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 builder.Services.AddScoped<ISensorService, SensorService>();
 builder.Services.AddScoped<ISensorRepository, InMemorySensorRepository>();
+builder.Services.AddScoped<ISensorRepository, SensorRepository>();
 
 var app = builder.Build();
 
