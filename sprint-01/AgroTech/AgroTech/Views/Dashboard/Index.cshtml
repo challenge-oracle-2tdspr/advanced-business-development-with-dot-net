@@ -1,0 +1,29 @@
+@model IEnumerable<AgroTech.Application.DTOs.SensorDTO>
+
+@{
+    ViewData["Title"] = "Dashboard";
+}
+
+<h1>Dashboard de Sensores</h1>
+
+<table class="table table-striped">
+    <thead>
+    <tr>
+        <th>Nome</th>
+        <th>Tipo</th>
+        <th>Valor</th>
+        <th>Última Atualização</th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var sensor in Model)
+    {
+        <tr>
+            <td>@sensor.Name</td>
+            <td>@sensor.Type</td>
+            <td>@sensor.Value</td>
+            <td>@sensor.Timestamp.ToString("g")</td>
+        </tr>
+    }
+    </tbody>
+</table>

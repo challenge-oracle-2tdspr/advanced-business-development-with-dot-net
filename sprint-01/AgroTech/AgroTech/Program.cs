@@ -1,7 +1,14 @@
+using AgroTech.Application.Interfaces;
+using AgroTech.Application.Services;
+using AgroTech.Domain.Interfaces;
+using AgroTech.Infrastructure.Repositories;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+builder.Services.AddScoped<ISensorService, SensorService>();
+builder.Services.AddScoped<ISensorRepository, InMemorySensorRepository>();
 
 var app = builder.Build();
 

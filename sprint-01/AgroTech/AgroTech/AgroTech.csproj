@@ -14,9 +14,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="src\Application\" />
-      <Folder Include="src\Infrastructure\" />
-      <Folder Include="src\Web\" />
+      <Folder Include="src\Web\Views\" />
       <Folder Include="tests\AgroTech.UnitTests\" />
     </ItemGroup>
 

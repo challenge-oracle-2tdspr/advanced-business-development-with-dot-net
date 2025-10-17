@@ -18,6 +18,10 @@ build_property.GenerateRazorMetadataSourceChecksumAttributes =
 build_property.MSBuildProjectDirectory = /home/ruan/Área de trabalho/challenge-2025/advanced-business-develpment-with-dotnet/sprint-01/AgroTech/AgroTech
 build_property._RazorSourceGeneratorDebug = 
 
+[/home/ruan/Área de trabalho/challenge-2025/advanced-business-develpment-with-dotnet/sprint-01/AgroTech/AgroTech/Views/Dashboard/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvRGFzaGJvYXJkL0luZGV4LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
 [/home/ruan/Área de trabalho/challenge-2025/advanced-business-develpment-with-dotnet/sprint-01/AgroTech/AgroTech/Views/Home/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3MvSG9tZS9JbmRleC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
