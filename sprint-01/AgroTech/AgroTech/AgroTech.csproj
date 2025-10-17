@@ -14,10 +14,9 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="src\AgroTech.Domain\" />
-      <Folder Include="src\AgroTech.Application\" />
-      <Folder Include="src\AgroTech.Infrastructure\" />
-      <Folder Include="src\AgroTech.Web\" />
+      <Folder Include="src\Application\" />
+      <Folder Include="src\Infrastructure\" />
+      <Folder Include="src\Web\" />
       <Folder Include="tests\AgroTech.UnitTests\" />
     </ItemGroup>
 
