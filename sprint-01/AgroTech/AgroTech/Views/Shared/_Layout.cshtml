@@ -28,7 +28,7 @@
                         <a class="btn btn-outline-light" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                     </li>
                     <li class="nav-item mx-1">
-                        <a class="btn btn-outline-light" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                        <a class="btn btn-outline-light" asp-area="" asp-controller="Home" asp-action="Privacy">About Us</a>
                     </li>
                     <li class="nav-item mx-1">
                         <a class="btn btn-outline-light" href="@Url.Action("Index", "Dashboard")">Dashboard</a>
@@ -43,9 +43,9 @@
     @RenderBody()
 </main>
 
-<footer class="footer text-center text-white" style="background-color: rgba(46,125,50,0.95);">
+<footer class="footer">
     <div class="container">
-        © 2025 - AgroTech - Soluções Inteligentes para Agricultura - <a asp-area="" asp-controller="Home" asp-action="Privacy" class="text-white text-decoration-none">Privacy</a>
+        © 2025 - AgroTech - Soluções Inteligentes para Agricultura - <a asp-area="" asp-controller="Home" asp-action="Privacy" class="text-white text-decoration-none">About Us</a>
     </div>
 </footer>
 
