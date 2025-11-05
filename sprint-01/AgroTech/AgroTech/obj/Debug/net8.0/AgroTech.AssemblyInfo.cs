@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("AgroTech")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+b18590493d5d8f8a891493dd18e1754502cd297b")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+f9782f8349b9d4f66d3815260363f35f7b400515")]
 [assembly: System.Reflection.AssemblyProductAttribute("AgroTech")]
 [assembly: System.Reflection.AssemblyTitleAttribute("AgroTech")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
