@@ -1,0 +1,38 @@
+@model IEnumerable<AgroTech.Application.DTOs.CropDTO>
+
+@{
+    ViewData["Title"] = "Safras";
+}
+
+<h2>Safras</h2>
+
+<p>
+    <a class="btn btn-primary" asp-action="Create">Nova Safra</a>
+</p>
+
+<table class="table table-striped table-bordered">
+    <thead>
+    <tr>
+        <th>Nome</th>
+        <th>Data Plantio</th>
+        <th>Data Colheita</th>
+        <th>Farm Id</th>
+        <th>Ações</th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var crop in Model)
+    {
+        <tr>
+            <td>@crop.Name</td>
+            <td>@crop.PlantingDate.ToString("yyyy-MM-dd")</td>
+            <td>@(crop.HarvestDate.HasValue ? crop.HarvestDate.Value.ToString("yyyy-MM-dd") : "-")</td>
+            <td>@crop.FarmId</td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@crop.Id" class="btn btn-sm btn-warning">Editar</a>
+                <a asp-action="Delete" asp-route-id="@crop.Id" class="btn btn-sm btn-danger">Excluir</a>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>

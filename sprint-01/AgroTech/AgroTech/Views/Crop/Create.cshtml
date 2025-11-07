@@ -1,0 +1,42 @@
+@model AgroTech.Application.DTOs.CropDTO
+
+@{
+    ViewData["Title"] = "Nova Safra";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<form asp-action="Create" method="post">
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+    <div class="mb-3">
+        <label asp-for="Name" class="form-label"></label>
+        <input asp-for="Name" class="form-control" />
+        <span asp-validation-for="Name" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="PlantingDate" class="form-label"></label>
+        <input asp-for="PlantingDate" type="date" class="form-control" />
+        <span asp-validation-for="PlantingDate" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="HarvestDate" class="form-label"></label>
+        <input asp-for="HarvestDate" type="date" class="form-control" />
+        <span asp-validation-for="HarvestDate" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="FarmId" class="form-label"></label>
+        <select asp-for="FarmId" asp-items="ViewBag.Farms" class="form-control"></select>
+        <span asp-validation-for="FarmId" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-success">Salvar</button>
+    <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
+</form>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

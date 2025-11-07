@@ -6,24 +6,19 @@ using AgroTech.Infrastructure.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddScoped<IRepository<Farm>, FarmRepository>();
-builder.Services.AddScoped<IRepository<Crop>, CropRepository>();
-builder.Services.AddScoped<IRepository<User>, UserRepository>();
+// Registrando repositórios como Singleton para manter estado em lista
+builder.Services.AddSingleton<IRepository<Farm>, FarmRepository>();
+builder.Services.AddSingleton<IRepository<Crop>, CropRepository>();
+builder.Services.AddSingleton<IRepository<User>, UserRepository>();
+builder.Services.AddSingleton<ISensorRepository, InMemorySensorRepository>();
 
-builder.Services.AddScoped<ISensorRepository, InMemorySensorRepository>();
+// Serviços com ciclo Scoped
+builder.Services.AddScoped<ISensorService, SensorService>();
+builder.Services.AddScoped<IFarmService, FarmService>();
+builder.Services.AddScoped<ICropService, CropService>();
+builder.Services.AddScoped<IUserService, UserService>();
+
 builder.Services.AddControllersWithViews();
-builder.Services.AddScoped<ISensorService, SensorService>();
-builder.Services.AddScoped<ISensorRepository, InMemorySensorRepository>();
-builder.Services.AddScoped<ISensorRepository, SensorRepository>();
-builder.Services.AddScoped<IFarmService, FarmService>();
-builder.Services.AddScoped<ICropService, CropService>();
-builder.Services.AddScoped<IUserService, UserService>();
-builder.Services.AddScoped<ISensorService, SensorService>();
-builder.Services.AddScoped<IFarmService, FarmService>();
-builder.Services.AddScoped<ICropService, CropService>();
-builder.Services.AddScoped<IUserService, UserService>();
-
-
 
 var app = builder.Build();
 

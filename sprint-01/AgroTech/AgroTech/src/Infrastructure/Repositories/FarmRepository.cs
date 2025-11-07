@@ -5,6 +5,6 @@ namespace AgroTech.Infrastructure.Repositories
 {
     public class FarmRepository : InMemoryRepository<Farm>, IRepository<Farm>
     {
-        
+        // Implementações específicas para Farm, se necessário
     }
 }

@@ -1,5 +1,9 @@
 using AgroTech.Domain.Common;
 using AgroTech.Domain.Interfaces;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace AgroTech.Infrastructure.Repositories
 {
@@ -9,6 +13,9 @@ namespace AgroTech.Infrastructure.Repositories
 
         public Task AddAsync(T entity)
         {
+            if (entity.Id == Guid.Empty)
+                entity.Id = Guid.NewGuid();
+
             _items.Add(entity);
             return Task.CompletedTask;
         }
@@ -18,12 +25,13 @@ namespace AgroTech.Infrastructure.Repositories
             var entity = _items.FirstOrDefault(e => e.Id == id);
             if (entity != null)
                 _items.Remove(entity);
+
             return Task.CompletedTask;
         }
 
         public Task<IEnumerable<T>> GetAllAsync()
         {
-            return Task.FromResult(_items.AsEnumerable());
+            return Task.FromResult<IEnumerable<T>>(_items);
         }
 
         public Task<T?> GetByIdAsync(Guid id)
@@ -40,6 +48,7 @@ namespace AgroTech.Infrastructure.Repositories
                 _items.Remove(existing);
                 _items.Add(entity);
             }
+
             return Task.CompletedTask;
         }
     }
