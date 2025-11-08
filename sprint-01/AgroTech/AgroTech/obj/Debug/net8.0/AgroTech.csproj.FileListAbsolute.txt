@@ -21,7 +21,6 @@
 /home/ruan/Área de trabalho/challenge-2025/advanced-business-develpment-with-dotnet/sprint-01/AgroTech/AgroTech/obj/Debug/net8.0/staticwebassets/msbuild.buildMultiTargeting.AgroTech.props
 /home/ruan/Área de trabalho/challenge-2025/advanced-business-develpment-with-dotnet/sprint-01/AgroTech/AgroTech/obj/Debug/net8.0/staticwebassets/msbuild.buildTransitive.AgroTech.props
 /home/ruan/Área de trabalho/challenge-2025/advanced-business-develpment-with-dotnet/sprint-01/AgroTech/AgroTech/obj/Debug/net8.0/staticwebassets.pack.json
-/home/ruan/Área de trabalho/challenge-2025/advanced-business-develpment-with-dotnet/sprint-01/AgroTech/AgroTech/obj/Debug/net8.0/scopedcss/Views/Shared/_Layout.cshtml.rz.scp.css
 /home/ruan/Área de trabalho/challenge-2025/advanced-business-develpment-with-dotnet/sprint-01/AgroTech/AgroTech/obj/Debug/net8.0/scopedcss/bundle/AgroTech.styles.css
 /home/ruan/Área de trabalho/challenge-2025/advanced-business-develpment-with-dotnet/sprint-01/AgroTech/AgroTech/obj/Debug/net8.0/scopedcss/projectbundle/AgroTech.bundle.scp.css
 /home/ruan/Área de trabalho/challenge-2025/advanced-business-develpment-with-dotnet/sprint-01/AgroTech/AgroTech/obj/Debug/net8.0/AgroTech.dll
@@ -29,3 +28,4 @@
 /home/ruan/Área de trabalho/challenge-2025/advanced-business-develpment-with-dotnet/sprint-01/AgroTech/AgroTech/obj/Debug/net8.0/AgroTech.pdb
 /home/ruan/Área de trabalho/challenge-2025/advanced-business-develpment-with-dotnet/sprint-01/AgroTech/AgroTech/obj/Debug/net8.0/AgroTech.genruntimeconfig.cache
 /home/ruan/Área de trabalho/challenge-2025/advanced-business-develpment-with-dotnet/sprint-01/AgroTech/AgroTech/obj/Debug/net8.0/ref/AgroTech.dll
+/home/ruan/Área de trabalho/challenge-2025/advanced-business-develpment-with-dotnet/sprint-01/AgroTech/AgroTech/obj/Debug/net8.0/scopedcss/src/Web/Views/Shared/_Layout.cshtml.rz.scp.css

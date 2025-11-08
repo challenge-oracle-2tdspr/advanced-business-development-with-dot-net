@@ -17,4 +17,38 @@
       <Folder Include="tests\AgroTech.UnitTests\" />
     </ItemGroup>
 
+    <ItemGroup>
+      <_ContentIncludedByDefault Remove="Views\Crop\Create.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Crop\Delete.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Crop\Edit.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Crop\Index.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Dashboard\Index.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Farm\Create.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Farm\Delete.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Farm\Edit.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Farm\Index.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Home\Index.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Home\Privacy.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Shared\Error.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Shared\_Layout.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Shared\_ValidationScriptsPartial.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\User\Create.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\User\Delete.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\User\Edit.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\User\Index.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\_ViewImports.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\_ViewStart.cshtml" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <AdditionalFiles Include="src\Web\Views\Dashboard\Index.cshtml" />
+      <AdditionalFiles Include="src\Web\Views\Home\Index.cshtml" />
+      <AdditionalFiles Include="src\Web\Views\Home\Privacy.cshtml" />
+      <AdditionalFiles Include="src\Web\Views\Shared\Error.cshtml" />
+      <AdditionalFiles Include="src\Web\Views\Shared\_Layout.cshtml" />
+      <AdditionalFiles Include="src\Web\Views\Shared\_ValidationScriptsPartial.cshtml" />
+      <AdditionalFiles Include="src\Web\Views\_ViewImports.cshtml" />
+      <AdditionalFiles Include="src\Web\Views\_ViewStart.cshtml" />
+    </ItemGroup>
+
 </Project>

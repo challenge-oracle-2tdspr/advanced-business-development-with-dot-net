@@ -6,19 +6,24 @@ using AgroTech.Infrastructure.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Registrando repositórios como Singleton para manter estado em lista
 builder.Services.AddSingleton<IRepository<Farm>, FarmRepository>();
 builder.Services.AddSingleton<IRepository<Crop>, CropRepository>();
 builder.Services.AddSingleton<IRepository<User>, UserRepository>();
 builder.Services.AddSingleton<ISensorRepository, InMemorySensorRepository>();
 
-// Serviços com ciclo Scoped
 builder.Services.AddScoped<ISensorService, SensorService>();
 builder.Services.AddScoped<IFarmService, FarmService>();
 builder.Services.AddScoped<ICropService, CropService>();
 builder.Services.AddScoped<IUserService, UserService>();
 
-builder.Services.AddControllersWithViews();
+builder.Services.AddControllersWithViews()
+    .AddRazorOptions(options =>
+    {
+        options.ViewLocationFormats.Clear();
+        options.ViewLocationFormats.Add("/src/Web/Views/{1}/{0}.cshtml");
+        options.ViewLocationFormats.Add("/src/Web/Views/Shared/{0}.cshtml");
+    });
+
 
 var app = builder.Build();
 
