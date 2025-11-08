@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "vri/RNw0Af4=",
+  "dgSpecHash": "20FSkonz7sAklH7cpNz8K5G0aExQZyO2yGa1i9zmFZ4oJcwbSRczMMZUXFpsCps+p7E9kY4YP/4IeJ8RBLyqyw==",
   "success": true,
   "projectFilePath": "/home/ruan/Área de trabalho/challenge-2025/advanced-business-develpment-with-dotnet/sprint-01/AgroTech/AgroTech/AgroTech.csproj",
   "expectedPackageFiles": [
@@ -70,7 +70,8 @@
     "/home/ruan/.nuget/packages/xunit.core/2.9.3/xunit.core.2.9.3.nupkg.sha512",
     "/home/ruan/.nuget/packages/xunit.extensibility.core/2.9.3/xunit.extensibility.core.2.9.3.nupkg.sha512",
     "/home/ruan/.nuget/packages/xunit.extensibility.execution/2.9.3/xunit.extensibility.execution.2.9.3.nupkg.sha512",
-    "/home/ruan/.nuget/packages/xunit.runner.visualstudio/3.1.5/xunit.runner.visualstudio.3.1.5.nupkg.sha512"
+    "/home/ruan/.nuget/packages/xunit.runner.visualstudio/3.1.5/xunit.runner.visualstudio.3.1.5.nupkg.sha512",
+    "/home/ruan/.nuget/packages/microsoft.aspnetcore.app.ref/8.0.20/microsoft.aspnetcore.app.ref.8.0.20.nupkg.sha512"
   ],
   "logs": []
 }
