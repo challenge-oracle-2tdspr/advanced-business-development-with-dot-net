@@ -2,6 +2,10 @@ using AgroTech.Application.DTOs;
 using AgroTech.Application.Interfaces;
 using AgroTech.Domain.Entities;
 using AgroTech.Domain.Interfaces;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace AgroTech.Application.Services
 {
@@ -20,7 +24,7 @@ namespace AgroTech.Application.Services
             {
                 Id = dto.Id != Guid.Empty ? dto.Id : Guid.NewGuid(),
                 Name = dto.Name,
-                Type = Enum.Parse<Domain.Enums.SensorType>(dto.Type),
+                Type = (int)Enum.Parse<Domain.Enums.SensorType>(dto.Type),
                 Value = dto.Value,
                 UpdatedAt = dto.Timestamp
             };
@@ -39,7 +43,7 @@ namespace AgroTech.Application.Services
             {
                 Id = s.Id,
                 Name = s.Name,
-                Type = s.Type.ToString(),
+                Type = Enum.GetName(typeof(Domain.Enums.SensorType), s.Type) ?? s.Type.ToString(),
                 Value = s.Value,
                 Timestamp = s.UpdatedAt ?? DateTime.UtcNow
             });
@@ -54,7 +58,7 @@ namespace AgroTech.Application.Services
             {
                 Id = s.Id,
                 Name = s.Name,
-                Type = s.Type.ToString(),
+                Type = Enum.GetName(typeof(Domain.Enums.SensorType), s.Type) ?? s.Type.ToString(),
                 Value = s.Value,
                 Timestamp = s.UpdatedAt ?? DateTime.UtcNow
             };
@@ -66,7 +70,7 @@ namespace AgroTech.Application.Services
             if (sensor == null) throw new Exception("Sensor não encontrado");
 
             sensor.Name = dto.Name;
-            sensor.Type = Enum.Parse<Domain.Enums.SensorType>(dto.Type);
+            sensor.Type = (int)Enum.Parse<Domain.Enums.SensorType>(dto.Type);
             sensor.Value = dto.Value;
             sensor.UpdatedAt = dto.Timestamp;
 

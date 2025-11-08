@@ -1,10 +1,13 @@
 using AgroTech.Domain.Entities;
 using AgroTech.Domain.Interfaces;
+using AgroTech.Infrastructure.Data;
 
 namespace AgroTech.Infrastructure.Repositories
 {
-    public class UserRepository : InMemoryRepository<User>, IRepository<User>
+    public class UserRepository : Repository<User>, IRepository<User>
     {
-        // Implementações específicas para User, se necessário
+        public UserRepository(AgroTechDbContext context) : base(context)
+        {
+        }
     }
 }

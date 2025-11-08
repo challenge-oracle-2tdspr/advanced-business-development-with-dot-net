@@ -1,4 +1,5 @@
 using AgroTech.Domain.Common;
+using System.Collections.Generic;
 
 namespace AgroTech.Domain.Entities
 {
@@ -6,7 +7,8 @@ namespace AgroTech.Domain.Entities
     {
         public string Name { get; set; } = string.Empty;
         public string Location { get; set; } = string.Empty;
-        public List<Sensor> Sensors { get; set; } = new();
-        public List<Crop> Crops { get; set; } = new();
+
+        public ICollection<Crop> Crops { get; set; } = new List<Crop>();
+        public ICollection<Sensor> Sensors { get; set; } = new List<Sensor>();
     }
 }

@@ -1,10 +1,13 @@
 using AgroTech.Domain.Entities;
 using AgroTech.Domain.Interfaces;
+using AgroTech.Infrastructure.Data;
 
 namespace AgroTech.Infrastructure.Repositories
 {
-    public class CropRepository : InMemoryRepository<Crop>, IRepository<Crop>
+    public class CropRepository : Repository<Crop>, IRepository<Crop>
     {
-        // Implementações específicas para Crop, se necessário
+        public CropRepository(AgroTechDbContext context) : base(context)
+        {
+        }
     }
 }

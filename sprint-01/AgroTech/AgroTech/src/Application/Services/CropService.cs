@@ -12,21 +12,17 @@ namespace AgroTech.Application.Services
 {
     public class CropService : ICropService
     {
-        private readonly IRepository<Crop> repository;
+        private readonly IRepository<Crop> _repository;
 
         public CropService(IRepository<Crop> repository)
         {
-            this.repository = repository;
+            _repository = repository;
         }
 
         public async Task AddAsync(CropDTO dto)
         {
             if (string.IsNullOrWhiteSpace(dto.Name))
                 throw new DomainException("O nome da safra não pode ser vazio.");
-            if (dto.PlantingDate == default)
-                throw new DomainException("Data de plantio inválida.");
-            if (dto.FarmId == Guid.Empty)
-                throw new DomainException("Fazenda associada obrigatória.");
 
             var crop = new Crop
             {
@@ -34,24 +30,25 @@ namespace AgroTech.Application.Services
                 Name = dto.Name,
                 PlantingDate = dto.PlantingDate,
                 HarvestDate = dto.HarvestDate,
-                FarmId = dto.FarmId
+                FarmId = dto.FarmId,
+                CreatedAt = DateTime.UtcNow
             };
 
-            await repository.AddAsync(crop);
+            await _repository.AddAsync(crop);
         }
 
         public async Task DeleteAsync(Guid id)
         {
-            var crop = await repository.GetByIdAsync(id);
+            var crop = await _repository.GetByIdAsync(id);
             if (crop == null)
                 throw new DomainException("Safra não encontrada.");
 
-            await repository.DeleteAsync(id);
+            await _repository.DeleteAsync(id);
         }
 
         public async Task<IEnumerable<CropDTO>> GetAllAsync()
         {
-            var crops = await repository.GetAllAsync();
+            var crops = await _repository.GetAllAsync();
             return crops.Select(c => new CropDTO
             {
                 Id = c.Id,
@@ -64,7 +61,7 @@ namespace AgroTech.Application.Services
 
         public async Task<CropDTO?> GetByIdAsync(Guid id)
         {
-            var crop = await repository.GetByIdAsync(id);
+            var crop = await _repository.GetByIdAsync(id);
             if (crop == null)
                 return null;
 
@@ -80,21 +77,20 @@ namespace AgroTech.Application.Services
 
         public async Task UpdateAsync(CropDTO dto)
         {
-            var crop = await repository.GetByIdAsync(dto.Id);
+            var crop = await _repository.GetByIdAsync(dto.Id);
             if (crop == null)
                 throw new DomainException("Safra não encontrada.");
 
             if (string.IsNullOrWhiteSpace(dto.Name))
                 throw new DomainException("O nome da safra não pode ser vazio.");
-            if (dto.PlantingDate == default)
-                throw new DomainException("Data de plantio inválida.");
 
             crop.Name = dto.Name;
             crop.PlantingDate = dto.PlantingDate;
             crop.HarvestDate = dto.HarvestDate;
             crop.FarmId = dto.FarmId;
+            crop.UpdatedAt = DateTime.UtcNow;
 
-            await repository.UpdateAsync(crop);
+            await _repository.UpdateAsync(crop);
         }
     }
 }

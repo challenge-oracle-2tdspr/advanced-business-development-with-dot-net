@@ -1,10 +1,13 @@
 using AgroTech.Domain.Entities;
 using AgroTech.Domain.Interfaces;
+using AgroTech.Infrastructure.Data;
 
 namespace AgroTech.Infrastructure.Repositories
 {
-    public class FarmRepository : InMemoryRepository<Farm>, IRepository<Farm>
+    public class FarmRepository : Repository<Farm>, IRepository<Farm>
     {
-        // Implementações específicas para Farm, se necessário
+        public FarmRepository(AgroTechDbContext context) : base(context)
+        {
+        }
     }
 }
