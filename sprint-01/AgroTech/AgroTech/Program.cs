@@ -24,8 +24,9 @@ builder.Services.AddControllersWithViews()
         options.ViewLocationFormats.Add("/src/Web/Views/Shared/{0}.cshtml");
     });
 
-
 var app = builder.Build();
+
+app.UseMiddleware<AgroTech.Web.Middleware.ExceptionHandlingMiddleware>();
 
 if (!app.Environment.IsDevelopment())
 {
