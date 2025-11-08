@@ -10,12 +10,12 @@
 using System;
 using System.Reflection;
 
-[assembly: System.Reflection.AssemblyCompanyAttribute("AgroTech")]
+[assembly: System.Reflection.AssemblyCompanyAttribute("AgroTech.Tests")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+f5d0d7af89337f915b0de8fb65ecb5e65e0fd284")]
-[assembly: System.Reflection.AssemblyProductAttribute("AgroTech")]
-[assembly: System.Reflection.AssemblyTitleAttribute("AgroTech")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+35a93532c935c12861bcfc97112cdaf0a55060f5")]
+[assembly: System.Reflection.AssemblyProductAttribute("AgroTech.Tests")]
+[assembly: System.Reflection.AssemblyTitleAttribute("AgroTech.Tests")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
 
 // Gerado pela classe WriteCodeFragment do MSBuild.
