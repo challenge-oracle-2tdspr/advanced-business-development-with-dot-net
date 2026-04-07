@@ -3,6 +3,7 @@ using System;
 using AgroTech.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Oracle.EntityFrameworkCore.Metadata;
 
@@ -11,9 +12,11 @@ using Oracle.EntityFrameworkCore.Metadata;
 namespace AgroTech.Migrations
 {
     [DbContext(typeof(AgroTechDbContext))]
-    partial class AgroTechDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260407183926_InitialSensorsOnly")]
+    partial class InitialSensorsOnly
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

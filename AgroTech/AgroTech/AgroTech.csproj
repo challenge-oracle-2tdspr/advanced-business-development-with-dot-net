@@ -39,6 +39,18 @@
       <_ContentIncludedByDefault Remove="tests\AgroTech.UnitTests\obj\project.assets.json" />
       <_ContentIncludedByDefault Remove="AgroTech.Tests\obj\AgroTech.Tests.csproj.nuget.dgspec.json" />
       <_ContentIncludedByDefault Remove="AgroTech.Tests\obj\project.assets.json" />
+      <_ContentIncludedByDefault Remove="src\Web\Views\Crop\Create.cshtml" />
+      <_ContentIncludedByDefault Remove="src\Web\Views\Crop\Delete.cshtml" />
+      <_ContentIncludedByDefault Remove="src\Web\Views\Crop\Edit.cshtml" />
+      <_ContentIncludedByDefault Remove="src\Web\Views\Crop\Index.cshtml" />
+      <_ContentIncludedByDefault Remove="src\Web\Views\Farm\Create.cshtml" />
+      <_ContentIncludedByDefault Remove="src\Web\Views\Farm\Delete.cshtml" />
+      <_ContentIncludedByDefault Remove="src\Web\Views\Farm\Edit.cshtml" />
+      <_ContentIncludedByDefault Remove="src\Web\Views\Farm\Index.cshtml" />
+      <_ContentIncludedByDefault Remove="src\Web\Views\User\Create.cshtml" />
+      <_ContentIncludedByDefault Remove="src\Web\Views\User\Delete.cshtml" />
+      <_ContentIncludedByDefault Remove="src\Web\Views\User\Edit.cshtml" />
+      <_ContentIncludedByDefault Remove="src\Web\Views\User\Index.cshtml" />
     </ItemGroup>
 
     <ItemGroup>

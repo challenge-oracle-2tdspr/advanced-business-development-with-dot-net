@@ -4286,11 +4286,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/home/ruan/Área de Trabalho/advanced-business-development-with-dot-net/sprint-01/AgroTech/AgroTech/AgroTech.csproj",
+      "projectUniqueName": "/home/ruan/Área de Trabalho/advanced-business-development-with-dot-net/AgroTech/AgroTech/AgroTech.csproj",
       "projectName": "AgroTech",
-      "projectPath": "/home/ruan/Área de Trabalho/advanced-business-development-with-dot-net/sprint-01/AgroTech/AgroTech/AgroTech.csproj",
+      "projectPath": "/home/ruan/Área de Trabalho/advanced-business-development-with-dot-net/AgroTech/AgroTech/AgroTech.csproj",
       "packagesPath": "/home/ruan/.nuget/packages/",
-      "outputPath": "/home/ruan/Área de Trabalho/advanced-business-development-with-dot-net/sprint-01/AgroTech/AgroTech/obj/",
+      "outputPath": "/home/ruan/Área de Trabalho/advanced-business-development-with-dot-net/AgroTech/AgroTech/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "/home/ruan/.nuget/NuGet/NuGet.Config"

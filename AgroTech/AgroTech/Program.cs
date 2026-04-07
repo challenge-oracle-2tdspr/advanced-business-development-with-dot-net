@@ -1,25 +1,17 @@
 using AgroTech.Application.Interfaces;
 using AgroTech.Application.Services;
-using AgroTech.Domain.Entities;
 using AgroTech.Domain.Interfaces;
 using AgroTech.Infrastructure.Data;
 using AgroTech.Infrastructure.Repositories;
+using AgroTech.Web.Middleware;
 using Microsoft.EntityFrameworkCore;
-
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDbContext<AgroTechDbContext>(options =>
     options.UseOracle(builder.Configuration.GetConnectionString("AgroTechOracle")));
 
-builder.Services.AddScoped<IRepository<User>, UserRepository>();
-builder.Services.AddScoped<IRepository<Farm>, FarmRepository>();
-builder.Services.AddScoped<IRepository<Crop>, CropRepository>();
 builder.Services.AddScoped<ISensorRepository, SensorRepository>();
-
-builder.Services.AddScoped<IUserService, UserService>();
-builder.Services.AddScoped<IFarmService, FarmService>();
-builder.Services.AddScoped<ICropService, CropService>();
 builder.Services.AddScoped<ISensorService, SensorService>();
 
 builder.Services.AddControllersWithViews()
@@ -32,7 +24,7 @@ builder.Services.AddControllersWithViews()
 
 var app = builder.Build();
 
-app.UseMiddleware<AgroTech.Web.Middleware.ExceptionHandlingMiddleware>();
+app.UseMiddleware<ExceptionHandlingMiddleware>();
 
 if (!app.Environment.IsDevelopment())
 {

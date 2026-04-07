@@ -7,10 +7,7 @@ namespace AgroTech.Domain.Entities
     {
         public string Name { get; set; } = string.Empty;
         public int Type { get; set; }
-        public string Unit { get; set; } = string.Empty;
         public double Value { get; set; }
-
-        public Guid FarmId { get; set; }
-        public Farm? Farm { get; set; }
+        public DateTime Timestamp { get; set; }
     }
 }
