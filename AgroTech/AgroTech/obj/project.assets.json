@@ -4286,11 +4286,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/home/ruan/Área de trabalho/challenge-2025/advanced-business-develpment-with-dotnet/sprint-01/AgroTech/AgroTech/AgroTech.csproj",
+      "projectUniqueName": "/home/ruan/Área de Trabalho/advanced-business-development-with-dot-net/sprint-01/AgroTech/AgroTech/AgroTech.csproj",
       "projectName": "AgroTech",
-      "projectPath": "/home/ruan/Área de trabalho/challenge-2025/advanced-business-develpment-with-dotnet/sprint-01/AgroTech/AgroTech/AgroTech.csproj",
+      "projectPath": "/home/ruan/Área de Trabalho/advanced-business-development-with-dot-net/sprint-01/AgroTech/AgroTech/AgroTech.csproj",
       "packagesPath": "/home/ruan/.nuget/packages/",
-      "outputPath": "/home/ruan/Área de trabalho/challenge-2025/advanced-business-develpment-with-dotnet/sprint-01/AgroTech/AgroTech/obj/",
+      "outputPath": "/home/ruan/Área de Trabalho/advanced-business-development-with-dot-net/sprint-01/AgroTech/AgroTech/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "/home/ruan/.nuget/NuGet/NuGet.Config"
@@ -4311,6 +4311,11 @@
         "warnAsError": [
           "NU1605"
         ]
+      },
+      "restoreAuditProperties": {
+        "enableAudit": "true",
+        "auditLevel": "low",
+        "auditMode": "direct"
       }
     },
     "frameworks": {
@@ -4365,12 +4370,6 @@
         ],
         "assetTargetFallback": true,
         "warn": true,
-        "downloadDependencies": [
-          {
-            "name": "Microsoft.AspNetCore.App.Ref",
-            "version": "[8.0.20, 8.0.20]"
-          }
-        ],
         "frameworkReferences": {
           "Microsoft.AspNetCore.App": {
             "privateAssets": "none"
@@ -4379,7 +4378,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/8.0.120/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "/home/ruan/.dotnet/sdk/8.0.413/PortableRuntimeIdentifierGraph.json"
       }
     }
   }
