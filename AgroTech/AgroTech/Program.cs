@@ -22,11 +22,19 @@ builder.Services.AddControllersWithViews()
         options.ViewLocationFormats.Add("/src/Web/Views/Shared/{0}.cshtml");
     });
 
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+
 var app = builder.Build();
 
 app.UseMiddleware<ExceptionHandlingMiddleware>();
 
-if (!app.Environment.IsDevelopment())
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
+else
 {
     app.UseExceptionHandler("/Home/Error");
     app.UseHsts();

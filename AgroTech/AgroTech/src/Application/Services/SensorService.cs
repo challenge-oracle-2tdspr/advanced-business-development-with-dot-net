@@ -19,7 +19,7 @@ namespace AgroTech.Application.Services
             _repository = repository;
         }
 
-        public async Task AddAsync(SensorDTO dto)
+        public async Task<Guid> AddAsync(SensorDTO dto)
         {
             if (string.IsNullOrWhiteSpace(dto.Name))
                 throw new DomainException("O nome do sensor não pode ser vazio.");
@@ -30,9 +30,11 @@ namespace AgroTech.Application.Services
             if (!int.TryParse(dto.Type, out var sensorType))
                 throw new DomainException("O tipo do sensor deve ser numérico.");
 
+            var sensorId = dto.Id != Guid.Empty ? dto.Id : Guid.NewGuid();
+
             var sensor = new Sensor
             {
-                Id = dto.Id != Guid.Empty ? dto.Id : Guid.NewGuid(),
+                Id = sensorId,
                 Name = dto.Name,
                 Type = sensorType,
                 Value = dto.Value,
@@ -41,7 +43,9 @@ namespace AgroTech.Application.Services
             };
 
             await _repository.AddAsync(sensor);
-        }
+
+            return sensorId;
+        }   
 
         public async Task DeleteAsync(Guid id)
         {
@@ -104,6 +108,66 @@ namespace AgroTech.Application.Services
             sensor.UpdatedAt = DateTime.UtcNow;
 
             await _repository.UpdateAsync(sensor);
+        }
+        public async Task<PagedResultDTO<SensorDTO>> SearchAsync(SensorSearchDTO searchDto)
+        {
+            var sensors = await _repository.GetAllAsync();
+
+            var query = sensors.AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(searchDto.Name))
+                query = query.Where(s => s.Name.ToLower().Contains(searchDto.Name.ToLower()));
+
+            if (!string.IsNullOrWhiteSpace(searchDto.Type) && int.TryParse(searchDto.Type, out var sensorType))
+                query = query.Where(s => s.Type == sensorType);
+
+            if (searchDto.MinValue.HasValue)
+                query = query.Where(s => s.Value >= searchDto.MinValue.Value);
+
+            if (searchDto.MaxValue.HasValue)
+                query = query.Where(s => s.Value <= searchDto.MaxValue.Value);
+
+            if (searchDto.StartTimestamp.HasValue)
+                query = query.Where(s => s.Timestamp >= searchDto.StartTimestamp.Value);
+
+            if (searchDto.EndTimestamp.HasValue)
+                query = query.Where(s => s.Timestamp <= searchDto.EndTimestamp.Value);
+
+            query = (searchDto.OrderBy?.ToLower(), searchDto.Direction?.ToLower()) switch
+            {
+                ("name", "asc") => query.OrderBy(s => s.Name),
+                ("name", "desc") => query.OrderByDescending(s => s.Name),
+                ("type", "asc") => query.OrderBy(s => s.Type),
+                ("type", "desc") => query.OrderByDescending(s => s.Type),
+                ("value", "asc") => query.OrderBy(s => s.Value),
+                ("value", "desc") => query.OrderByDescending(s => s.Value),
+                ("timestamp", "asc") => query.OrderBy(s => s.Timestamp),
+                _ => query.OrderByDescending(s => s.Timestamp)
+            };
+
+            var totalItems = query.Count();
+
+            var items = query
+                .Skip((searchDto.Page - 1) * searchDto.PageSize)
+                .Take(searchDto.PageSize)
+                .Select(s => new SensorDTO
+                {
+                    Id = s.Id,
+                    Name = s.Name,
+                    Type = s.Type.ToString(),
+                    Value = s.Value,
+                    Timestamp = s.Timestamp
+                })
+                .ToList();
+
+            return new PagedResultDTO<SensorDTO>
+            {
+                Items = items,
+                Page = searchDto.Page,
+                PageSize = searchDto.PageSize,
+                TotalItems = totalItems,
+                TotalPages = (int)Math.Ceiling(totalItems / (double)searchDto.PageSize)
+            };
         }
     }
 }

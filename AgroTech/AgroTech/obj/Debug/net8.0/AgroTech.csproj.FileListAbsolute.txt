@@ -450,3 +450,8 @@
 /home/ruan/Área de Trabalho/advanced-business-development-with-dot-net/AgroTech/AgroTech/obj/Debug/net8.0/AgroTech.pdb
 /home/ruan/Área de Trabalho/advanced-business-development-with-dot-net/AgroTech/AgroTech/obj/Debug/net8.0/AgroTech.genruntimeconfig.cache
 /home/ruan/Área de Trabalho/advanced-business-development-with-dot-net/AgroTech/AgroTech/obj/Debug/net8.0/ref/AgroTech.dll
+/home/ruan/Área de Trabalho/advanced-business-development-with-dot-net/AgroTech/AgroTech/bin/Debug/net8.0/Microsoft.OpenApi.dll
+/home/ruan/Área de Trabalho/advanced-business-development-with-dot-net/AgroTech/AgroTech/bin/Debug/net8.0/Swashbuckle.AspNetCore.Swagger.dll
+/home/ruan/Área de Trabalho/advanced-business-development-with-dot-net/AgroTech/AgroTech/bin/Debug/net8.0/Swashbuckle.AspNetCore.SwaggerGen.dll
+/home/ruan/Área de Trabalho/advanced-business-development-with-dot-net/AgroTech/AgroTech/bin/Debug/net8.0/Swashbuckle.AspNetCore.SwaggerUI.dll
+/home/ruan/Área de Trabalho/advanced-business-development-with-dot-net/AgroTech/AgroTech/obj/Debug/net8.0/AgroTech.MvcApplicationPartsAssemblyInfo.cs
