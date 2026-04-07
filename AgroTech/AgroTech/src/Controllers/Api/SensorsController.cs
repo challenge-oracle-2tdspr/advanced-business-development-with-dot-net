@@ -34,15 +34,15 @@ namespace AgroTech.Web.Controllers.Api
         }
 
         [HttpPost]
-        public async Task<ActionResult> Create([FromBody] SensorDTO dto)
+        public async Task<ActionResult> Create([FromBody] List<SensorDTO> dtos)
         {
-            var id = await _sensorService.AddAsync(dto);
+            var ids = await _sensorService.AddAsync(dtos);
 
-            return CreatedAtAction(
-                nameof(GetById),
-                new { id },
-                new { id, message = "Sensor criado com sucesso." }
-            );
+            return Ok(new
+            {
+                message = "Sensores criados com sucesso.",
+                ids
+            });
         }
 
         [HttpPut("{id:guid}")]

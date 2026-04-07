@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace AgroTech.Application.DTOs
@@ -18,5 +19,7 @@ namespace AgroTech.Application.DTOs
 
         [Required(ErrorMessage = "O timestamp é obrigatório")]
         public DateTime Timestamp { get; set; }
+
+        public List<LinkDTO> Links { get; set; } = new();
     }
 }

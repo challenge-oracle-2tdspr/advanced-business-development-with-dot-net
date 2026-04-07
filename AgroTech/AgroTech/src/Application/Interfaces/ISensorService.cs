@@ -9,7 +9,7 @@ namespace AgroTech.Application.Interfaces
     {
         Task<IEnumerable<SensorDTO>> GetAllAsync();
         Task<SensorDTO?> GetByIdAsync(Guid id);
-        Task<Guid> AddAsync(SensorDTO dto);
+        Task<List<Guid>> AddAsync(IEnumerable<SensorDTO> dtos);
         Task UpdateAsync(SensorDTO dto);
         Task DeleteAsync(Guid id);
         Task<PagedResultDTO<SensorDTO>> SearchAsync(SensorSearchDTO searchDto);

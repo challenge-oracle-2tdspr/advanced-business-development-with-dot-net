@@ -19,32 +19,41 @@ namespace AgroTech.Application.Services
             _repository = repository;
         }
 
-        public async Task<Guid> AddAsync(SensorDTO dto)
+        public async Task<List<Guid>> AddAsync(IEnumerable<SensorDTO> dtos)
         {
-            if (string.IsNullOrWhiteSpace(dto.Name))
-                throw new DomainException("O nome do sensor não pode ser vazio.");
+            if (dtos == null || !dtos.Any())
+                throw new DomainException("A lista de sensores não pode ser vazia.");
 
-            if (string.IsNullOrWhiteSpace(dto.Type))
-                throw new DomainException("O tipo do sensor não pode ser vazio.");
+            var ids = new List<Guid>();
 
-            if (!int.TryParse(dto.Type, out var sensorType))
-                throw new DomainException("O tipo do sensor deve ser numérico.");
-
-            var sensorId = dto.Id != Guid.Empty ? dto.Id : Guid.NewGuid();
-
-            var sensor = new Sensor
+            foreach (var dto in dtos)
             {
-                Id = sensorId,
-                Name = dto.Name,
-                Type = sensorType,
-                Value = dto.Value,
-                Timestamp = dto.Timestamp,
-                CreatedAt = DateTime.UtcNow
-            };
+                if (string.IsNullOrWhiteSpace(dto.Name))
+                    throw new DomainException("O nome do sensor não pode ser vazio.");
 
-            await _repository.AddAsync(sensor);
+                if (string.IsNullOrWhiteSpace(dto.Type))
+                    throw new DomainException("O tipo do sensor não pode ser vazio.");
 
-            return sensorId;
+                if (!int.TryParse(dto.Type, out var sensorType))
+                    throw new DomainException("O tipo do sensor deve ser numérico.");
+
+                var sensorId = dto.Id != Guid.Empty ? dto.Id : Guid.NewGuid();
+
+                var sensor = new Sensor
+                {
+                    Id = sensorId,
+                    Name = dto.Name,
+                    Type = sensorType,
+                    Value = dto.Value,
+                    Timestamp = dto.Timestamp,
+                    CreatedAt = DateTime.UtcNow
+                };
+
+                await _repository.AddAsync(sensor);
+                ids.Add(sensorId);
+            }
+
+            return ids;
         }   
 
         public async Task DeleteAsync(Guid id)
