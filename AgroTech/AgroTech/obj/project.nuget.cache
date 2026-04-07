@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "lShKtAyQrtQ=",
+  "dgSpecHash": "rEB0ZRVn+Eg=",
   "success": true,
   "projectFilePath": "/home/ruan/Área de Trabalho/advanced-business-development-with-dot-net/AgroTech/AgroTech/AgroTech.csproj",
   "expectedPackageFiles": [
@@ -29,6 +29,12 @@
     "/home/ruan/.nuget/packages/microsoft.extensions.dependencyinjection/9.0.10/microsoft.extensions.dependencyinjection.9.0.10.nupkg.sha512",
     "/home/ruan/.nuget/packages/microsoft.extensions.dependencyinjection.abstractions/9.0.10/microsoft.extensions.dependencyinjection.abstractions.9.0.10.nupkg.sha512",
     "/home/ruan/.nuget/packages/microsoft.extensions.dependencymodel/9.0.10/microsoft.extensions.dependencymodel.9.0.10.nupkg.sha512",
+    "/home/ruan/.nuget/packages/microsoft.extensions.diagnostics.abstractions/8.0.1/microsoft.extensions.diagnostics.abstractions.8.0.1.nupkg.sha512",
+    "/home/ruan/.nuget/packages/microsoft.extensions.diagnostics.healthchecks/8.0.10/microsoft.extensions.diagnostics.healthchecks.8.0.10.nupkg.sha512",
+    "/home/ruan/.nuget/packages/microsoft.extensions.diagnostics.healthchecks.abstractions/8.0.10/microsoft.extensions.diagnostics.healthchecks.abstractions.8.0.10.nupkg.sha512",
+    "/home/ruan/.nuget/packages/microsoft.extensions.diagnostics.healthchecks.entityframeworkcore/8.0.10/microsoft.extensions.diagnostics.healthchecks.entityframeworkcore.8.0.10.nupkg.sha512",
+    "/home/ruan/.nuget/packages/microsoft.extensions.fileproviders.abstractions/8.0.0/microsoft.extensions.fileproviders.abstractions.8.0.0.nupkg.sha512",
+    "/home/ruan/.nuget/packages/microsoft.extensions.hosting.abstractions/8.0.1/microsoft.extensions.hosting.abstractions.8.0.1.nupkg.sha512",
     "/home/ruan/.nuget/packages/microsoft.extensions.logging/9.0.10/microsoft.extensions.logging.9.0.10.nupkg.sha512",
     "/home/ruan/.nuget/packages/microsoft.extensions.logging.abstractions/9.0.10/microsoft.extensions.logging.abstractions.9.0.10.nupkg.sha512",
     "/home/ruan/.nuget/packages/microsoft.extensions.options/9.0.10/microsoft.extensions.options.9.0.10.nupkg.sha512",
