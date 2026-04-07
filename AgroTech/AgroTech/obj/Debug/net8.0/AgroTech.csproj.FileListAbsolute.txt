@@ -469,3 +469,12 @@
 /home/ruan/Área de Trabalho/advanced-business-development-with-dot-net/AgroTech/AgroTech/obj/Debug/net8.0/AgroTech.pdb
 /home/ruan/Área de Trabalho/advanced-business-development-with-dot-net/AgroTech/AgroTech/obj/Debug/net8.0/AgroTech.genruntimeconfig.cache
 /home/ruan/Área de Trabalho/advanced-business-development-with-dot-net/AgroTech/AgroTech/obj/Debug/net8.0/ref/AgroTech.dll
+/home/ruan/Área de Trabalho/advanced-business-development-with-dot-net/AgroTech/AgroTech/bin/Debug/net8.0/OpenTelemetry.dll
+/home/ruan/Área de Trabalho/advanced-business-development-with-dot-net/AgroTech/AgroTech/bin/Debug/net8.0/OpenTelemetry.Api.dll
+/home/ruan/Área de Trabalho/advanced-business-development-with-dot-net/AgroTech/AgroTech/bin/Debug/net8.0/OpenTelemetry.Api.ProviderBuilderExtensions.dll
+/home/ruan/Área de Trabalho/advanced-business-development-with-dot-net/AgroTech/AgroTech/bin/Debug/net8.0/OpenTelemetry.Exporter.Console.dll
+/home/ruan/Área de Trabalho/advanced-business-development-with-dot-net/AgroTech/AgroTech/bin/Debug/net8.0/OpenTelemetry.Extensions.Hosting.dll
+/home/ruan/Área de Trabalho/advanced-business-development-with-dot-net/AgroTech/AgroTech/bin/Debug/net8.0/OpenTelemetry.Instrumentation.AspNetCore.dll
+/home/ruan/Área de Trabalho/advanced-business-development-with-dot-net/AgroTech/AgroTech/bin/Debug/net8.0/OpenTelemetry.Instrumentation.EntityFrameworkCore.dll
+/home/ruan/Área de Trabalho/advanced-business-development-with-dot-net/AgroTech/AgroTech/bin/Debug/net8.0/OpenTelemetry.Instrumentation.Http.dll
+/home/ruan/Área de Trabalho/advanced-business-development-with-dot-net/AgroTech/AgroTech/bin/Debug/net8.0/OpenTelemetry.Instrumentation.Runtime.dll
