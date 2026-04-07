@@ -1,7 +1,4 @@
-using System;
 using System.Net;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using AgroTech.Application.Exceptions;
 using System.Text.Json;
 
@@ -10,10 +7,11 @@ namespace AgroTech.Web.Middleware
     public class ExceptionHandlingMiddleware
     {
         private readonly RequestDelegate _next;
-
-        public ExceptionHandlingMiddleware(RequestDelegate next)
+        private readonly ILogger<ExceptionHandlingMiddleware> _logger;
+        public ExceptionHandlingMiddleware(RequestDelegate next,  ILogger<ExceptionHandlingMiddleware> logger)
         {
             _next = next;
+            _logger = logger;
         }
 
         public async Task InvokeAsync(HttpContext httpContext)
@@ -24,10 +22,12 @@ namespace AgroTech.Web.Middleware
             }
             catch (DomainException ex)
             {
+                _logger.LogWarning(ex, "Erro de domínio tratado: {Message}", ex.Message);
                 await HandleExceptionAsync(httpContext, ex.Message, HttpStatusCode.BadRequest);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                _logger.LogError(ex, "Erro interno não tratado.");
                 await HandleExceptionAsync(httpContext, "Erro interno no servidor.", HttpStatusCode.InternalServerError);
             }
         }

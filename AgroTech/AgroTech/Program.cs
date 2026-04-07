@@ -1,3 +1,5 @@
+using Serilog;
+using Serilog.Events;
 using AgroTech.Application.Interfaces;
 using AgroTech.Application.Services;
 using AgroTech.Domain.Interfaces;
@@ -34,7 +36,21 @@ static Task WriteHealthResponse(HttpContext context, HealthReport report)
 
     return context.Response.WriteAsync(json);
 }
+Log.Logger = new LoggerConfiguration()
+    .MinimumLevel.Information()
+    .MinimumLevel.Override("Microsoft", LogEventLevel.Warning)
+    .MinimumLevel.Override("Microsoft.Hosting.Lifetime", LogEventLevel.Information)
+    .Enrich.FromLogContext()
+    .WriteTo.Console(
+        outputTemplate: "[{Timestamp:HH:mm:ss} {Level:u3}] {Message:lj}{NewLine}{Exception}")
+    .WriteTo.File(
+        path: "logs/agrotech-.txt",
+        rollingInterval: RollingInterval.Day,
+        retainedFileCountLimit: 7,
+        shared: true)
+    .CreateLogger();
 var builder = WebApplication.CreateBuilder(args);
+builder.Host.UseSerilog();
 
 builder.Services.AddDbContext<AgroTechDbContext>(options =>
     options.UseOracle(builder.Configuration.GetConnectionString("AgroTechOracle")));
@@ -74,7 +90,7 @@ else
     app.UseHsts();
 }
 
-app.UseHttpsRedirection();
+//app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
@@ -102,4 +118,16 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
+Console.WriteLine("\u001b[34m====================================\u001b[0m");
+Console.WriteLine("\u001b[32mAPI AGROTECH INICIADA COM SUCESSO\u001b[0m");
+Log.Information("   Ambiente: {Environment}", app.Environment.EnvironmentName);
+Console.WriteLine("\u001b[33m   Swagger: /swagger\u001b[0m");
+Console.WriteLine("\u001b[36m   Health: /health\u001b[0m");
+Log.Information("   Endpoints principais:");
+Log.Information("-> GET    /api/sensors");
+Log.Information("-> GET    /api/sensors/search");
+Log.Information("-> POST   /api/sensors");
+Log.Information("-> GET    /health");
+Console.WriteLine("\u001b[34m====================================\u001b[0m");
+Console.WriteLine("\u001b[32mDESENVOLVIDO POR RUAN GASPAR\u001b[0m");
 app.Run();
