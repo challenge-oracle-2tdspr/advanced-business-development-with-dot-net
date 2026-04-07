@@ -18,7 +18,13 @@ namespace AgroTech.Web.Controllers.Api
         [HttpGet]
         public async Task<ActionResult<IEnumerable<SensorDTO>>> GetAll()
         {
-            var sensors = await _sensorService.GetAllAsync();
+            var sensors = (await _sensorService.GetAllAsync()).ToList();
+
+            foreach (var sensor in sensors)
+            {
+                sensor.Links = GenerateLinks(sensor.Id);
+            }
+
             return Ok(sensors);
         }
 
@@ -29,6 +35,8 @@ namespace AgroTech.Web.Controllers.Api
 
             if (sensor == null)
                 return NotFound(new { message = "Sensor não encontrado." });
+
+            sensor.Links = GenerateLinks(sensor.Id);
 
             return Ok(sensor);
         }
@@ -65,7 +73,43 @@ namespace AgroTech.Web.Controllers.Api
         public async Task<ActionResult<PagedResultDTO<SensorDTO>>> Search([FromQuery] SensorSearchDTO searchDto)
         {
             var result = await _sensorService.SearchAsync(searchDto);
+
+            foreach (var item in result.Items)
+            {
+                item.Links = GenerateLinks(item.Id);
+            }
+
             return Ok(result);
+        }
+        private List<LinkDTO> GenerateLinks(Guid id)
+        {
+            return new List<LinkDTO>
+            {
+                new LinkDTO
+                {
+                    Rel = "self",
+                    Href = Url.Action(nameof(GetById), new { id }) ?? $"/api/sensors/{id}",
+                    Method = "GET"
+                },
+                new LinkDTO
+                {
+                    Rel = "update",
+                    Href = Url.Action(nameof(Update), new { id }) ?? $"/api/sensors/{id}",
+                    Method = "PUT"
+                },
+                new LinkDTO
+                {
+                    Rel = "delete",
+                    Href = Url.Action(nameof(Delete), new { id }) ?? $"/api/sensors/{id}",
+                    Method = "DELETE"
+                },
+                new LinkDTO
+                {
+                    Rel = "search",
+                    Href = Url.Action(nameof(Search)) ?? "/api/sensors/search",
+                    Method = "GET"
+                }
+            };
         }
     }
 }
