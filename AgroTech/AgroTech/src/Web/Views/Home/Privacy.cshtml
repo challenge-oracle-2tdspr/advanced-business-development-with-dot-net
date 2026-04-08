@@ -75,8 +75,33 @@
             color: #2c6e49;
             font-weight: bold;
         }
-      
-        
+      .personal-inf {
+          color: white;
+      }
+        .personal-inf h3 {
+            color: white;
+            font-weight: 600;
+        }
+        .personal-inf h2{
+          font-weight: 700;
+        }
+        .personal-inf a {
+          color: white;
+          font-weight: bold;
+          text-decoration: none;
+        }
+        .personal-inf a:hover {
+            text-decoration: underline;
+        }
+        .perfil-foto {
+            width: 140px;
+            height: 140px;
+            object-fit: cover;
+            border-radius: 50%;
+            border: 4px solid #2c6e49;
+            margin-bottom: 1rem;
+        }
+            
     </style>
 </head>
 <body>
@@ -89,58 +114,75 @@
     <section>
         <h2>Objetivo do Projeto</h2>
         <p>
-            O AgroTech é uma solução integrada de gestão agrícola inteligente, projetada para monitorar plantações e safras por meio de sensores IoT, análise de dados ambientais, automação de irrigação e controle de produtividade. 
-            O sistema visa conectar campo e gestão, possibilitando decisões em tempo real baseadas em dados precisos.
+            O AgroTech IoT API é uma aplicação backend criada para receber leituras de sensores agrícolas e ambientais, 
+            processar esses dados e disponibilizá-los para consulta por meio de uma API REST.
+
+            O foco do projeto é representar telemetria de sensores, e não cadastro fixo de dispositivos. Cada registro 
+            salvo no banco representa uma leitura recebida de um sensor em determinado momento.
+
+            O sistema foi construído seguindo os princípios de arquitetura limpa, separando responsabilidades entre as 
+            camadas de Domínio, Aplicação, Infraestrutura e Web.
         </p>
     </section>
 
     <section>
         <h2>Escopo do Sistema</h2>
         <ul>
-            <li>Backend Java (Spring Boot) para gerenciamento agrícola, usuários e sensores.</li>
-            <li>Módulo .NET (C#) para integração com dispositivos, segurança e dashboards.</li>
-            <li>Banco de Dados Oracle Cloud para persistência.</li>
-            <li>Camada IoT com ESP32 para coleta de dados ambientais.</li>
-            <li>Aplicativo Mobile com TypeScript/Ionic para produtores e técnicos.</li>
-            <li>Módulo de IA Oracle para análise preditiva e alertas.</li>
+            <li>API REST para CRUD de leituras de sensores;</li>
+            <li>endpoint de busca com paginação, filtros e ordenação;</li>
+            <li>health checks da aplicação e do banco;</li>
+            <li>logging estruturado com Serilog;</li>
+            <li>tracing e métricas com OpenTelemetry;</li>
+            <li>testes unitários e de integração;</li>
+            <li>documentação de uso do sistema.</li>
         </ul>
     </section>
 
     <section>
         <h2>Requisitos Funcionais</h2>
         <ul>
-            <li>Cadastro e autenticação de usuários.</li>
-            <li>Registro de propriedades, campos e safras.</li>
-            <li>Coleta integrada de dados dos sensores.</li>
-            <li>Visualização de relatórios de produtividade.</li>
-            <li>Alertas automáticos via IA.</li>
-            <li>Acompanhamento em tempo real pelo aplicativo.</li>
-            <li>Gerenciamento de permissões por perfil.</li>
+            <li>Receber leituras de sensores em lote via HTTP.</li>
+            <li>Validar lista de sensores recebida.</li>
+            <li>Validar nome do sensor.</li>
+            <li>Validar tipo do sensor.</li>
+            <li>Converter o campo Type recebido como string numérica para inteiro.</li>
+            <li>Armazenar leituras no banco de dados.</li>
+            <li>Permitir consulta de todas as leituras.</li>
+            <li>Permitir consulta por identificador.</li>
+            <li>Permitir atualização de leitura.</li>
+            <li>Permitir remoção de leitura.</li>
+            <li>Permitir busca com:
+                <ul>
+                    <li>filtro por nome;</li>
+                    <li>filtro por tipo;</li>
+                    <li>filtro por valor mínimo;</li>
+                    <li>filtro por valor máximo;</li>
+                    <li>filtro por intervalo de datas;</li>
+                    <li>paginação;</li>
+                    <li>ordenação ascendente e descendente.</li>
+                </ul>
+            </li>
+            <li>- Expor links HATEOAS nos retornos da API.</li>
+            <li>- Expor endpoints de health check.</li>
         </ul>
     </section>
 
     <section>
         <h2>Requisitos Não Funcionais</h2>
         <ul>
-            <li>Arquitetura limpa e desacoplada.</li>
-            <li>Disponibilidade mínima de 99,5% em nuvem.</li>
-            <li>Segurança com autenticação JWT e criptografia AES-256.</li>
-            <li>Resposta da API em menos de 300 ms.</li>
-            <li>Compatibilidade entre módulos Java, .NET e Oracle.</li>
+            <li>Aplicação desenvolvida em .NET 8.</li>
+            <li>Arquitetura baseada em Clean Architecture.</li>
+            <li>Persistência com Entity Framework Core e Oracle.</li>
+            <li>Documentação da API com Swagger.</li>
+            <li>Logging estruturado com Serilog.</li>
+            <li>Observabilidade com OpenTelemetry.</li>
+            <li>Testes automatizados com xUnit, Moq, FluentAssertions e WebApplicationFactory.</li>
+            <li>Organização em projetos separados para testes unitários e integração.</li>
+            <li>Nomenclatura padronizada de testes no formato:
+                MetodoTestado_Cenario_ResultadoEsperado</li>
         </ul>
     </section>
-
-    <section>
-        <h2>Arquitetura</h2>
-        <ul>
-            <li>Apresentação (Controllers, DTOs)</li>
-            <li>Aplicação (Services, Use Cases)</li>
-            <li>Domínio (Entities, Models)</li>
-            <li>Infraestrutura (Repositories, Configurações)</li>
-        </ul>
-        <p>Essa estrutura facilita a manutenção, testes, independência tecnológica e substituição de frameworks.</p>
-    </section>
-
+    
     <section>
         <h2>Integração IoT e Inteligência Artificial</h2>
         <ul>
@@ -157,23 +199,50 @@
             <li>Público-alvo: cooperativas, agrônomos, produtores médios e grandes.</li>
             <li>Solução modular, integrável e acessível, focada em produtores médios.</li>
             <li>Mercado global esperado em US$ 55 bilhões até 2030.</li>
-            <li>MVP contempla coleta real de dados, dashboard funcional e integração básica cloud.</li>
+            <li>MVP contempla coleta factível de dados, dashboard funcional e integração com Oracle Cloud.</li>
         </ul>
     </section>
 
     <section>
         <h2>Tecnologias Principais</h2>
         <div class="tech-list">
-            <span class="tech-item">Java 21 + Spring Boot 3</span>
-            <span class="tech-item">C# .NET 8</span>
-            <span class="tech-item">Oracle Database Cloud, APEX, AI Services</span>
-            <span class="tech-item">TypeScript + Ionic Mobile</span>
-            <span class="tech-item">ESP32 (IoT)</span>
-            <span class="tech-item">Swagger / OpenAPI 3.0</span>
-            <span class="tech-item">Docker & OCI</span>
+            <span class="tech-item">.NET 8</span>
+            <span class="tech-item">ASP.NET Core Web API / MVC</span>
+            <span class="tech-item">Entity Framework Core</span>
+            <span class="tech-item">Oracle Entity Framework Core Provider</span>
+            <span class="tech-item">Swagger / Swashbuckle</span>
+            <span class="tech-item">Serilog</span>
+            <span class="tech-item">OpenTelemetry</span>
+            <span class="tech-item">xUnit</span>
+            <span class="tech-item">Moq</span>
+            <span class="tech-item">FluentAssertions</span>
+            <span class="tech-item">Microsoft.AspNetCore.Mvc.Testing</span>
+            <span class="tech-item">EntityFrameworkCore.InMemory</span>
         </div>
     </section>
-    
+    <section>
+        <h2>Resumo do Projeto e Informações Adicionais</h2>
+        <p>
+            Essa API é parte componente do projeto Agrotech. Idealizado como uma solução para pequenos e médios agricultores, o Agrotech visa facilitar o manejo e plantio em zonas rurais, permitindo que usuários cadastrem suas propriedades e implementem sensores IoT diretamente em campo, realizando assim a coleta e análise de informações para tomada de decisões estratégicas na produção.
+
+            Componentes do projeto: API .net realiza a integração de sensores IoT via Node-Red por protocolo MQTT ao Oracle. 
+            <br>
+            Fluxo 1:
+            <br>
+            -> Sensores -> Broker MQTT -> Node-Red (conversão para HTTP) -> API .net -> Banco de dados Oracle -> Oracle 23ai -> LLM Retorna sugestões de manejo ao agricultor (predição) -> Dashboard Exibido no frontend React ao user
+            <br>
+            Fluxo 2:
+            <br>
+            -> Frontend permite CRUD de informações (Cadastro de Usuário, Propriedade, Campo, etc) -> API Spring Boot Java recebe os dados -> Envia ao Banco Oracle 
+        </p>
+    </section>
+    <section class="personal-inf">
+        <h2>Desenvolvido por:</h2>
+        <h3>Ruan Nunes Gaspar</h3>
+        <img src="~/images/perfil.jpeg" alt="Foto de Ruan Nunes Gaspar" class="perfil-foto"/>
+        <br>
+        <a href="https://github.com/ruan-gaspar">Ir para Github de Ruan</a>
+    </section>
 </main>
 </body>
 </html>

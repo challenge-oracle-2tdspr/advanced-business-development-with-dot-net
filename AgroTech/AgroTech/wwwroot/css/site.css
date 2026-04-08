@@ -15,7 +15,6 @@ main {
 .hero-section {
     position: relative;
     min-height: 100vh;
-    background-image: url('../images/agrotech-iot.jpg');
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
@@ -64,15 +63,16 @@ main {
 }
 
 .footer {
-    position: fixed;
     bottom: 0;
     left: 0;
-    width: 100%;
     height: 60px;
     background-color: rgba(46,125,50,0.95);
     color: white;
     text-align: center;
     z-index: 1000;
+    position: static !important;
+    width: auto !important;
+    line-height: normal !important;
 }
 
 @media (max-width: 768px) {
@@ -80,3 +80,35 @@ main {
         background-position: top center;
     }
 }
+html, body {
+    min-height: 100%;
+}
+
+body.agrotech-body {
+    background: #0f1517;
+    color: #eef3ef;
+}
+
+.agrotech-navbar {
+    background: rgba(16, 24, 21, 0.88);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+
+.nav-action {
+    min-width: 108px;
+    border-radius: 999px;
+}
+
+.agrotech-main {
+    min-height: calc(100vh - 120px);
+    padding-top: 76px;
+}
+
+.agrotech-footer {
+    background: #0d1214;
+    border-top: 1px solid rgba(255,255,255,0.06);
+    color: #b8c5be;
+    padding: 1rem 0;
+}
+

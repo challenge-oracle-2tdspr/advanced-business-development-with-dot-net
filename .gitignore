@@ -1,0 +1,15 @@
+# .NET
+bin/
+obj/
+
+# logs
+logs/
+*.log
+
+# arquivos compilados
+*.dll
+*.pdb
+
+# Rider / VSCode
+.idea/
+.vscode/

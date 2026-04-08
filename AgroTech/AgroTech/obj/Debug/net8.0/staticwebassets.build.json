@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "NO+FaaYmkA9tcMrrxUvJ1hyHkmp22phF4eh9gvV02xU=",
+  "Hash": "HwAW7QlMLfDcXWDAsobKadKmKKkmPnG284ZCSUztMw0=",
   "Source": "AgroTech",
   "BasePath": "_content/AgroTech",
   "Mode": "Default",
@@ -16,44 +16,6 @@
     }
   ],
   "Assets": [
-    {
-      "Identity": "/home/ruan/Área de Trabalho/advanced-business-development-with-dot-net/AgroTech/AgroTech/obj/Debug/net8.0/scopedcss/bundle/AgroTech.styles.css",
-      "SourceId": "AgroTech",
-      "SourceType": "Computed",
-      "ContentRoot": "/home/ruan/Área de Trabalho/advanced-business-development-with-dot-net/AgroTech/AgroTech/obj/Debug/net8.0/scopedcss/bundle/",
-      "BasePath": "_content/AgroTech",
-      "RelativePath": "AgroTech.styles.css",
-      "AssetKind": "All",
-      "AssetMode": "CurrentProject",
-      "AssetRole": "Primary",
-      "AssetMergeBehavior": "",
-      "AssetMergeSource": "",
-      "RelatedAsset": "",
-      "AssetTraitName": "ScopedCss",
-      "AssetTraitValue": "ApplicationBundle",
-      "CopyToOutputDirectory": "Never",
-      "CopyToPublishDirectory": "PreserveNewest",
-      "OriginalItemSpec": "/home/ruan/Área de Trabalho/advanced-business-development-with-dot-net/AgroTech/AgroTech/obj/Debug/net8.0/scopedcss/bundle/AgroTech.styles.css"
-    },
-    {
-      "Identity": "/home/ruan/Área de Trabalho/advanced-business-development-with-dot-net/AgroTech/AgroTech/obj/Debug/net8.0/scopedcss/projectbundle/AgroTech.bundle.scp.css",
-      "SourceId": "AgroTech",
-      "SourceType": "Computed",
-      "ContentRoot": "/home/ruan/Área de Trabalho/advanced-business-development-with-dot-net/AgroTech/AgroTech/obj/Debug/net8.0/scopedcss/projectbundle/",
-      "BasePath": "_content/AgroTech",
-      "RelativePath": "AgroTech.bundle.scp.css",
-      "AssetKind": "All",
-      "AssetMode": "Reference",
-      "AssetRole": "Primary",
-      "AssetMergeBehavior": "",
-      "AssetMergeSource": "",
-      "RelatedAsset": "",
-      "AssetTraitName": "ScopedCss",
-      "AssetTraitValue": "ProjectBundle",
-      "CopyToOutputDirectory": "Never",
-      "CopyToPublishDirectory": "PreserveNewest",
-      "OriginalItemSpec": "/home/ruan/Área de Trabalho/advanced-business-development-with-dot-net/AgroTech/AgroTech/obj/Debug/net8.0/scopedcss/projectbundle/AgroTech.bundle.scp.css"
-    },
     {
       "Identity": "/home/ruan/Área de Trabalho/advanced-business-development-with-dot-net/AgroTech/AgroTech/wwwroot/css/site.css",
       "SourceId": "AgroTech",
@@ -93,12 +55,12 @@
       "OriginalItemSpec": "wwwroot/favicon.ico"
     },
     {
-      "Identity": "/home/ruan/Área de Trabalho/advanced-business-development-with-dot-net/AgroTech/AgroTech/wwwroot/images/agrotech-iot.jpg",
+      "Identity": "/home/ruan/Área de Trabalho/advanced-business-development-with-dot-net/AgroTech/AgroTech/wwwroot/images/perfil.jpeg",
       "SourceId": "AgroTech",
       "SourceType": "Discovered",
       "ContentRoot": "/home/ruan/Área de Trabalho/advanced-business-development-with-dot-net/AgroTech/AgroTech/wwwroot/",
       "BasePath": "_content/AgroTech",
-      "RelativePath": "images/agrotech-iot.jpg",
+      "RelativePath": "images/perfil.jpeg",
       "AssetKind": "All",
       "AssetMode": "All",
       "AssetRole": "Primary",
@@ -109,7 +71,7 @@
       "AssetTraitValue": "",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
-      "OriginalItemSpec": "wwwroot/images/agrotech-iot.jpg"
+      "OriginalItemSpec": "wwwroot/images/perfil.jpeg"
     },
     {
       "Identity": "/home/ruan/Área de Trabalho/advanced-business-development-with-dot-net/AgroTech/AgroTech/wwwroot/js/site.js",

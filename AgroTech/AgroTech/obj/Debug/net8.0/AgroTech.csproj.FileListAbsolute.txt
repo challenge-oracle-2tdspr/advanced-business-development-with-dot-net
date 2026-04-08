@@ -160,9 +160,7 @@
 /home/ruan/Área de Trabalho/advanced-business-development-with-dot-net/AgroTech/AgroTech/obj/Debug/net8.0/staticwebassets/msbuild.buildMultiTargeting.AgroTech.props
 /home/ruan/Área de Trabalho/advanced-business-development-with-dot-net/AgroTech/AgroTech/obj/Debug/net8.0/staticwebassets/msbuild.buildTransitive.AgroTech.props
 /home/ruan/Área de Trabalho/advanced-business-development-with-dot-net/AgroTech/AgroTech/obj/Debug/net8.0/staticwebassets.pack.json
-/home/ruan/Área de Trabalho/advanced-business-development-with-dot-net/AgroTech/AgroTech/obj/Debug/net8.0/scopedcss/src/Web/Views/Shared/_Layout.cshtml.rz.scp.css
 /home/ruan/Área de Trabalho/advanced-business-development-with-dot-net/AgroTech/AgroTech/obj/Debug/net8.0/scopedcss/bundle/AgroTech.styles.css
-/home/ruan/Área de Trabalho/advanced-business-development-with-dot-net/AgroTech/AgroTech/obj/Debug/net8.0/scopedcss/projectbundle/AgroTech.bundle.scp.css
 /home/ruan/Área de Trabalho/advanced-business-development-with-dot-net/AgroTech/AgroTech/obj/Debug/net8.0/AgroTech.csproj.Up2Date
 /home/ruan/Área de Trabalho/advanced-business-development-with-dot-net/AgroTech/AgroTech/obj/Debug/net8.0/AgroTech.dll
 /home/ruan/Área de Trabalho/advanced-business-development-with-dot-net/AgroTech/AgroTech/obj/Debug/net8.0/refint/AgroTech.dll

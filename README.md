@@ -58,12 +58,6 @@ O sistema foi construído seguindo os princípios de arquitetura limpa, separand
 - testes unitários e de integração;
 - documentação de uso do sistema.
 
-Não faz parte do escopo atual:
-
-- autenticação e autorização;
-- front-end completo de dashboard operacional;
-- comunicação MQTT direta;
-- cadastro mestre de sensores e dispositivos.
 
 ## Requisitos Funcionais
 
@@ -668,6 +662,8 @@ Idealizado como uma solução para pequenos e médios agricultores, o Agrotech v
 
 Componentes do projeto:
 API .net realiza a integração de sensores IoT via Node-Red por protocolo MQTT ao Oracle.
+
+
 Fluxo 1: 
 ```
 -> Sensores -> Broker MQTT -> Node-Red (conversão para HTTP) -> API .net -> Banco de dados Oracle -> Oracle 23ai -> LLM Retorna sugestões de manejo ao agricultor (predição) -> Dashboard Exibido no frontend React ao user
@@ -676,3 +672,8 @@ Fluxo 2:
 ```
 -> Frontend permite CRUD de informações (Cadastro de Usuário, Propriedade, Campo, etc) -> API Spring Boot Java recebe os dados -> Envia ao Banco Oracle 
 ```
+
+
+
+
+

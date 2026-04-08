@@ -1,41 +1,121 @@
-﻿<div class="hero-section d-flex flex-column justify-content-center text-center text-white">
-    <div class="overlay"></div>
-    <div class="container content animate__animated animate__fadeIn">
-        <h1 class="display-3 fw-bold mb-3">Bem-vindo ao AgroTech</h1>
-        <p class="lead mb-5">
-            Monitoramento inteligente de plantações com sensores IoT e análise de dados em tempo real.
-        </p>
+﻿@{
+    ViewData["Title"] = "AgroTech";
+}
 
-        <div class="row row-cols-1 row-cols-md-3 g-4 mb-5">
-            <div class="col">
-                <div class="card h-100 shadow-sm border-success">
-                    <div class="card-body text-center">
-                        <i class="bi bi-thermometer-half display-4 text-danger mb-3"></i>
-                        <h5 class="card-title">Temperatura</h5>
-                        <p class="card-text">Sensores em campo medindo temperatura em tempo real.</p>
+<style>
+    .home-hero {
+        min-height: calc(100vh - 76px);
+        background:
+            linear-gradient(rgba(10, 17, 15, 0.72), rgba(10, 17, 15, 0.78)),
+            url("https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=1600&q=80") center/cover no-repeat;
+        display: flex;
+        align-items: center;
+        color: #f3f7f3;
+        padding: 5rem 0 4rem;
+    }
+
+    .home-glass {
+        background: rgba(17, 24, 21, 0.62);
+        border: 1px solid rgba(255,255,255,0.10);
+        border-radius: 28px;
+        backdrop-filter: blur(12px);
+        box-shadow: 0 20px 45px rgba(0,0,0,0.28);
+        padding: 2rem;
+    }
+
+    .feature-card {
+        background: linear-gradient(180deg, rgba(255,255,255,0.94), rgba(244,249,245,0.98));
+        border: none;
+        border-radius: 22px;
+        box-shadow: 0 16px 30px rgba(0,0,0,0.10);
+        transition: transform 0.25s ease, box-shadow 0.25s ease;
+    }
+
+    .feature-card:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 24px 34px rgba(0,0,0,0.14);
+    }
+
+    .metric-chip {
+        display: inline-flex;
+        gap: 0.5rem;
+        align-items: center;
+        padding: 0.55rem 0.9rem;
+        border-radius: 999px;
+        background: rgba(255,255,255,0.08);
+        border: 1px solid rgba(255,255,255,0.10);
+        color: #e8efe9;
+        margin: 0 0.5rem 0.75rem 0;
+    }
+</style>
+
+<section class="home-hero">
+    <div class="container">
+        <div class="row g-4 align-items-center">
+            <div class="col-lg-7">
+                <div class="home-glass">
+                    <div class="mb-3">
+                        <span class="metric-chip"><i class="bi bi-broadcast-pin"></i> IoT em campo</span>
+                        <span class="metric-chip"><i class="bi bi-graph-up-arrow"></i> Monitoramento contínuo</span>
+                        <span class="metric-chip"><i class="bi bi-droplet-half"></i> Irrigação inteligente</span>
+                    </div>
+
+                    <h1 class="display-4 fw-bold mb-3">AgroTech</h1>
+                    <p class="lead mb-4">
+                        Plataforma de monitoramento agrícola com sensores IoT, análise em tempo real,
+                        dashboards operacionais e base pronta para recomendações inteligentes ao produtor.
+                    </p>
+
+                    <div class="d-flex flex-wrap gap-3">
+                        <a class="btn btn-success btn-lg px-4" asp-controller="Dashboard" asp-action="Index">
+                            <i class="bi bi-speedometer2 me-2"></i>Abrir Dashboard
+                        </a>
+                        <a class="btn btn-outline-light btn-lg px-4" asp-controller="Home" asp-action="Privacy">
+                            <i class="bi bi-info-circle me-2"></i>Sobre o Projeto
+                        </a>
                     </div>
                 </div>
             </div>
 
-            <div class="col">
-                <div class="card h-100 shadow-sm border-success">
-                    <div class="card-body text-center">
-                        <i class="bi bi-droplet-half display-4 text-primary mb-3"></i>
-                        <h5 class="card-title">Umidade</h5>
-                        <p class="card-text">Monitoramento da umidade do solo e do ar para irrigação eficiente.</p>
+            <div class="col-lg-5">
+                <div class="row g-3">
+                    <div class="col-12">
+                        <div class="card feature-card h-100">
+                            <div class="card-body p-4">
+                                <i class="bi bi-thermometer-half display-5 text-danger mb-3"></i>
+                                <h5 class="fw-bold">Temperatura e Microclima</h5>
+                                <p class="text-muted mb-0">
+                                    Leitura contínua de temperatura do ar e do solo para suporte ao manejo agrícola.
+                                </p>
+                            </div>
+                        </div>
                     </div>
-                </div>
-            </div>
 
-            <div class="col">
-                <div class="card h-100 shadow-sm border-success">
-                    <div class="card-body text-center">
-                        <i class="bi bi-lightning-charge display-4 text-warning mb-3"></i>
-                        <h5 class="card-title">Luminosidade</h5>
-                        <p class="card-text">Controle da luz para estufas e monitoramento do clima.</p>
+                    <div class="col-md-6">
+                        <div class="card feature-card h-100">
+                            <div class="card-body p-4">
+                                <i class="bi bi-droplet-half display-5 text-primary mb-3"></i>
+                                <h5 class="fw-bold">Umidade</h5>
+                                <p class="text-muted mb-0">
+                                    Apoio à decisão de irrigação com foco em eficiência hídrica.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="card feature-card h-100">
+                            <div class="card-body p-4">
+                                <i class="bi bi-brightness-high display-5 text-warning mb-3"></i>
+                                <h5 class="fw-bold">Luminosidade</h5>
+                                <p class="text-muted mb-0">
+                                    Monitoramento ambiental para acompanhamento do desenvolvimento da cultura.
+                                </p>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
+</section>

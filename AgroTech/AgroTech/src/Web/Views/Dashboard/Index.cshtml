@@ -1,53 +1,718 @@
+@using System.Globalization
+@using System.Text.Json
 @model IEnumerable<AgroTech.Application.DTOs.SensorDTO>
 
 @{
     ViewData["Title"] = "Dashboard";
+
+    var readings = (Model ?? Enumerable.Empty<AgroTech.Application.DTOs.SensorDTO>())
+        .OrderByDescending(x => x.Timestamp)
+        .ToList();
+
+    var latestByName = readings
+        .GroupBy(x => x.Name)
+        .Select(g => g.OrderByDescending(x => x.Timestamp).First())
+        .OrderBy(x => x.Name)
+        .ToList();
+
+    bool NameIs(AgroTech.Application.DTOs.SensorDTO sensor, params string[] names) =>
+        names.Any(n => string.Equals(sensor.Name, n, StringComparison.OrdinalIgnoreCase));
+
+    AgroTech.Application.DTOs.SensorDTO? Latest(params string[] names) =>
+        readings.FirstOrDefault(x => NameIs(x, names));
+
+    double? V(params string[] names) => Latest(names)?.Value;
+
+    string T(params string[] names) =>
+        Latest(names)?.Timestamp.ToString("dd/MM/yyyy HH:mm") ?? "--";
+
+    double Clamp(double value, double min, double max) => Math.Max(min, Math.Min(value, max));
+
+    int ToPercent(double? value, double min, double max)
+    {
+        if (!value.HasValue || max <= min) return 0;
+        return (int)Math.Round(((Clamp(value.Value, min, max) - min) / (max - min)) * 100);
+    }
+
+    string GaugeVars(double? value, double min, double max, string accent) =>
+        $"--value:{ToPercent(value, min, max)}; --accent:{accent};";
+
+    bool IsAlert(AgroTech.Application.DTOs.SensorDTO sensor)
+    {
+        var name = sensor.Name.ToLowerInvariant();
+
+        return
+            (name.Contains("temperatura do ar") && sensor.Value > 35) ||
+            (name.Contains("temperatura do solo") && sensor.Value > 32) ||
+            (name.Contains("umidade do ar") && sensor.Value < 30) ||
+            (name.Contains("umidade do solo") && sensor.Value < 35) ||
+            (name.Contains("ph do solo") && (sensor.Value < 5.5 || sensor.Value > 7.5)) ||
+            (name.Contains("luminosidade") && sensor.Value < 250) ||
+            (name.Contains("velocidade do vento") && sensor.Value > 20) ||
+            (name.Contains("chuva") && sensor.Value > 20);
+    }
+
+    string StatusClass(AgroTech.Application.DTOs.SensorDTO sensor)
+    {
+        if (IsAlert(sensor)) return "status-danger";
+        return "status-ok";
+    }
+
+    string StatusText(AgroTech.Application.DTOs.SensorDTO sensor)
+    {
+        if (IsAlert(sensor)) return "Alerta";
+        return "Normal";
+    }
+
+    var airTemp = Latest("Temperatura do Ar", "Temperatura");
+    var airHumidity = Latest("Umidade do Ar", "Umidade");
+    var soilMoisture = Latest("Umidade do Solo");
+    var soilPh = Latest("pH do Solo", "Ph do Solo");
+    var light = Latest("Luminosidade");
+    var wind = Latest("Velocidade do Vento");
+    var rain = Latest("Chuva");
+    var soilTemp = Latest("Temperatura do Solo");
+
+    var lastUpdate = readings.FirstOrDefault()?.Timestamp.ToString("dd/MM/yyyy HH:mm:ss") ?? "--";
+    var alertCount = latestByName.Count(IsAlert);
+
+    var recommendations = new List<string>();
+
+    if ((soilMoisture?.Value ?? 0) < 35)
+        recommendations.Add("Aumentar a irrigação do campo principal em 15%.");
+
+    if ((rain?.Value ?? 0) > 10)
+        recommendations.Add("Suspender a irrigação nas próximas 12 horas devido à chuva.");
+
+    if ((wind?.Value ?? 0) > 12)
+        recommendations.Add("Evitar pulverização neste momento por causa da velocidade do vento.");
+
+    if ((soilPh?.Value ?? 7) < 5.5 || (soilPh?.Value ?? 7) > 7.5)
+        recommendations.Add("Verificar correção do pH do solo antes da próxima adubação.");
+
+    if ((airTemp?.Value ?? 0) > 34 && (airHumidity?.Value ?? 100) < 35)
+        recommendations.Add("Monitorar estresse hídrico. Temperatura alta e ar seco detectados.");
+
+    if (!recommendations.Any())
+        recommendations.Add("Condições estáveis. Sem ações corretivas imediatas.");
+
+    var chartTimes = readings
+        .Where(x => NameIs(x, "Temperatura do Ar", "Temperatura", "Umidade do Ar", "Umidade"))
+        .Select(x => x.Timestamp)
+        .Distinct()
+        .OrderBy(x => x)
+        .TakeLast(12)
+        .ToList();
+
+    var chartLabels = chartTimes
+        .Select(x => x.ToString("HH:mm"))
+        .ToList();
+
+    var chartTemp = chartTimes
+        .Select(ts => readings.FirstOrDefault(x =>
+            x.Timestamp == ts && NameIs(x, "Temperatura do Ar", "Temperatura"))?.Value)
+        .ToList();
+
+    var chartHumidity = chartTimes
+        .Select(ts => readings.FirstOrDefault(x =>
+            x.Timestamp == ts && NameIs(x, "Umidade do Ar", "Umidade"))?.Value)
+        .ToList();
 }
 
-<h2>Dashboard AgroTech</h2>
-
-<table class="table table-striped table-bordered">
-    <thead>
-    <tr>
-        <th>Nome</th>
-        <th>Tipo</th>
-        <th>Valor</th>
-        <th>Timestamp</th>
-    </tr>
-    </thead>
-    <tbody>
-    @foreach (var sensor in Model)
-    {
-        var alertClass = "";
-        
-        // Alertas por tipo de sensor
-        if(sensor.Type == "Temperature" && sensor.Value > 35)
-        {
-            alertClass = "table-danger"; // vermelho
-        }
-        else if(sensor.Type == "Humidity" && sensor.Value < 30)
-        {
-            alertClass = "table-warning"; // amarelo
-        }
-        else if(sensor.Type == "Ph" && (sensor.Value < 5 || sensor.Value > 8))
-        {
-            alertClass = "table-info"; // azul
-        }
-        else if (sensor.Type == "Light" && sensor.Value < 300)
-        {
-            alertClass = "table-secondary"; // cinza
-        }
-        else if (sensor.Type == "Wind" && sensor.Value > 20)
-        {
-            alertClass = "table-primary"; // azul escuro
-        }
-        
-        <tr class="@alertClass">
-            <td>@sensor.Name</td>
-            <td>@sensor.Type</td>
-            <td>@sensor.Value</td>
-            <td>@sensor.Timestamp.ToString("yyyy-MM-dd HH:mm:ss")</td>
-        </tr>
+<style>
+    .dash-page {
+        min-height: calc(100vh - 100px);
+        background:
+            radial-gradient(circle at top left, rgba(70, 124, 92, 0.18), transparent 30%),
+            radial-gradient(circle at top right, rgba(58, 97, 168, 0.14), transparent 28%),
+            linear-gradient(180deg, #101517 0%, #131a1d 100%);
+        color: #eef3ef;
+        padding: 2rem 1rem 4rem;
     }
-    </tbody>
-</table>
+
+    .dash-shell {
+        max-width: 1450px;
+        margin: 0 auto;
+    }
+
+    .dash-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+        flex-wrap: wrap;
+    }
+
+    .dash-title h1 {
+        margin: 0;
+        font-size: 2rem;
+        font-weight: 700;
+        letter-spacing: 0.3px;
+    }
+
+    .dash-title p {
+        margin: 0.35rem 0 0;
+        color: #a9b8ae;
+    }
+
+    .dash-badges {
+        display: flex;
+        gap: 0.75rem;
+        flex-wrap: wrap;
+    }
+
+    .dash-badge {
+        background: rgba(255,255,255,0.06);
+        border: 1px solid rgba(255,255,255,0.08);
+        color: #dde7df;
+        border-radius: 999px;
+        padding: 0.55rem 0.9rem;
+        font-size: 0.9rem;
+    }
+
+    .panel {
+        background: linear-gradient(180deg, rgba(31, 38, 43, 0.96) 0%, rgba(22, 28, 32, 0.97) 100%);
+        border: 1px solid rgba(255,255,255,0.08);
+        border-radius: 22px;
+        box-shadow: 0 18px 40px rgba(0,0,0,0.25);
+        overflow: hidden;
+    }
+
+    .panel-head {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1rem 1.1rem 0;
+    }
+
+    .panel-head h5,
+    .panel-head h6 {
+        margin: 0;
+        color: #f2f5f2;
+        font-weight: 600;
+    }
+
+    .panel-body {
+        padding: 1.1rem;
+    }
+
+    .grid-top {
+        display: grid;
+        grid-template-columns: 1.1fr 1.3fr 0.8fr 0.8fr;
+        gap: 1rem;
+        margin-bottom: 1rem;
+    }
+
+    .grid-middle {
+        display: grid;
+        grid-template-columns: 2fr 1fr;
+        gap: 1rem;
+        margin-bottom: 1rem;
+    }
+
+    .grid-bottom {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 1rem;
+        margin-bottom: 1rem;
+    }
+
+    .hero-gauge-wrap {
+        min-height: 320px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .hero-gauge {
+        width: 240px;
+        aspect-ratio: 1;
+        border-radius: 50%;
+        display: grid;
+        place-items: center;
+        background:
+            radial-gradient(farthest-side, #182126 74%, transparent 75% 100%),
+            conic-gradient(var(--accent) calc(var(--value) * 1%), rgba(255,255,255,0.08) 0);
+        box-shadow:
+            inset 0 0 0 10px rgba(255,255,255,0.03),
+            0 10px 30px rgba(0,0,0,0.25);
+    }
+
+    .hero-gauge-inner {
+        text-align: center;
+    }
+
+    .hero-gauge-value {
+        font-size: 2.4rem;
+        font-weight: 800;
+        line-height: 1;
+    }
+
+    .hero-gauge-label {
+        margin-top: 0.35rem;
+        color: #9eb0a4;
+        font-size: 0.95rem;
+    }
+
+    .hero-gauge-scale {
+        display: flex;
+        justify-content: space-between;
+        width: 100%;
+        max-width: 240px;
+        color: #95a39a;
+        font-size: 0.9rem;
+    }
+
+    .map-card {
+        min-height: 320px;
+        position: relative;
+    }
+
+    .fake-map {
+        min-height: 260px;
+        border-radius: 18px;
+        position: relative;
+        overflow: hidden;
+        background:
+            linear-gradient(rgba(22,27,30,0.15), rgba(22,27,30,0.25)),
+            url("https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=1200&q=80") center/cover no-repeat;
+        border: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .fake-map::after {
+        content: "";
+        width: 18px;
+        height: 18px;
+        border-radius: 50%;
+        background: #58c2ff;
+        position: absolute;
+        left: 56%;
+        top: 44%;
+        box-shadow: 0 0 0 8px rgba(88,194,255,0.18);
+    }
+
+    .fake-map-label {
+        position: absolute;
+        left: 1rem;
+        bottom: 1rem;
+        background: rgba(17, 22, 25, 0.82);
+        border: 1px solid rgba(255,255,255,0.08);
+        color: #f1f4f1;
+        border-radius: 12px;
+        padding: 0.75rem 0.9rem;
+        backdrop-filter: blur(8px);
+    }
+
+    .stat-card {
+        min-height: 155px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+
+    .stat-caption {
+        color: #96a69d;
+        font-size: 0.92rem;
+        margin-bottom: 0.6rem;
+    }
+
+    .stat-value {
+        font-size: 3rem;
+        font-weight: 800;
+        line-height: 1;
+        color: #79de74;
+    }
+
+    .stat-time {
+        margin-top: 0.75rem;
+        color: #b0bbb5;
+        font-size: 0.9rem;
+    }
+
+    .chart-wrap {
+        height: 320px;
+    }
+
+    .recommendation-list {
+        display: grid;
+        gap: 0.85rem;
+    }
+
+    .recommendation-item {
+        background: rgba(255,255,255,0.04);
+        border: 1px solid rgba(255,255,255,0.07);
+        border-radius: 14px;
+        padding: 0.9rem 0.95rem;
+        display: flex;
+        gap: 0.75rem;
+        align-items: flex-start;
+    }
+
+    .recommendation-item i {
+        color: #9ce188;
+        font-size: 1.1rem;
+        margin-top: 0.15rem;
+    }
+
+    .sensor-tile {
+        padding: 1rem;
+        min-height: 130px;
+    }
+
+    .sensor-name {
+        color: #eef3ef;
+        font-weight: 600;
+        margin-bottom: 0.7rem;
+    }
+
+    .sensor-value {
+        font-size: 2rem;
+        font-weight: 800;
+        line-height: 1;
+        margin-bottom: 0.45rem;
+    }
+
+    .sensor-meta {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        color: #9aad9f;
+        font-size: 0.9rem;
+    }
+
+    .status-pill {
+        border-radius: 999px;
+        padding: 0.2rem 0.65rem;
+        font-size: 0.8rem;
+        font-weight: 700;
+        border: 1px solid transparent;
+    }
+
+    .status-ok {
+        color: #86e08d;
+        background: rgba(57, 181, 74, 0.12);
+        border-color: rgba(57, 181, 74, 0.25);
+    }
+
+    .status-danger {
+        color: #ff9a9a;
+        background: rgba(240, 82, 82, 0.12);
+        border-color: rgba(240, 82, 82, 0.25);
+    }
+
+    .recent-table {
+        width: 100%;
+        color: #e8eeea;
+        margin: 0;
+    }
+
+    .recent-table thead th {
+        color: #99a8a0;
+        border-bottom: 1px solid rgba(255,255,255,0.08);
+        font-weight: 600;
+        padding: 0.9rem 1rem;
+    }
+
+    .recent-table tbody td {
+        border-bottom: 1px solid rgba(255,255,255,0.05);
+        padding: 0.85rem 1rem;
+        vertical-align: middle;
+    }
+
+    .recent-table tbody tr:hover {
+        background: rgba(255,255,255,0.03);
+    }
+
+    .tag-soft {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.35rem;
+        border-radius: 999px;
+        padding: 0.25rem 0.6rem;
+        background: rgba(255,255,255,0.05);
+        color: #c4d0ca;
+        font-size: 0.8rem;
+    }
+
+    .empty-state {
+        padding: 4rem 2rem;
+        text-align: center;
+        color: #c8d3cc;
+    }
+
+    .empty-state i {
+        font-size: 3rem;
+        display: block;
+        margin-bottom: 1rem;
+        color: #6fbf73;
+    }
+
+    @@media (max-width: 1200px) {
+        .grid-top {
+            grid-template-columns: 1fr 1fr;
+        }
+
+        .grid-middle {
+            grid-template-columns: 1fr;
+        }
+
+        .grid-bottom {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+
+    @@media (max-width: 768px) {
+        .dash-page {
+            padding: 1rem 0.75rem 3rem;
+        }
+
+        .grid-top,
+        .grid-bottom {
+            grid-template-columns: 1fr;
+        }
+
+        .stat-value {
+            font-size: 2.4rem;
+        }
+
+        .hero-gauge {
+            width: 210px;
+        }
+    }
+</style>
+
+<div class="dash-page">
+    <div class="dash-shell">
+        <div class="dash-header">
+            <div class="dash-title">
+                <h1>AgroTech Control Center</h1>
+                <p>Monitoramento inteligente da lavoura com visão operacional em tempo real.</p>
+            </div>
+
+            <div class="dash-badges">
+                <span class="dash-badge"><i class="bi bi-clock-history me-1"></i> Última atualização: @lastUpdate</span>
+                <span class="dash-badge"><i class="bi bi-bell me-1"></i> Alertas: @alertCount</span>
+                <span class="dash-badge"><i class="bi bi-cpu me-1"></i> Sensores ativos: @latestByName.Count</span>
+            </div>
+        </div>
+
+        @if (!readings.Any())
+        {
+            <div class="panel">
+                <div class="empty-state">
+                    <i class="bi bi-broadcast-pin"></i>
+                    <h3>Nenhuma leitura disponível</h3>
+                    <p>Assim que os sensores enviarem dados, o dashboard será preenchido automaticamente.</p>
+                </div>
+            </div>
+        }
+        else
+        {
+            <div class="grid-top">
+                <div class="panel">
+                    <div class="panel-head">
+                        <h5>Water Tank / Umidade do Solo</h5>
+                        <span class="tag-soft"><i class="bi bi-droplet-half"></i> Campo 1</span>
+                    </div>
+                    <div class="panel-body hero-gauge-wrap">
+                        <div class="hero-gauge" style="@GaugeVars(soilMoisture?.Value, 0, 100, "#57c7ea")">
+                            <div class="hero-gauge-inner">
+                                <div class="hero-gauge-value">
+                                    @((soilMoisture?.Value ?? 0).ToString("0.0", CultureInfo.InvariantCulture))
+                                </div>
+                                <div class="hero-gauge-label">%</div>
+                            </div>
+                        </div>
+                        <div class="hero-gauge-scale">
+                            <span>0</span>
+                            <span>100</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="panel map-card">
+                    <div class="panel-head">
+                        <h5>Mapa do Campo</h5>
+                        <span class="tag-soft"><i class="bi bi-geo-alt-fill"></i> Integrável com APEX / GIS</span>
+                    </div>
+                    <div class="panel-body">
+                        <div class="fake-map">
+                            <div class="fake-map-label">
+                                <strong>Talhão Principal</strong><br />
+                                Área monitorada pela estação atual
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="panel stat-card">
+                    <div class="panel-body">
+                        <div class="stat-caption">Temperatura do Ar</div>
+                        <div class="stat-value">@((airTemp?.Value ?? 0).ToString("0.0", CultureInfo.InvariantCulture))</div>
+                        <div class="stat-caption">°C</div>
+                        <div class="stat-time">@T("Temperatura do Ar", "Temperatura")</div>
+                    </div>
+                </div>
+
+                <div class="panel stat-card">
+                    <div class="panel-body">
+                        <div class="stat-caption">Umidade do Ar</div>
+                        <div class="stat-value">@((airHumidity?.Value ?? 0).ToString("0.0", CultureInfo.InvariantCulture))</div>
+                        <div class="stat-caption">%</div>
+                        <div class="stat-time">@T("Umidade do Ar", "Umidade")</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid-middle">
+                <div class="panel">
+                    <div class="panel-head">
+                        <h5>Tendência recente</h5>
+                        <span class="tag-soft"><i class="bi bi-graph-up-arrow"></i> Temperatura e Umidade</span>
+                    </div>
+                    <div class="panel-body">
+                        <div class="chart-wrap">
+                            <canvas id="climateChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="panel">
+                    <div class="panel-head">
+                        <h5>Recomendações</h5>
+                        <span class="tag-soft"><i class="bi bi-stars"></i> Ações sugeridas</span>
+                    </div>
+                    <div class="panel-body">
+                        <div class="recommendation-list">
+                            @foreach (var item in recommendations)
+                            {
+                                <div class="recommendation-item">
+                                    <i class="bi bi-check2-circle"></i>
+                                    <div>@item</div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid-bottom">
+                @foreach (var sensor in latestByName)
+                {
+                    <div class="panel sensor-tile">
+                        <div class="sensor-name">@sensor.Name</div>
+                        <div class="sensor-value">@sensor.Value.ToString("0.0", CultureInfo.InvariantCulture)</div>
+                        <div class="sensor-meta">
+                            <span>@sensor.Timestamp.ToString("HH:mm:ss")</span>
+                            <span class="status-pill @StatusClass(sensor)">@StatusText(sensor)</span>
+                        </div>
+                    </div>
+                }
+            </div>
+
+            <div class="panel">
+                <div class="panel-head">
+                    <h5>Últimas leituras</h5>
+                    <span class="tag-soft"><i class="bi bi-table"></i> Histórico recente</span>
+                </div>
+                <div class="table-responsive">
+                    <table class="recent-table">
+                        <thead>
+                        <tr>
+                            <th>Nome</th>
+                            <th>Tipo</th>
+                            <th>Valor</th>
+                            <th>Timestamp</th>
+                            <th>Status</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        @foreach (var sensor in readings.Take(15))
+                        {
+                            <tr>
+                                <td>@sensor.Name</td>
+                                <td>@sensor.Type</td>
+                                <td>@sensor.Value.ToString("0.0", CultureInfo.InvariantCulture)</td>
+                                <td>@sensor.Timestamp.ToString("dd/MM/yyyy HH:mm:ss")</td>
+                                <td>
+                                    <span class="status-pill @StatusClass(sensor)">
+                                        @StatusText(sensor)
+                                    </span>
+                                </td>
+                            </tr>
+                        }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        const climateLabels = @Html.Raw(JsonSerializer.Serialize(chartLabels));
+        const climateTemp = @Html.Raw(JsonSerializer.Serialize(chartTemp));
+        const climateHumidity = @Html.Raw(JsonSerializer.Serialize(chartHumidity));
+
+        const ctx = document.getElementById('climateChart');
+        if (ctx) {
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: climateLabels,
+                    datasets: [
+                        {
+                            label: 'Temperatura do Ar',
+                            data: climateTemp,
+                            borderColor: '#f6f7f8',
+                            backgroundColor: 'rgba(246,247,248,0.08)',
+                            borderWidth: 2,
+                            tension: 0.35,
+                            pointRadius: 3,
+                            pointHoverRadius: 4
+                        },
+                        {
+                            label: 'Umidade do Ar',
+                            data: climateHumidity,
+                            borderColor: '#88e17f',
+                            backgroundColor: 'rgba(136,225,127,0.10)',
+                            borderWidth: 2,
+                            tension: 0.35,
+                            pointRadius: 3,
+                            pointHoverRadius: 4
+                        }
+                    ]
+                },
+                options: {
+                    maintainAspectRatio: false,
+                    interaction: {
+                        mode: 'index',
+                        intersect: false
+                    },
+                    plugins: {
+                        legend: {
+                            labels: {
+                                color: '#dbe4de'
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            ticks: { color: '#91a199' },
+                            grid: { color: 'rgba(255,255,255,0.06)' }
+                        },
+                        y: {
+                            ticks: { color: '#91a199' },
+                            grid: { color: 'rgba(255,255,255,0.06)' }
+                        }
+                    }
+                }
+            });
+        }
+    </script>
+}

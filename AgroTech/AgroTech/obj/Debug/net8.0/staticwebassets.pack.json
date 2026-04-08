@@ -1,10 +1,6 @@
 {
   "Files": [
     {
-      "Id": "/home/ruan/Área de Trabalho/advanced-business-development-with-dot-net/AgroTech/AgroTech/obj/Debug/net8.0/scopedcss/projectbundle/AgroTech.bundle.scp.css",
-      "PackagePath": "staticwebassets/AgroTech.bundle.scp.css"
-    },
-    {
       "Id": "/home/ruan/Área de Trabalho/advanced-business-development-with-dot-net/AgroTech/AgroTech/wwwroot/css/site.css",
       "PackagePath": "staticwebassets/css/site.css"
     },
@@ -13,8 +9,8 @@
       "PackagePath": "staticwebassets/favicon.ico"
     },
     {
-      "Id": "/home/ruan/Área de Trabalho/advanced-business-development-with-dot-net/AgroTech/AgroTech/wwwroot/images/agrotech-iot.jpg",
-      "PackagePath": "staticwebassets/images/agrotech-iot.jpg"
+      "Id": "/home/ruan/Área de Trabalho/advanced-business-development-with-dot-net/AgroTech/AgroTech/wwwroot/images/perfil.jpeg",
+      "PackagePath": "staticwebassets/images/perfil.jpeg"
     },
     {
       "Id": "/home/ruan/Área de Trabalho/advanced-business-development-with-dot-net/AgroTech/AgroTech/wwwroot/js/site.js",
