@@ -601,6 +601,8 @@ dotnet run --project ./AgroTech
 - API: http://localhost:5081
 - Swagger: http://localhost:5081/swagger
 - Health: http://localhost:5081/health
+## Importante!
+Para ver o Dashboard funcionando, abra o NODE-RED na porta 8080 e importe o arquivo flows.json para seu fluxo, salve e teste clicando no nó inject. Em seguida veja o Dashboard web exibindo os dados.`
 
 ### Como Executar as Migrations
 #### Criar migration
