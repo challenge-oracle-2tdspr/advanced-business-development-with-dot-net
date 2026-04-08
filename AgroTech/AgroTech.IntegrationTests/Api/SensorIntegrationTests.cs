@@ -4,7 +4,8 @@ using FluentAssertions;
 
 namespace AgroTech.IntegrationTests.Api
 {
-    public class SensorsIntegrationTests : IClassFixture<CustomWebApplicationFactory>
+    [Collection("Integration Test Collection")]
+    public class SensorsIntegrationTests
     {
         private readonly HttpClient _client;
 

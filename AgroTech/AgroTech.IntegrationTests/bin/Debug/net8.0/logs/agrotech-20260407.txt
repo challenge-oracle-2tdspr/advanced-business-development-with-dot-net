@@ -154,3 +154,149 @@ AgroTech.Application.Exceptions.DomainException: A lista de sensores não pode s
 2026-04-07 21:35:25.111 -03:00 [INF] Sensor "22222222-2222-2222-2222-222222222222" removido com sucesso.
 2026-04-07 21:35:25.113 -03:00 [INF] Buscando sensor por id: "22222222-2222-2222-2222-222222222222".
 2026-04-07 21:35:25.114 -03:00 [WRN] Sensor não Encontrado para o id: "22222222-2222-2222-2222-222222222222"
+[2026-04-07 23:29:00 INF] [CorrelationId: ]    Ambiente: Testing
+[2026-04-07 23:29:00 INF] [CorrelationId: ]    Ambiente: Testing
+[2026-04-07 23:29:00 INF] [CorrelationId: ]    Endpoints principais:
+[2026-04-07 23:29:00 INF] [CorrelationId: ]    Endpoints principais:
+[2026-04-07 23:29:00 INF] [CorrelationId: ] -> GET    /api/sensors
+[2026-04-07 23:29:00 INF] [CorrelationId: ] -> GET    /api/sensors
+[2026-04-07 23:29:00 INF] [CorrelationId: ] -> GET    /api/sensors/search
+[2026-04-07 23:29:00 INF] [CorrelationId: ] -> GET    /api/sensors/search
+[2026-04-07 23:29:00 INF] [CorrelationId: ] -> POST   /api/sensors
+[2026-04-07 23:29:00 INF] [CorrelationId: ] -> POST   /api/sensors
+[2026-04-07 23:29:00 INF] [CorrelationId: ] -> GET    /health
+[2026-04-07 23:29:00 INF] [CorrelationId: ] -> GET    /health
+[2026-04-07 23:29:00 INF] [CorrelationId: 9d6a2dab-5878-42a3-aad5-ea4cf0aefa61] Start processing HTTP request GET http://localhost:1880/
+[2026-04-07 23:29:00 INF] [CorrelationId: 9d6a2dab-5878-42a3-aad5-ea4cf0aefa61] Sending HTTP request GET http://localhost:1880/
+[2026-04-07 23:29:01 INF] [CorrelationId: 9d6a2dab-5878-42a3-aad5-ea4cf0aefa61] Received HTTP response headers after 52.0352ms - 200
+[2026-04-07 23:29:01 INF] [CorrelationId: 9d6a2dab-5878-42a3-aad5-ea4cf0aefa61] End processing HTTP request after 71.7779ms - 200
+[2026-04-07 23:29:01 INF] [CorrelationId: 9d6a2dab-5878-42a3-aad5-ea4cf0aefa61] Serviço externo disponível. URL: http://localhost:1880, StatusCode: 200
+[2026-04-07 23:29:01 INF] [CorrelationId: 5cb90353-ce78-459e-ba81-86c9e4ea5a57] Recebendo lote de sensores com 2 itens.
+[2026-04-07 23:29:01 INF] [CorrelationId: 9d6a2dab-5878-42a3-aad5-ea4cf0aefa61] HTTP GET /health responded 200 in 112.2939 ms
+[2026-04-07 23:29:01 INF] [CorrelationId: 5cb90353-ce78-459e-ba81-86c9e4ea5a57] Lote de sensores salvo com sucesso. 2 registros criados.
+[2026-04-07 23:29:01 INF] [CorrelationId: 5cb90353-ce78-459e-ba81-86c9e4ea5a57] HTTP POST /api/sensors responded 200 in 120.0842 ms
+[2026-04-07 23:29:01 INF] [CorrelationId: 42a2a6a7-3b97-4636-8c23-b3dbaf2fc604] HTTP GET /health/live responded 200 in 1.7193 ms
+[2026-04-07 23:29:01 INF] [CorrelationId: a7803b60-5421-4145-9335-21f29e2e88b1] Start processing HTTP request GET http://localhost:1880/
+[2026-04-07 23:29:01 INF] [CorrelationId: a7803b60-5421-4145-9335-21f29e2e88b1] Sending HTTP request GET http://localhost:1880/
+[2026-04-07 23:29:01 INF] [CorrelationId: a7803b60-5421-4145-9335-21f29e2e88b1] Received HTTP response headers after 2.0483ms - 200
+[2026-04-07 23:29:01 INF] [CorrelationId: a7803b60-5421-4145-9335-21f29e2e88b1] End processing HTTP request after 2.6518ms - 200
+[2026-04-07 23:29:01 INF] [CorrelationId: a7803b60-5421-4145-9335-21f29e2e88b1] Serviço externo disponível. URL: http://localhost:1880, StatusCode: 200
+[2026-04-07 23:29:01 INF] [CorrelationId: a7803b60-5421-4145-9335-21f29e2e88b1] HTTP GET /health/ready responded 200 in 6.4726 ms
+[2026-04-07 23:29:01 INF] [CorrelationId: a563c5cc-c378-4f35-9984-54ef1f675ad2] Buscando todos os sensores.
+[2026-04-07 23:29:01 INF] [CorrelationId: a563c5cc-c378-4f35-9984-54ef1f675ad2] Foram retornados 5 sensores.
+[2026-04-07 23:29:01 INF] [CorrelationId: a563c5cc-c378-4f35-9984-54ef1f675ad2] HTTP GET /api/sensors responded 200 in 45.9601 ms
+[2026-04-07 23:29:01 INF] [CorrelationId: 35e8e6c0-890c-42c7-b5dd-f280198896da] Recebendo lote de sensores com 0 itens.
+[2026-04-07 23:29:01 ERR] [CorrelationId: 35e8e6c0-890c-42c7-b5dd-f280198896da] An unhandled exception has occurred while executing the request.
+AgroTech.Application.Exceptions.DomainException: A lista de sensores não pode ser vazia.
+   at AgroTech.Application.Services.SensorService.AddAsync(IEnumerable`1 dtos) in /home/ruan/Área de Trabalho/advanced-business-development-with-dot-net/AgroTech/AgroTech/src/Application/Services/SensorService.cs:line 25
+   at AgroTech.Web.Controllers.Api.SensorsController.Create(List`1 dtos) in /home/ruan/Área de Trabalho/advanced-business-development-with-dot-net/AgroTech/AgroTech/src/Controllers/Api/SensorsController.cs:line 58
+   at lambda_method102(Closure, Object)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.TaskOfActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Logged|12_1(ControllerActionInvoker invoker)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeInnerFilterAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeNextResourceFilter>g__Awaited|25_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Rethrow(ResourceExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.InvokeFilterPipelineAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddlewareImpl.<Invoke>g__Awaited|10_0(ExceptionHandlerMiddlewareImpl middleware, HttpContext context, Task task)
+[2026-04-07 23:29:01 ERR] [CorrelationId: 35e8e6c0-890c-42c7-b5dd-f280198896da] HTTP POST /api/sensors responded 500 in 50.4949 ms
+[2026-04-07 23:29:01 INF] [CorrelationId: 0ba239aa-fa54-45eb-ad7e-dd24522fd597] Atualizando sensor "11111111-1111-1111-1111-111111111111"
+[2026-04-07 23:29:01 INF] [CorrelationId: 0ba239aa-fa54-45eb-ad7e-dd24522fd597] Sensor "11111111-1111-1111-1111-111111111111" atualizado com sucesso.
+[2026-04-07 23:29:01 INF] [CorrelationId: 0ba239aa-fa54-45eb-ad7e-dd24522fd597] HTTP PUT /api/sensors/11111111-1111-1111-1111-111111111111 responded 204 in 28.4211 ms
+[2026-04-07 23:29:01 INF] [CorrelationId: b2baac35-8c68-4a1d-8ac0-5fa4e1a371a8] Buscando sensor por id: "11111111-1111-1111-1111-111111111111".
+[2026-04-07 23:29:01 INF] [CorrelationId: b2baac35-8c68-4a1d-8ac0-5fa4e1a371a8] HTTP GET /api/sensors/11111111-1111-1111-1111-111111111111 responded 200 in 5.1951 ms
+[2026-04-07 23:29:01 INF] [CorrelationId: 73aa3f60-4465-44fc-bb9c-dab1591c5c5f] Atualizando sensor "99999999-9999-9999-9999-999999999999"
+[2026-04-07 23:29:01 WRN] [CorrelationId: 73aa3f60-4465-44fc-bb9c-dab1591c5c5f] Id da rota "99999999-9999-9999-9999-999999999999" diferente do id do corpo "11111111-1111-1111-1111-111111111111"
+[2026-04-07 23:29:01 INF] [CorrelationId: 73aa3f60-4465-44fc-bb9c-dab1591c5c5f] HTTP PUT /api/sensors/99999999-9999-9999-9999-999999999999 responded 400 in 2.3868 ms
+[2026-04-07 23:29:01 INF] [CorrelationId: 77725375-04ec-40ae-82de-f0a13cb378b4] Buscando sensor por id: "11111111-1111-1111-1111-111111111111".
+[2026-04-07 23:29:01 INF] [CorrelationId: 77725375-04ec-40ae-82de-f0a13cb378b4] HTTP GET /api/sensors/11111111-1111-1111-1111-111111111111 responded 200 in 1.7472 ms
+[2026-04-07 23:29:01 INF] [CorrelationId: b03af6da-b830-44fd-97bd-196fc15e5eb6] Buscando sensor por id: "d6cf4552-fdb7-4aa7-94b8-4e038e7043e1".
+[2026-04-07 23:29:01 WRN] [CorrelationId: b03af6da-b830-44fd-97bd-196fc15e5eb6] Sensor não Encontrado para o id: "d6cf4552-fdb7-4aa7-94b8-4e038e7043e1"
+[2026-04-07 23:29:01 INF] [CorrelationId: b03af6da-b830-44fd-97bd-196fc15e5eb6] HTTP GET /api/sensors/d6cf4552-fdb7-4aa7-94b8-4e038e7043e1 responded 404 in 1.1901 ms
+[2026-04-07 23:29:01 INF] [CorrelationId: 8ac0260b-b422-49cb-b03e-47b3aacbcaa4] Buscando sensores com filtros: Name=temp, Type=null, MinValue=null, MaxValue=null, Page=1, PageSize=10
+[2026-04-07 23:29:01 INF] [CorrelationId: 8ac0260b-b422-49cb-b03e-47b3aacbcaa4] Busca retornou 1 sensores na página 1.
+[2026-04-07 23:29:01 INF] [CorrelationId: 8ac0260b-b422-49cb-b03e-47b3aacbcaa4] HTTP GET /api/sensors/search responded 200 in 20.5902 ms
+[2026-04-07 23:29:01 INF] [CorrelationId: a91cf730-bb9a-45c6-b997-b1c9c2e29d7b] Removendo sensor "22222222-2222-2222-2222-222222222222"
+[2026-04-07 23:29:01 INF] [CorrelationId: a91cf730-bb9a-45c6-b997-b1c9c2e29d7b] Sensor "22222222-2222-2222-2222-222222222222" removido com sucesso.
+[2026-04-07 23:29:01 INF] [CorrelationId: a91cf730-bb9a-45c6-b997-b1c9c2e29d7b] HTTP DELETE /api/sensors/22222222-2222-2222-2222-222222222222 responded 204 in 7.9480 ms
+[2026-04-07 23:29:01 INF] [CorrelationId: 5a15b54f-fbee-4984-85d8-17494a8709c8] Buscando sensor por id: "22222222-2222-2222-2222-222222222222".
+[2026-04-07 23:29:01 WRN] [CorrelationId: 5a15b54f-fbee-4984-85d8-17494a8709c8] Sensor não Encontrado para o id: "22222222-2222-2222-2222-222222222222"
+[2026-04-07 23:29:01 INF] [CorrelationId: 5a15b54f-fbee-4984-85d8-17494a8709c8] HTTP GET /api/sensors/22222222-2222-2222-2222-222222222222 responded 404 in 0.8381 ms
+[2026-04-07 23:34:08 INF] [CorrelationId: ]    Ambiente: Testing
+[2026-04-07 23:34:08 INF] [CorrelationId: ]    Endpoints principais:
+[2026-04-07 23:34:08 INF] [CorrelationId: ] -> GET    /api/sensors
+[2026-04-07 23:34:08 INF] [CorrelationId: ] -> GET    /api/sensors/search
+[2026-04-07 23:34:08 INF] [CorrelationId: ] -> POST   /api/sensors
+[2026-04-07 23:34:08 INF] [CorrelationId: ] -> GET    /health
+[2026-04-07 23:34:09 INF] [CorrelationId: d32e889c-0db2-47be-9eb5-afd330c94619] Recebendo lote de sensores com 2 itens.
+[2026-04-07 23:34:09 INF] [CorrelationId: d32e889c-0db2-47be-9eb5-afd330c94619] Lote de sensores salvo com sucesso. 2 registros criados.
+[2026-04-07 23:34:09 INF] [CorrelationId: d32e889c-0db2-47be-9eb5-afd330c94619] HTTP POST /api/sensors responded 200 in 74.4881 ms
+[2026-04-07 23:34:09 INF] [CorrelationId: 60edbbe0-244f-44db-ab76-88e744158f7d] Buscando todos os sensores.
+[2026-04-07 23:34:09 INF] [CorrelationId: 60edbbe0-244f-44db-ab76-88e744158f7d] Foram retornados 5 sensores.
+[2026-04-07 23:34:09 INF] [CorrelationId: 60edbbe0-244f-44db-ab76-88e744158f7d] HTTP GET /api/sensors responded 200 in 46.2355 ms
+[2026-04-07 23:34:09 INF] [CorrelationId: 93b0755b-b3c0-4f8a-bd44-2fe5e037ddd1] Recebendo lote de sensores com 0 itens.
+[2026-04-07 23:34:09 ERR] [CorrelationId: 93b0755b-b3c0-4f8a-bd44-2fe5e037ddd1] An unhandled exception has occurred while executing the request.
+AgroTech.Application.Exceptions.DomainException: A lista de sensores não pode ser vazia.
+   at AgroTech.Application.Services.SensorService.AddAsync(IEnumerable`1 dtos) in /home/ruan/Área de Trabalho/advanced-business-development-with-dot-net/AgroTech/AgroTech/src/Application/Services/SensorService.cs:line 25
+   at AgroTech.Web.Controllers.Api.SensorsController.Create(List`1 dtos) in /home/ruan/Área de Trabalho/advanced-business-development-with-dot-net/AgroTech/AgroTech/src/Controllers/Api/SensorsController.cs:line 58
+   at lambda_method102(Closure, Object)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.TaskOfActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Logged|12_1(ControllerActionInvoker invoker)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeInnerFilterAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeNextResourceFilter>g__Awaited|25_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Rethrow(ResourceExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.InvokeFilterPipelineAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddlewareImpl.<Invoke>g__Awaited|10_0(ExceptionHandlerMiddlewareImpl middleware, HttpContext context, Task task)
+[2026-04-07 23:34:09 ERR] [CorrelationId: 93b0755b-b3c0-4f8a-bd44-2fe5e037ddd1] HTTP POST /api/sensors responded 500 in 41.6777 ms
+[2026-04-07 23:34:09 INF] [CorrelationId: 78ca50c0-ce22-464d-8905-16d6f343e454] Atualizando sensor "11111111-1111-1111-1111-111111111111"
+[2026-04-07 23:34:09 INF] [CorrelationId: 78ca50c0-ce22-464d-8905-16d6f343e454] Sensor "11111111-1111-1111-1111-111111111111" atualizado com sucesso.
+[2026-04-07 23:34:09 INF] [CorrelationId: 78ca50c0-ce22-464d-8905-16d6f343e454] HTTP PUT /api/sensors/11111111-1111-1111-1111-111111111111 responded 204 in 26.6851 ms
+[2026-04-07 23:34:09 INF] [CorrelationId: 45bc87fb-0665-4255-9a56-848c4a43e2ae] Buscando sensor por id: "11111111-1111-1111-1111-111111111111".
+[2026-04-07 23:34:09 INF] [CorrelationId: 45bc87fb-0665-4255-9a56-848c4a43e2ae] HTTP GET /api/sensors/11111111-1111-1111-1111-111111111111 responded 200 in 4.8051 ms
+[2026-04-07 23:34:09 INF] [CorrelationId: 56666b1d-12eb-450f-b899-1c5d370917b4] Atualizando sensor "99999999-9999-9999-9999-999999999999"
+[2026-04-07 23:34:09 WRN] [CorrelationId: 56666b1d-12eb-450f-b899-1c5d370917b4] Id da rota "99999999-9999-9999-9999-999999999999" diferente do id do corpo "11111111-1111-1111-1111-111111111111"
+[2026-04-07 23:34:09 INF] [CorrelationId: 56666b1d-12eb-450f-b899-1c5d370917b4] HTTP PUT /api/sensors/99999999-9999-9999-9999-999999999999 responded 400 in 2.1958 ms
+[2026-04-07 23:34:09 INF] [CorrelationId: 7c40a9be-30b8-4d74-b6c7-cf1b18f8844c] Buscando sensor por id: "11111111-1111-1111-1111-111111111111".
+[2026-04-07 23:34:09 INF] [CorrelationId: 7c40a9be-30b8-4d74-b6c7-cf1b18f8844c] HTTP GET /api/sensors/11111111-1111-1111-1111-111111111111 responded 200 in 1.5609 ms
+[2026-04-07 23:34:09 INF] [CorrelationId: ea7d2f43-c9bc-408c-97c8-134f54d240da] Buscando sensor por id: "321fe8f6-e6a1-4192-a99b-d830c3bae289".
+[2026-04-07 23:34:09 WRN] [CorrelationId: ea7d2f43-c9bc-408c-97c8-134f54d240da] Sensor não Encontrado para o id: "321fe8f6-e6a1-4192-a99b-d830c3bae289"
+[2026-04-07 23:34:09 INF] [CorrelationId: ea7d2f43-c9bc-408c-97c8-134f54d240da] HTTP GET /api/sensors/321fe8f6-e6a1-4192-a99b-d830c3bae289 responded 404 in 1.3745 ms
+[2026-04-07 23:34:09 INF] [CorrelationId: 425975f5-8e6d-4cf3-9545-34543d38a844] Buscando sensores com filtros: Name=temp, Type=null, MinValue=null, MaxValue=null, Page=1, PageSize=10
+[2026-04-07 23:34:09 INF] [CorrelationId: 425975f5-8e6d-4cf3-9545-34543d38a844] Busca retornou 1 sensores na página 1.
+[2026-04-07 23:34:09 INF] [CorrelationId: 425975f5-8e6d-4cf3-9545-34543d38a844] HTTP GET /api/sensors/search responded 200 in 23.2709 ms
+[2026-04-07 23:34:09 INF] [CorrelationId: 63b69e4e-650a-4253-afee-9828914e52f0] Removendo sensor "22222222-2222-2222-2222-222222222222"
+[2026-04-07 23:34:09 INF] [CorrelationId: 63b69e4e-650a-4253-afee-9828914e52f0] Sensor "22222222-2222-2222-2222-222222222222" removido com sucesso.
+[2026-04-07 23:34:09 INF] [CorrelationId: 63b69e4e-650a-4253-afee-9828914e52f0] HTTP DELETE /api/sensors/22222222-2222-2222-2222-222222222222 responded 204 in 9.3145 ms
+[2026-04-07 23:34:09 INF] [CorrelationId: 77417941-663a-4292-8ae8-8e90f5a549c7] Buscando sensor por id: "22222222-2222-2222-2222-222222222222".
+[2026-04-07 23:34:09 WRN] [CorrelationId: 77417941-663a-4292-8ae8-8e90f5a549c7] Sensor não Encontrado para o id: "22222222-2222-2222-2222-222222222222"
+[2026-04-07 23:34:09 INF] [CorrelationId: 77417941-663a-4292-8ae8-8e90f5a549c7] HTTP GET /api/sensors/22222222-2222-2222-2222-222222222222 responded 404 in 1.3232 ms
+[2026-04-07 23:34:09 INF] [CorrelationId: a61f84a5-37d4-411e-9678-fdff5e3a63a5] Start processing HTTP request GET http://localhost:1880/
+[2026-04-07 23:34:09 INF] [CorrelationId: a61f84a5-37d4-411e-9678-fdff5e3a63a5] Sending HTTP request GET http://localhost:1880/
+[2026-04-07 23:34:09 INF] [CorrelationId: a61f84a5-37d4-411e-9678-fdff5e3a63a5] Received HTTP response headers after 26.9055ms - 200
+[2026-04-07 23:34:09 INF] [CorrelationId: a61f84a5-37d4-411e-9678-fdff5e3a63a5] End processing HTTP request after 36.741ms - 200
+[2026-04-07 23:34:09 INF] [CorrelationId: a61f84a5-37d4-411e-9678-fdff5e3a63a5] Serviço externo disponível. URL: http://localhost:1880, StatusCode: 200
+[2026-04-07 23:34:09 INF] [CorrelationId: a61f84a5-37d4-411e-9678-fdff5e3a63a5] HTTP GET /health responded 200 in 53.9103 ms
+[2026-04-07 23:34:09 INF] [CorrelationId: 7c1dc94a-306b-446a-ae8d-7d9202abc15c] HTTP GET /health/live responded 200 in 1.4422 ms
+[2026-04-07 23:34:09 INF] [CorrelationId: 268e86e9-cdd9-4e89-a5b8-ec3bd4f8d957] Start processing HTTP request GET http://localhost:1880/
+[2026-04-07 23:34:09 INF] [CorrelationId: 268e86e9-cdd9-4e89-a5b8-ec3bd4f8d957] Sending HTTP request GET http://localhost:1880/
+[2026-04-07 23:34:09 INF] [CorrelationId: 268e86e9-cdd9-4e89-a5b8-ec3bd4f8d957] Received HTTP response headers after 1.8134ms - 200
+[2026-04-07 23:34:09 INF] [CorrelationId: 268e86e9-cdd9-4e89-a5b8-ec3bd4f8d957] End processing HTTP request after 2.2385ms - 200
+[2026-04-07 23:34:09 INF] [CorrelationId: 268e86e9-cdd9-4e89-a5b8-ec3bd4f8d957] Serviço externo disponível. URL: http://localhost:1880, StatusCode: 200
+[2026-04-07 23:34:09 INF] [CorrelationId: 268e86e9-cdd9-4e89-a5b8-ec3bd4f8d957] HTTP GET /health/ready responded 200 in 4.0001 ms

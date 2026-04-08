@@ -8,7 +8,10 @@ namespace AgroTech.Web.Middleware
     {
         private readonly RequestDelegate _next;
         private readonly ILogger<ExceptionHandlingMiddleware> _logger;
-        public ExceptionHandlingMiddleware(RequestDelegate next,  ILogger<ExceptionHandlingMiddleware> logger)
+
+        public ExceptionHandlingMiddleware(
+            RequestDelegate next,
+            ILogger<ExceptionHandlingMiddleware> logger)
         {
             _next = next;
             _logger = logger;
@@ -22,24 +25,51 @@ namespace AgroTech.Web.Middleware
             }
             catch (DomainException ex)
             {
-                _logger.LogWarning(ex, "Erro de domínio tratado: {Message}", ex.Message);
-                await HandleExceptionAsync(httpContext, ex.Message, HttpStatusCode.BadRequest);
+                _logger.LogWarning(
+                    ex,
+                    "Erro de domínio tratado. CorrelationId: {CorrelationId}. Message: {Message}",
+                    httpContext.TraceIdentifier,
+                    ex.Message);
+
+                await HandleExceptionAsync(
+                    httpContext,
+                    ex.Message,
+                    HttpStatusCode.BadRequest);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Erro interno não tratado.");
-                await HandleExceptionAsync(httpContext, "Erro interno no servidor.", HttpStatusCode.InternalServerError);
+                _logger.LogError(
+                    ex,
+                    "Erro interno não tratado. CorrelationId: {CorrelationId}",
+                    httpContext.TraceIdentifier);
+
+                await HandleExceptionAsync(
+                    httpContext,
+                    "Erro interno no servidor.",
+                    HttpStatusCode.InternalServerError);
             }
         }
 
-        private static Task HandleExceptionAsync(HttpContext context, string message, HttpStatusCode statusCode)
+        private static Task HandleExceptionAsync(
+            HttpContext context,
+            string message,
+            HttpStatusCode statusCode)
         {
-            context.Response.ContentType = "application/json";
+            context.Response.ContentType = "application/json; charset=utf-8";
             context.Response.StatusCode = (int)statusCode;
 
-            var response = new { error = message };
+            var response = new
+            {
+                error = message,
+                correlationId = context.TraceIdentifier
+            };
 
-            return context.Response.WriteAsync(JsonSerializer.Serialize(response));
+            var json = JsonSerializer.Serialize(response, new JsonSerializerOptions
+            {
+                Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping
+            });
+
+            return context.Response.WriteAsync(json);
         }
     }
 }

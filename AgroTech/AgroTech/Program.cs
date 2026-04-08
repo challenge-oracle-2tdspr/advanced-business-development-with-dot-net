@@ -1,3 +1,4 @@
+using AgroTech.Web.HealthChecks;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
@@ -45,15 +46,19 @@ Log.Logger = new LoggerConfiguration()
     .MinimumLevel.Override("Microsoft.Hosting.Lifetime", LogEventLevel.Information)
     .Enrich.FromLogContext()
     .WriteTo.Console(
-        outputTemplate: "[{Timestamp:HH:mm:ss} {Level:u3}] {Message:lj}{NewLine}{Exception}")
+        outputTemplate: "[{Timestamp:HH:mm:ss} {Level:u3}] [CorrelationId: {CorrelationId}] {Message:lj}{NewLine}{Exception}")
     .WriteTo.File(
         path: "logs/agrotech-.txt",
         rollingInterval: RollingInterval.Day,
         retainedFileCountLimit: 7,
-        shared: true)
+        shared: true,
+        outputTemplate: "[{Timestamp:yyyy-MM-dd HH:mm:ss} {Level:u3}] [CorrelationId: {CorrelationId}] {Message:lj}{NewLine}{Exception}")
     .CreateLogger();
+
 var builder = WebApplication.CreateBuilder(args);
 builder.Host.UseSerilog();
+
+builder.Services.AddHttpClient();
 
 builder.Services.AddDbContext<AgroTechDbContext>(options =>
     options.UseOracle(builder.Configuration.GetConnectionString("AgroTechOracle")));
@@ -73,10 +78,19 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddHealthChecks()
-    .AddDbContextCheck<AgroTechDbContext>("oracle", 
+    .AddDbContextCheck<AgroTechDbContext>(
+        "oracle",
         failureStatus: HealthStatus.Unhealthy,
         tags: new[] { "db", "oracle" })
-    .AddCheck("self", () => Microsoft.Extensions.Diagnostics.HealthChecks.HealthCheckResult.Healthy("API está saudável"));
+    .AddCheck(
+        "self",
+        () => Microsoft.Extensions.Diagnostics.HealthChecks.HealthCheckResult.Healthy("API está saudável"),
+        tags: new[] { "api" })
+    .AddCheck<ExternalServiceHealthCheck>(
+        "external_service",
+        failureStatus: HealthStatus.Unhealthy,
+        tags: new[] { "external", "http" });
+
 builder.Services.AddOpenTelemetry()
     .ConfigureResource(resource => resource.AddService(
         serviceName: "AgroTech.Api",
@@ -93,6 +107,20 @@ builder.Services.AddOpenTelemetry()
         .AddConsoleExporter());
 
 var app = builder.Build();
+
+app.UseCorrelationId();
+
+app.UseSerilogRequestLogging(options =>
+{
+    options.EnrichDiagnosticContext = (diagnosticContext, httpContext) =>
+    {
+        diagnosticContext.Set("CorrelationId", httpContext.TraceIdentifier);
+        diagnosticContext.Set("RequestHost", httpContext.Request.Host.Value);
+        diagnosticContext.Set("RequestScheme", httpContext.Request.Scheme);
+        diagnosticContext.Set("RequestPath", httpContext.Request.Path.Value ?? string.Empty);
+        diagnosticContext.Set("RequestMethod", httpContext.Request.Method);
+    };
+});
 
 app.UseMiddleware<ExceptionHandlingMiddleware>();
 

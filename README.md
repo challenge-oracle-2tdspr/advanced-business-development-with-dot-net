@@ -403,27 +403,37 @@ Os DTOs expostos pela API incluem links HATEOAS com:
   ]
 }
 ```
-### Health Checks
+## Health Checks
 
 A aplicação possui endpoints de health check para monitoramento.
 
-#### Endpoints disponíveis
-```
-GET /health
-```
-```
-GET /health/live
-```
-```
-GET /health/ready
-```
+### Endpoints disponíveis
 
-#### O que é verificado
+- GET /health
+- GET /health/live
+- GET /health/ready
+
+### O que é verificado
+
 - saúde da própria API (self)
 - conectividade com o banco (oracle)
+- disponibilidade de serviço externo configurado (external_service)
 
-#### Exemplo de resposta
-```
+### Como monitorar a aplicação
+
+- /health: visão completa da saúde da aplicação
+- /health/live: verifica se a API está viva
+- /health/ready: verifica se a API está pronta para uso, incluindo dependências
+
+Status possíveis:
+
+- Healthy: funcionamento normal
+- Degraded: funcionamento parcial ou configuração ausente
+- Unhealthy: falha de dependência ou indisponibilidade
+
+### Exemplo de resposta
+
+```json
 {
   "status": "Healthy",
   "totalDurationMs": 120,
@@ -439,30 +449,55 @@ GET /health/ready
       "status": "Healthy",
       "description": "Healthy",
       "durationMs": 21.4
+    },
+    {
+      "name": "external_service",
+      "status": "Healthy",
+      "description": "Serviço externo disponível. StatusCode: 200",
+      "durationMs": 12.5
     }
   ]
 }
 ```
+
+
 ### Logging Estruturado
 
-#### O projeto utiliza Serilog com saída para:
+O projeto utiliza Serilog com saída para:
 
 - Console
 - Arquivo
+
 #### Níveis utilizados
+
 - Information
 - Warning
 - Error
 
 #### Onde há logs
+
 - controllers
 - middleware de tratamento de exceções
 - inicialização da aplicação
+- logs automáticos de requisição HTTP
+
+#### Correlação de requisições
+
+A API utiliza o header X-Correlation-ID para correlacionar requisições e logs.
+
+Se o cliente enviar X-Correlation-ID, esse valor será reutilizado.
+Caso não envie, a aplicação gera um identificador automaticamente.
+
+O CorrelationId é incluído:
+
+- nos logs do Serilog
+- no header da resposta
+- nas respostas de erro tratadas pelo middleware
 
 #### Diretório de logs
-```
+
 AgroTech/logs/
-```
+
 ### Observabilidade com OpenTelemetry
 
 A aplicação utiliza OpenTelemetry para tracing e métricas.
@@ -491,13 +526,17 @@ AgroTech.UnitTests
 
 Cobrem principalmente:
 
+- camada de Domínio
+- camada da Aplicação
 - validações do SensorService
-- regras de negócio da camada Application
 - cenários felizes e cenários de erro
 
 2. Testes de Integração
 
 #### Projeto:
+```
+AgroTech.IntegrationTests
+```
 
 #### Cobrem:
 
@@ -508,6 +547,13 @@ Cobrem principalmente:
 - atualização
 - remoção
 - fluxo HTTP completo com WebApplicationFactory
+
+#### Os testes de integração utilizam:
+- WebApplicationFactory
+- CustomWebApplicationFactory
+- Collection Fixture
+- EntityFrameworkCore.InMemory
+
 #### Resultado atual
 - 26 testes unitários
 - 13 testes de integração
@@ -515,6 +561,21 @@ Cobrem principalmente:
 Total:
 
 - 39 testes automatizados aprovados
+
+### Como executar somente os testes
+
+#### Rodar todos os testes
+```bash
+dotnet test
+```
+#### Roder somente testes unitários
+```bash
+dotnet test ./AgroTech.UnitTests
+```
+#### Rodar somente integração
+```bash
+dotnet test ./AgroTech.IntegrationTests
+```
 
 #### Como Executar o Projeto
 1. Clonar o repositório
@@ -559,22 +620,6 @@ dotnet ef database update --project ./AgroTech
 ### Migration atual
 
 O projeto já possui migration inicial para a tabela de sensores.
-
-### Como Executar os Testes
-
-#### Rodar todos os testes
-
-```bash
-dotnet test
-```
-#### Rodar somente testes unitários
-```bash
-dotnet test ./AgroTech.UnitTests
-```
-#### Rodar somente integração
-```bash
-dotnet test ./AgroTech.UnitTests
-```
 
 ### Exemplos de requisição
 
