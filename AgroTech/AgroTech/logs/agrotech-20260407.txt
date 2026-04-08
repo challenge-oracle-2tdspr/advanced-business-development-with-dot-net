@@ -255,3 +255,24 @@
 2026-04-07 18:02:04.171 -03:00 [INF] Hosting environment: Development
 2026-04-07 18:02:04.171 -03:00 [INF] Content root path: /home/ruan/Área de Trabalho/advanced-business-development-with-dot-net/AgroTech/AgroTech
 2026-04-07 18:02:32.156 -03:00 [INF] Application is shutting down...
+2026-04-07 20:44:47.535 -03:00 [INF]    Ambiente: Development
+2026-04-07 20:44:47.581 -03:00 [INF]    Endpoints principais:
+2026-04-07 20:44:47.582 -03:00 [INF] -> GET    /api/sensors
+2026-04-07 20:44:47.582 -03:00 [INF] -> GET    /api/sensors/search
+2026-04-07 20:44:47.582 -03:00 [INF] -> POST   /api/sensors
+2026-04-07 20:44:47.582 -03:00 [INF] -> GET    /health
+2026-04-07 20:44:47.691 -03:00 [INF] Now listening on: http://localhost:5081
+2026-04-07 20:44:47.694 -03:00 [INF] Application started. Press Ctrl+C to shut down.
+2026-04-07 20:44:47.695 -03:00 [INF] Hosting environment: Development
+2026-04-07 20:44:47.695 -03:00 [INF] Content root path: /home/ruan/Área de Trabalho/advanced-business-development-with-dot-net/AgroTech/AgroTech
+2026-04-07 20:54:51.308 -03:00 [INF] Application is shutting down...
+2026-04-07 21:35:11.580 -03:00 [INF]    Ambiente: Development
+2026-04-07 21:35:11.632 -03:00 [INF]    Endpoints principais:
+2026-04-07 21:35:11.632 -03:00 [INF] -> GET    /api/sensors
+2026-04-07 21:35:11.632 -03:00 [INF] -> GET    /api/sensors/search
+2026-04-07 21:35:11.632 -03:00 [INF] -> POST   /api/sensors
+2026-04-07 21:35:11.632 -03:00 [INF] -> GET    /health
+2026-04-07 21:35:11.740 -03:00 [INF] Now listening on: http://localhost:5081
+2026-04-07 21:35:11.742 -03:00 [INF] Application started. Press Ctrl+C to shut down.
+2026-04-07 21:35:11.743 -03:00 [INF] Hosting environment: Development
+2026-04-07 21:35:11.743 -03:00 [INF] Content root path: /home/ruan/Área de Trabalho/advanced-business-development-with-dot-net/AgroTech/AgroTech

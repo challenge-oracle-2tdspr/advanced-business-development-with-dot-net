@@ -6,12 +6,9 @@
 /home/ruan/Área de Trabalho/advanced-business-development-with-dot-net/AgroTech/AgroTech.IntegrationTests/bin/Debug/net8.0/appsettings.Development.json
 /home/ruan/Área de Trabalho/advanced-business-development-with-dot-net/AgroTech/AgroTech.IntegrationTests/bin/Debug/net8.0/appsettings.json
 /home/ruan/Área de Trabalho/advanced-business-development-with-dot-net/AgroTech/AgroTech.IntegrationTests/bin/Debug/net8.0/AgroTech.staticwebassets.runtime.json
-/home/ruan/Área de Trabalho/advanced-business-development-with-dot-net/AgroTech/AgroTech.IntegrationTests/bin/Debug/net8.0/xunit.runner.visualstudio.testadapter.dll
 /home/ruan/Área de Trabalho/advanced-business-development-with-dot-net/AgroTech/AgroTech.IntegrationTests/bin/Debug/net8.0/AgroTech
 /home/ruan/Área de Trabalho/advanced-business-development-with-dot-net/AgroTech/AgroTech.IntegrationTests/bin/Debug/net8.0/MvcTestingAppManifest.json
-/home/ruan/Área de Trabalho/advanced-business-development-with-dot-net/AgroTech/AgroTech.IntegrationTests/bin/Debug/net8.0/xunit.runner.visualstudio.dotnetcore.testadapter.dll
-/home/ruan/Área de Trabalho/advanced-business-development-with-dot-net/AgroTech/AgroTech.IntegrationTests/bin/Debug/net8.0/xunit.runner.reporters.netcoreapp10.dll
-/home/ruan/Área de Trabalho/advanced-business-development-with-dot-net/AgroTech/AgroTech.IntegrationTests/bin/Debug/net8.0/xunit.runner.utility.netcoreapp10.dll
+/home/ruan/Área de Trabalho/advanced-business-development-with-dot-net/AgroTech/AgroTech.IntegrationTests/bin/Debug/net8.0/xunit.runner.visualstudio.testadapter.dll
 /home/ruan/Área de Trabalho/advanced-business-development-with-dot-net/AgroTech/AgroTech.IntegrationTests/bin/Debug/net8.0/AgroTech.IntegrationTests.deps.json
 /home/ruan/Área de Trabalho/advanced-business-development-with-dot-net/AgroTech/AgroTech.IntegrationTests/bin/Debug/net8.0/AgroTech.IntegrationTests.runtimeconfig.json
 /home/ruan/Área de Trabalho/advanced-business-development-with-dot-net/AgroTech/AgroTech.IntegrationTests/bin/Debug/net8.0/AgroTech.IntegrationTests.dll
@@ -198,7 +195,6 @@
 /home/ruan/Área de Trabalho/advanced-business-development-with-dot-net/AgroTech/AgroTech.IntegrationTests/bin/Debug/net8.0/refs/System.IO.FileSystem.Watcher.dll
 /home/ruan/Área de Trabalho/advanced-business-development-with-dot-net/AgroTech/AgroTech.IntegrationTests/bin/Debug/net8.0/refs/System.IO.IsolatedStorage.dll
 /home/ruan/Área de Trabalho/advanced-business-development-with-dot-net/AgroTech/AgroTech.IntegrationTests/bin/Debug/net8.0/refs/System.IO.MemoryMappedFiles.dll
-/home/ruan/Área de Trabalho/advanced-business-development-with-dot-net/AgroTech/AgroTech.IntegrationTests/bin/Debug/net8.0/refs/System.IO.Pipelines.dll
 /home/ruan/Área de Trabalho/advanced-business-development-with-dot-net/AgroTech/AgroTech.IntegrationTests/bin/Debug/net8.0/refs/System.IO.Pipes.AccessControl.dll
 /home/ruan/Área de Trabalho/advanced-business-development-with-dot-net/AgroTech/AgroTech.IntegrationTests/bin/Debug/net8.0/refs/System.IO.Pipes.dll
 /home/ruan/Área de Trabalho/advanced-business-development-with-dot-net/AgroTech/AgroTech.IntegrationTests/bin/Debug/net8.0/refs/System.IO.UnmanagedMemoryStream.dll
@@ -277,8 +273,6 @@
 /home/ruan/Área de Trabalho/advanced-business-development-with-dot-net/AgroTech/AgroTech.IntegrationTests/bin/Debug/net8.0/refs/System.Text.Encoding.CodePages.dll
 /home/ruan/Área de Trabalho/advanced-business-development-with-dot-net/AgroTech/AgroTech.IntegrationTests/bin/Debug/net8.0/refs/System.Text.Encoding.dll
 /home/ruan/Área de Trabalho/advanced-business-development-with-dot-net/AgroTech/AgroTech.IntegrationTests/bin/Debug/net8.0/refs/System.Text.Encoding.Extensions.dll
-/home/ruan/Área de Trabalho/advanced-business-development-with-dot-net/AgroTech/AgroTech.IntegrationTests/bin/Debug/net8.0/refs/System.Text.Encodings.Web.dll
-/home/ruan/Área de Trabalho/advanced-business-development-with-dot-net/AgroTech/AgroTech.IntegrationTests/bin/Debug/net8.0/refs/System.Text.Json.dll
 /home/ruan/Área de Trabalho/advanced-business-development-with-dot-net/AgroTech/AgroTech.IntegrationTests/bin/Debug/net8.0/refs/System.Text.RegularExpressions.dll
 /home/ruan/Área de Trabalho/advanced-business-development-with-dot-net/AgroTech/AgroTech.IntegrationTests/bin/Debug/net8.0/refs/System.Threading.Channels.dll
 /home/ruan/Área de Trabalho/advanced-business-development-with-dot-net/AgroTech/AgroTech.IntegrationTests/bin/Debug/net8.0/refs/System.Threading.dll
@@ -307,13 +301,13 @@
 /home/ruan/Área de Trabalho/advanced-business-development-with-dot-net/AgroTech/AgroTech.IntegrationTests/bin/Debug/net8.0/refs/System.Xml.XPath.dll
 /home/ruan/Área de Trabalho/advanced-business-development-with-dot-net/AgroTech/AgroTech.IntegrationTests/bin/Debug/net8.0/refs/System.Xml.XPath.XDocument.dll
 /home/ruan/Área de Trabalho/advanced-business-development-with-dot-net/AgroTech/AgroTech.IntegrationTests/bin/Debug/net8.0/refs/WindowsBase.dll
-/home/ruan/Área de Trabalho/advanced-business-development-with-dot-net/AgroTech/AgroTech.IntegrationTests/bin/Debug/net8.0/Castle.Core.dll
 /home/ruan/Área de Trabalho/advanced-business-development-with-dot-net/AgroTech/AgroTech.IntegrationTests/bin/Debug/net8.0/FluentAssertions.dll
 /home/ruan/Área de Trabalho/advanced-business-development-with-dot-net/AgroTech/AgroTech.IntegrationTests/bin/Debug/net8.0/Microsoft.AspNetCore.Mvc.Testing.dll
 /home/ruan/Área de Trabalho/advanced-business-development-with-dot-net/AgroTech/AgroTech.IntegrationTests/bin/Debug/net8.0/Microsoft.AspNetCore.TestHost.dll
 /home/ruan/Área de Trabalho/advanced-business-development-with-dot-net/AgroTech/AgroTech.IntegrationTests/bin/Debug/net8.0/Microsoft.VisualStudio.CodeCoverage.Shim.dll
 /home/ruan/Área de Trabalho/advanced-business-development-with-dot-net/AgroTech/AgroTech.IntegrationTests/bin/Debug/net8.0/Microsoft.EntityFrameworkCore.dll
 /home/ruan/Área de Trabalho/advanced-business-development-with-dot-net/AgroTech/AgroTech.IntegrationTests/bin/Debug/net8.0/Microsoft.EntityFrameworkCore.Abstractions.dll
+/home/ruan/Área de Trabalho/advanced-business-development-with-dot-net/AgroTech/AgroTech.IntegrationTests/bin/Debug/net8.0/Microsoft.EntityFrameworkCore.InMemory.dll
 /home/ruan/Área de Trabalho/advanced-business-development-with-dot-net/AgroTech/AgroTech.IntegrationTests/bin/Debug/net8.0/Microsoft.EntityFrameworkCore.Relational.dll
 /home/ruan/Área de Trabalho/advanced-business-development-with-dot-net/AgroTech/AgroTech.IntegrationTests/bin/Debug/net8.0/Microsoft.Extensions.Caching.Abstractions.dll
 /home/ruan/Área de Trabalho/advanced-business-development-with-dot-net/AgroTech/AgroTech.IntegrationTests/bin/Debug/net8.0/Microsoft.Extensions.Caching.Memory.dll
@@ -350,7 +344,6 @@
 /home/ruan/Área de Trabalho/advanced-business-development-with-dot-net/AgroTech/AgroTech.IntegrationTests/bin/Debug/net8.0/Microsoft.TestPlatform.Utilities.dll
 /home/ruan/Área de Trabalho/advanced-business-development-with-dot-net/AgroTech/AgroTech.IntegrationTests/bin/Debug/net8.0/Microsoft.VisualStudio.TestPlatform.Common.dll
 /home/ruan/Área de Trabalho/advanced-business-development-with-dot-net/AgroTech/AgroTech.IntegrationTests/bin/Debug/net8.0/testhost.dll
-/home/ruan/Área de Trabalho/advanced-business-development-with-dot-net/AgroTech/AgroTech.IntegrationTests/bin/Debug/net8.0/Moq.dll
 /home/ruan/Área de Trabalho/advanced-business-development-with-dot-net/AgroTech/AgroTech.IntegrationTests/bin/Debug/net8.0/Newtonsoft.Json.dll
 /home/ruan/Área de Trabalho/advanced-business-development-with-dot-net/AgroTech/AgroTech.IntegrationTests/bin/Debug/net8.0/OpenTelemetry.dll
 /home/ruan/Área de Trabalho/advanced-business-development-with-dot-net/AgroTech/AgroTech.IntegrationTests/bin/Debug/net8.0/OpenTelemetry.Api.dll
@@ -380,8 +373,11 @@
 /home/ruan/Área de Trabalho/advanced-business-development-with-dot-net/AgroTech/AgroTech.IntegrationTests/bin/Debug/net8.0/System.Diagnostics.EventLog.dll
 /home/ruan/Área de Trabalho/advanced-business-development-with-dot-net/AgroTech/AgroTech.IntegrationTests/bin/Debug/net8.0/System.Diagnostics.PerformanceCounter.dll
 /home/ruan/Área de Trabalho/advanced-business-development-with-dot-net/AgroTech/AgroTech.IntegrationTests/bin/Debug/net8.0/System.DirectoryServices.Protocols.dll
+/home/ruan/Área de Trabalho/advanced-business-development-with-dot-net/AgroTech/AgroTech.IntegrationTests/bin/Debug/net8.0/System.IO.Pipelines.dll
 /home/ruan/Área de Trabalho/advanced-business-development-with-dot-net/AgroTech/AgroTech.IntegrationTests/bin/Debug/net8.0/System.Security.Cryptography.Pkcs.dll
 /home/ruan/Área de Trabalho/advanced-business-development-with-dot-net/AgroTech/AgroTech.IntegrationTests/bin/Debug/net8.0/System.Security.Cryptography.ProtectedData.dll
+/home/ruan/Área de Trabalho/advanced-business-development-with-dot-net/AgroTech/AgroTech.IntegrationTests/bin/Debug/net8.0/System.Text.Encodings.Web.dll
+/home/ruan/Área de Trabalho/advanced-business-development-with-dot-net/AgroTech/AgroTech.IntegrationTests/bin/Debug/net8.0/System.Text.Json.dll
 /home/ruan/Área de Trabalho/advanced-business-development-with-dot-net/AgroTech/AgroTech.IntegrationTests/bin/Debug/net8.0/xunit.assert.dll
 /home/ruan/Área de Trabalho/advanced-business-development-with-dot-net/AgroTech/AgroTech.IntegrationTests/bin/Debug/net8.0/xunit.core.dll
 /home/ruan/Área de Trabalho/advanced-business-development-with-dot-net/AgroTech/AgroTech.IntegrationTests/bin/Debug/net8.0/xunit.execution.dotnet.dll
@@ -457,6 +453,7 @@
 /home/ruan/Área de Trabalho/advanced-business-development-with-dot-net/AgroTech/AgroTech.IntegrationTests/bin/Debug/net8.0/runtimes/osx/lib/net8.0/System.DirectoryServices.Protocols.dll
 /home/ruan/Área de Trabalho/advanced-business-development-with-dot-net/AgroTech/AgroTech.IntegrationTests/bin/Debug/net8.0/runtimes/win/lib/net8.0/System.DirectoryServices.Protocols.dll
 /home/ruan/Área de Trabalho/advanced-business-development-with-dot-net/AgroTech/AgroTech.IntegrationTests/bin/Debug/net8.0/runtimes/win/lib/net8.0/System.Security.Cryptography.Pkcs.dll
+/home/ruan/Área de Trabalho/advanced-business-development-with-dot-net/AgroTech/AgroTech.IntegrationTests/bin/Debug/net8.0/runtimes/browser/lib/net8.0/System.Text.Encodings.Web.dll
 /home/ruan/Área de Trabalho/advanced-business-development-with-dot-net/AgroTech/AgroTech.IntegrationTests/bin/Debug/net8.0/AgroTech.dll
 /home/ruan/Área de Trabalho/advanced-business-development-with-dot-net/AgroTech/AgroTech.IntegrationTests/bin/Debug/net8.0/AgroTech.pdb
 /home/ruan/Área de Trabalho/advanced-business-development-with-dot-net/AgroTech/AgroTech.IntegrationTests/obj/Debug/net8.0/AgroTech.IntegrationTests.csproj.AssemblyReference.cache
