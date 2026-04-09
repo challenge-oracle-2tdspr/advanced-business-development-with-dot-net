@@ -3,6 +3,8 @@ using AgroTech.Application.Exceptions;
 using AgroTech.Application.Services;
 using AgroTech.Domain.Entities;
 using AgroTech.Domain.Interfaces;
+using AgroTech.Contracts.Events;
+using AgroTech.Messaging;
 using FluentAssertions;
 using Moq;
 
@@ -11,46 +13,67 @@ namespace AgroTech.UnitTests.Services
     public class SensorServiceTests
     {
         private readonly Mock<ISensorRepository> _sensorRepositoryMock;
+        private readonly Mock<IEventPublisher> _eventPublisherMock;
+        private readonly Mock<ICorrelationIdAccessor> _correlationIdAccessorMock;
         private readonly SensorService _sensorService;
 
         public SensorServiceTests()
         {
             _sensorRepositoryMock = new Mock<ISensorRepository>();
-            _sensorService = new SensorService(_sensorRepositoryMock.Object);
+            _eventPublisherMock = new Mock<IEventPublisher>();
+            _correlationIdAccessorMock = new Mock<ICorrelationIdAccessor>();
+
+            _correlationIdAccessorMock
+                .Setup(x => x.GetCorrelationId())
+                .Returns("test-correlation-id");
+
+            _eventPublisherMock
+                .Setup(x => x.PublishSensorReadingCreatedAsync(
+                    It.IsAny<SensorReadingCreatedEvent>(),
+                    It.IsAny<CancellationToken>()))
+                .Returns(Task.CompletedTask);
+
+            _sensorService = new SensorService(
+                _sensorRepositoryMock.Object,
+                _eventPublisherMock.Object,
+                _correlationIdAccessorMock.Object);
         }
 
         [Fact]
         public async Task AddAsync_ListaNula_DeveLancarDomainException()
         {
-            // Arrange
             IEnumerable<SensorDTO>? sensores = null;
 
-            // Act
             Func<Task> act = async () => await _sensorService.AddAsync(sensores!);
 
-            // Assert
             await act.Should().ThrowAsync<DomainException>()
                 .WithMessage("A lista de sensores não pode ser vazia.");
+
+            _sensorRepositoryMock.Verify(x => x.AddAsync(It.IsAny<Sensor>()), Times.Never);
+            _eventPublisherMock.Verify(
+                x => x.PublishSensorReadingCreatedAsync(It.IsAny<SensorReadingCreatedEvent>(), It.IsAny<CancellationToken>()),
+                Times.Never);
         }
 
         [Fact]
         public async Task AddAsync_ListaVazia_DeveLancarDomainException()
         {
-            // Arrange
             var sensores = new List<SensorDTO>();
 
-            // Act
             Func<Task> act = async () => await _sensorService.AddAsync(sensores);
 
-            // Assert
             await act.Should().ThrowAsync<DomainException>()
                 .WithMessage("A lista de sensores não pode ser vazia.");
+
+            _sensorRepositoryMock.Verify(x => x.AddAsync(It.IsAny<Sensor>()), Times.Never);
+            _eventPublisherMock.Verify(
+                x => x.PublishSensorReadingCreatedAsync(It.IsAny<SensorReadingCreatedEvent>(), It.IsAny<CancellationToken>()),
+                Times.Never);
         }
 
         [Fact]
         public async Task AddAsync_NomeVazio_DeveLancarDomainException()
         {
-            // Arrange
             var sensores = new List<SensorDTO>
             {
                 new()
@@ -62,18 +85,20 @@ namespace AgroTech.UnitTests.Services
                 }
             };
 
-            // Act
             Func<Task> act = async () => await _sensorService.AddAsync(sensores);
 
-            // Assert
             await act.Should().ThrowAsync<DomainException>()
                 .WithMessage("O nome do sensor não pode ser vazio.");
+
+            _sensorRepositoryMock.Verify(x => x.AddAsync(It.IsAny<Sensor>()), Times.Never);
+            _eventPublisherMock.Verify(
+                x => x.PublishSensorReadingCreatedAsync(It.IsAny<SensorReadingCreatedEvent>(), It.IsAny<CancellationToken>()),
+                Times.Never);
         }
 
         [Fact]
         public async Task AddAsync_TipoVazio_DeveLancarDomainException()
         {
-            // Arrange
             var sensores = new List<SensorDTO>
             {
                 new()
@@ -85,18 +110,20 @@ namespace AgroTech.UnitTests.Services
                 }
             };
 
-            // Act
             Func<Task> act = async () => await _sensorService.AddAsync(sensores);
 
-            // Assert
             await act.Should().ThrowAsync<DomainException>()
                 .WithMessage("O tipo do sensor não pode ser vazio.");
+
+            _sensorRepositoryMock.Verify(x => x.AddAsync(It.IsAny<Sensor>()), Times.Never);
+            _eventPublisherMock.Verify(
+                x => x.PublishSensorReadingCreatedAsync(It.IsAny<SensorReadingCreatedEvent>(), It.IsAny<CancellationToken>()),
+                Times.Never);
         }
 
         [Fact]
         public async Task AddAsync_TipoNaoNumerico_DeveLancarDomainException()
         {
-            // Arrange
             var sensores = new List<SensorDTO>
             {
                 new()
@@ -108,18 +135,20 @@ namespace AgroTech.UnitTests.Services
                 }
             };
 
-            // Act
             Func<Task> act = async () => await _sensorService.AddAsync(sensores);
 
-            // Assert
             await act.Should().ThrowAsync<DomainException>()
                 .WithMessage("O tipo do sensor deve ser numérico.");
+
+            _sensorRepositoryMock.Verify(x => x.AddAsync(It.IsAny<Sensor>()), Times.Never);
+            _eventPublisherMock.Verify(
+                x => x.PublishSensorReadingCreatedAsync(It.IsAny<SensorReadingCreatedEvent>(), It.IsAny<CancellationToken>()),
+                Times.Never);
         }
 
         [Fact]
         public async Task AddAsync_DadosValidos_DeveSalvarSensoresERetornarIds()
         {
-            // Arrange
             var timestamp1 = new DateTime(2026, 4, 7, 10, 0, 0, DateTimeKind.Utc);
             var timestamp2 = new DateTime(2026, 4, 7, 10, 5, 0, DateTimeKind.Utc);
 
@@ -142,20 +171,29 @@ namespace AgroTech.UnitTests.Services
             };
 
             var sensoresSalvos = new List<Sensor>();
+            var eventosPublicados = new List<SensorReadingCreatedEvent>();
 
             _sensorRepositoryMock
                 .Setup(x => x.AddAsync(It.IsAny<Sensor>()))
                 .Callback<Sensor>(sensor => sensoresSalvos.Add(sensor))
                 .Returns(Task.CompletedTask);
 
-            // Act
+            _eventPublisherMock
+                .Setup(x => x.PublishSensorReadingCreatedAsync(
+                    It.IsAny<SensorReadingCreatedEvent>(),
+                    It.IsAny<CancellationToken>()))
+                .Callback<SensorReadingCreatedEvent, CancellationToken>((evt, _) => eventosPublicados.Add(evt))
+                .Returns(Task.CompletedTask);
+
             var result = await _sensorService.AddAsync(sensores);
 
-            // Assert
             result.Should().HaveCount(2);
             result.Should().OnlyHaveUniqueItems();
 
             _sensorRepositoryMock.Verify(x => x.AddAsync(It.IsAny<Sensor>()), Times.Exactly(2));
+            _eventPublisherMock.Verify(
+                x => x.PublishSensorReadingCreatedAsync(It.IsAny<SensorReadingCreatedEvent>(), It.IsAny<CancellationToken>()),
+                Times.Exactly(2));
 
             sensoresSalvos.Should().HaveCount(2);
 
@@ -173,12 +211,29 @@ namespace AgroTech.UnitTests.Services
 
             result.Should().Contain(sensoresSalvos[0].Id);
             result.Should().Contain(sensoresSalvos[1].Id);
+
+            eventosPublicados.Should().HaveCount(2);
+
+            eventosPublicados[0].EventName.Should().Be("sensor.reading.created");
+            eventosPublicados[0].CorrelationId.Should().Be("test-correlation-id");
+            eventosPublicados[0].SensorName.Should().Be("Temperatura");
+            eventosPublicados[0].SensorType.Should().Be(1);
+            eventosPublicados[0].Value.Should().Be(25.4);
+            eventosPublicados[0].Timestamp.Should().Be(timestamp1);
+            eventosPublicados[0].Source.Should().Be("node-red");
+
+            eventosPublicados[1].EventName.Should().Be("sensor.reading.created");
+            eventosPublicados[1].CorrelationId.Should().Be("test-correlation-id");
+            eventosPublicados[1].SensorName.Should().Be("Umidade");
+            eventosPublicados[1].SensorType.Should().Be(2);
+            eventosPublicados[1].Value.Should().Be(60);
+            eventosPublicados[1].Timestamp.Should().Be(timestamp2);
+            eventosPublicados[1].Source.Should().Be("node-red");
         }
 
         [Fact]
         public async Task UpdateAsync_SensorNaoEncontrado_DeveLancarDomainException()
         {
-            // Arrange
             var dto = new SensorDTO
             {
                 Id = Guid.NewGuid(),
@@ -192,10 +247,8 @@ namespace AgroTech.UnitTests.Services
                 .Setup(x => x.GetByIdAsync(dto.Id))
                 .ReturnsAsync((Sensor?)null);
 
-            // Act
             Func<Task> act = async () => await _sensorService.UpdateAsync(dto);
 
-            // Assert
             await act.Should().ThrowAsync<DomainException>()
                 .WithMessage("Sensor não encontrado.");
 
@@ -205,7 +258,6 @@ namespace AgroTech.UnitTests.Services
         [Fact]
         public async Task UpdateAsync_NomeVazio_DeveLancarDomainException()
         {
-            // Arrange
             var sensor = new Sensor
             {
                 Id = Guid.NewGuid(),
@@ -228,10 +280,8 @@ namespace AgroTech.UnitTests.Services
                 .Setup(x => x.GetByIdAsync(sensor.Id))
                 .ReturnsAsync(sensor);
 
-            // Act
             Func<Task> act = async () => await _sensorService.UpdateAsync(dto);
 
-            // Assert
             await act.Should().ThrowAsync<DomainException>()
                 .WithMessage("O nome do sensor não pode ser vazio.");
 
@@ -241,7 +291,6 @@ namespace AgroTech.UnitTests.Services
         [Fact]
         public async Task UpdateAsync_TipoVazio_DeveLancarDomainException()
         {
-            // Arrange
             var sensor = new Sensor
             {
                 Id = Guid.NewGuid(),
@@ -264,10 +313,8 @@ namespace AgroTech.UnitTests.Services
                 .Setup(x => x.GetByIdAsync(sensor.Id))
                 .ReturnsAsync(sensor);
 
-            // Act
             Func<Task> act = async () => await _sensorService.UpdateAsync(dto);
 
-            // Assert
             await act.Should().ThrowAsync<DomainException>()
                 .WithMessage("O tipo do sensor não pode ser vazio.");
 
@@ -277,7 +324,6 @@ namespace AgroTech.UnitTests.Services
         [Fact]
         public async Task UpdateAsync_TipoNaoNumerico_DeveLancarDomainException()
         {
-            // Arrange
             var sensor = new Sensor
             {
                 Id = Guid.NewGuid(),
@@ -300,10 +346,8 @@ namespace AgroTech.UnitTests.Services
                 .Setup(x => x.GetByIdAsync(sensor.Id))
                 .ReturnsAsync(sensor);
 
-            // Act
             Func<Task> act = async () => await _sensorService.UpdateAsync(dto);
 
-            // Assert
             await act.Should().ThrowAsync<DomainException>()
                 .WithMessage("O tipo do sensor deve ser numérico.");
 
@@ -313,7 +357,6 @@ namespace AgroTech.UnitTests.Services
         [Fact]
         public async Task UpdateAsync_DadosValidos_DeveAtualizarSensor()
         {
-            // Arrange
             var sensor = new Sensor
             {
                 Id = Guid.NewGuid(),
@@ -346,10 +389,8 @@ namespace AgroTech.UnitTests.Services
                 .Callback<Sensor>(s => sensorAtualizado = s)
                 .Returns(Task.CompletedTask);
 
-            // Act
             await _sensorService.UpdateAsync(dto);
 
-            // Assert
             _sensorRepositoryMock.Verify(x => x.GetByIdAsync(sensor.Id), Times.Once);
             _sensorRepositoryMock.Verify(x => x.UpdateAsync(It.IsAny<Sensor>()), Times.Once);
 
@@ -364,17 +405,14 @@ namespace AgroTech.UnitTests.Services
         [Fact]
         public async Task DeleteAsync_SensorNaoEncontrado_DeveLancarDomainException()
         {
-            // Arrange
             var id = Guid.NewGuid();
 
             _sensorRepositoryMock
                 .Setup(x => x.GetByIdAsync(id))
                 .ReturnsAsync((Sensor?)null);
 
-            // Act
             Func<Task> act = async () => await _sensorService.DeleteAsync(id);
 
-            // Assert
             await act.Should().ThrowAsync<DomainException>()
                 .WithMessage("Sensor não encontrado.");
 
@@ -384,7 +422,6 @@ namespace AgroTech.UnitTests.Services
         [Fact]
         public async Task DeleteAsync_SensorExistente_DeveRemoverSensor()
         {
-            // Arrange
             var id = Guid.NewGuid();
 
             var sensor = new Sensor
@@ -404,10 +441,8 @@ namespace AgroTech.UnitTests.Services
                 .Setup(x => x.DeleteAsync(id))
                 .Returns(Task.CompletedTask);
 
-            // Act
             await _sensorService.DeleteAsync(id);
 
-            // Assert
             _sensorRepositoryMock.Verify(x => x.GetByIdAsync(id), Times.Once);
             _sensorRepositoryMock.Verify(x => x.DeleteAsync(id), Times.Once);
         }
@@ -415,24 +450,20 @@ namespace AgroTech.UnitTests.Services
         [Fact]
         public async Task GetByIdAsync_SensorNaoEncontrado_DeveRetornarNull()
         {
-            // Arrange
             var id = Guid.NewGuid();
 
             _sensorRepositoryMock
                 .Setup(x => x.GetByIdAsync(id))
                 .ReturnsAsync((Sensor?)null);
 
-            // Act
             var result = await _sensorService.GetByIdAsync(id);
 
-            // Assert
             result.Should().BeNull();
         }
 
         [Fact]
         public async Task GetByIdAsync_SensorExistente_DeveRetornarDto()
         {
-            // Arrange
             var id = Guid.NewGuid();
             var timestamp = new DateTime(2026, 4, 7, 12, 0, 0, DateTimeKind.Utc);
 
@@ -449,10 +480,8 @@ namespace AgroTech.UnitTests.Services
                 .Setup(x => x.GetByIdAsync(id))
                 .ReturnsAsync(sensor);
 
-            // Act
             var result = await _sensorService.GetByIdAsync(id);
 
-            // Assert
             result.Should().NotBeNull();
             result!.Id.Should().Be(id);
             result.Name.Should().Be("Temperatura");
@@ -464,7 +493,6 @@ namespace AgroTech.UnitTests.Services
         [Fact]
         public async Task GetAllAsync_QuandoExistiremSensores_DeveRetornarListaMapeada()
         {
-            // Arrange
             var sensores = new List<Sensor>
             {
                 new()
@@ -489,10 +517,8 @@ namespace AgroTech.UnitTests.Services
                 .Setup(x => x.GetAllAsync())
                 .ReturnsAsync(sensores);
 
-            // Act
             var result = (await _sensorService.GetAllAsync()).ToList();
 
-            // Assert
             result.Should().HaveCount(2);
 
             result[0].Id.Should().Be(sensores[0].Id);
@@ -509,7 +535,6 @@ namespace AgroTech.UnitTests.Services
         [Fact]
         public async Task SearchAsync_SemFiltros_DeveRetornarResultadoPaginado()
         {
-            // Arrange
             var sensores = CriarSensoresParaBusca();
 
             _sensorRepositoryMock
@@ -522,10 +547,8 @@ namespace AgroTech.UnitTests.Services
                 PageSize = 2
             };
 
-            // Act
             var result = await _sensorService.SearchAsync(searchDto);
 
-            // Assert
             result.Should().NotBeNull();
             result.Page.Should().Be(1);
             result.PageSize.Should().Be(2);
@@ -537,7 +560,6 @@ namespace AgroTech.UnitTests.Services
         [Fact]
         public async Task SearchAsync_FiltroPorNome_DeveRetornarSomenteItensCorrespondentes()
         {
-            // Arrange
             var sensores = CriarSensoresParaBusca();
 
             _sensorRepositoryMock
@@ -551,10 +573,8 @@ namespace AgroTech.UnitTests.Services
                 PageSize = 10
             };
 
-            // Act
             var result = await _sensorService.SearchAsync(searchDto);
 
-            // Assert
             result.TotalItems.Should().Be(2);
             result.Items.Should().HaveCount(2);
             result.Items.All(x => x.Name.Contains("Temp", StringComparison.OrdinalIgnoreCase)).Should().BeTrue();
@@ -563,7 +583,6 @@ namespace AgroTech.UnitTests.Services
         [Fact]
         public async Task SearchAsync_FiltroPorTipo_DeveRetornarSomenteItensDoTipoInformado()
         {
-            // Arrange
             var sensores = CriarSensoresParaBusca();
 
             _sensorRepositoryMock
@@ -577,10 +596,8 @@ namespace AgroTech.UnitTests.Services
                 PageSize = 10
             };
 
-            // Act
             var result = await _sensorService.SearchAsync(searchDto);
 
-            // Assert
             result.TotalItems.Should().Be(2);
             result.Items.Should().HaveCount(2);
             result.Items.All(x => x.Type == "2").Should().BeTrue();
@@ -589,7 +606,6 @@ namespace AgroTech.UnitTests.Services
         [Fact]
         public async Task SearchAsync_FiltroPorMinValue_DeveRetornarItensComValorMaiorOuIgual()
         {
-            // Arrange
             var sensores = CriarSensoresParaBusca();
 
             _sensorRepositoryMock
@@ -603,10 +619,8 @@ namespace AgroTech.UnitTests.Services
                 PageSize = 10
             };
 
-            // Act
             var result = await _sensorService.SearchAsync(searchDto);
 
-            // Assert
             result.TotalItems.Should().Be(1);
             result.Items.Should().HaveCount(1);
             result.Items.All(x => x.Value >= 40).Should().BeTrue();
@@ -616,7 +630,6 @@ namespace AgroTech.UnitTests.Services
         [Fact]
         public async Task SearchAsync_FiltroPorMaxValue_DeveRetornarItensComValorMenorOuIgual()
         {
-            // Arrange
             var sensores = CriarSensoresParaBusca();
 
             _sensorRepositoryMock
@@ -630,10 +643,8 @@ namespace AgroTech.UnitTests.Services
                 PageSize = 10
             };
 
-            // Act
             var result = await _sensorService.SearchAsync(searchDto);
 
-            // Assert
             result.TotalItems.Should().Be(1);
             result.Items.Should().HaveCount(1);
             result.Items.All(x => x.Value <= 25).Should().BeTrue();
@@ -643,7 +654,6 @@ namespace AgroTech.UnitTests.Services
         [Fact]
         public async Task SearchAsync_FiltroPorPeriodo_DeveRetornarItensDentroDoIntervalo()
         {
-            // Arrange
             var sensores = CriarSensoresParaBusca();
 
             _sensorRepositoryMock
@@ -661,10 +671,8 @@ namespace AgroTech.UnitTests.Services
                 PageSize = 10
             };
 
-            // Act
             var result = await _sensorService.SearchAsync(searchDto);
 
-            // Assert
             result.TotalItems.Should().Be(2);
             result.Items.Should().HaveCount(2);
             result.Items.All(x => x.Timestamp >= inicio && x.Timestamp <= fim).Should().BeTrue();
@@ -673,7 +681,6 @@ namespace AgroTech.UnitTests.Services
         [Fact]
         public async Task SearchAsync_OrdenacaoPorNameAsc_DeveOrdenarCorretamente()
         {
-            // Arrange
             var sensores = CriarSensoresParaBusca();
 
             _sensorRepositoryMock
@@ -688,11 +695,9 @@ namespace AgroTech.UnitTests.Services
                 PageSize = 10
             };
 
-            // Act
             var result = await _sensorService.SearchAsync(searchDto);
             var items = result.Items.ToList();
 
-            // Assert
             items.Should().HaveCount(4);
             items[0].Name.Should().Be("Ph Solo");
             items[1].Name.Should().Be("Temperatura Estufa");
@@ -703,7 +708,6 @@ namespace AgroTech.UnitTests.Services
         [Fact]
         public async Task SearchAsync_OrdenacaoPorValueDesc_DeveOrdenarCorretamente()
         {
-            // Arrange
             var sensores = CriarSensoresParaBusca();
 
             _sensorRepositoryMock
@@ -718,11 +722,9 @@ namespace AgroTech.UnitTests.Services
                 PageSize = 10
             };
 
-            // Act
             var result = await _sensorService.SearchAsync(searchDto);
             var items = result.Items.ToList();
 
-            // Assert
             items.Should().HaveCount(4);
             items[0].Value.Should().Be(60);
             items[1].Value.Should().Be(35);
@@ -733,7 +735,6 @@ namespace AgroTech.UnitTests.Services
         [Fact]
         public async Task SearchAsync_Paginacao_DeveRetornarPaginaCorreta()
         {
-            // Arrange
             var sensores = CriarSensoresParaBusca();
 
             _sensorRepositoryMock
@@ -748,11 +749,9 @@ namespace AgroTech.UnitTests.Services
                 PageSize = 2
             };
 
-            // Act
             var result = await _sensorService.SearchAsync(searchDto);
             var items = result.Items.ToList();
 
-            // Assert
             result.Page.Should().Be(2);
             result.PageSize.Should().Be(2);
             result.TotalItems.Should().Be(4);

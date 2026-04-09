@@ -4,8 +4,6 @@ namespace AgroTech.Domain.Interfaces
 {
     public interface ISensorRepository : IRepository<Sensor>
     {
-        public interface ISensorRepository : IRepository<Sensor>
-        {
-        }
+     
     }
 }

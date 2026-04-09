@@ -13,3 +13,9 @@ logs/
 # Rider / VSCode
 .idea/
 .vscode/
+
+#Simulador Python
+.env
+.env*
+**/.env
+

@@ -713,6 +713,18 @@
           }
         }
       },
+      "RabbitMQ.Client/7.2.1": {
+        "dependencies": {
+          "System.IO.Pipelines": "9.0.10",
+          "System.Threading.RateLimiting": "8.0.0"
+        },
+        "runtime": {
+          "lib/net8.0/RabbitMQ.Client.dll": {
+            "assemblyVersion": "7.0.0.0",
+            "fileVersion": "7.2.1.0"
+          }
+        }
+      },
       "Serilog/3.1.1": {
         "runtime": {
           "lib/net7.0/Serilog.dll": {
@@ -997,6 +1009,7 @@
           }
         }
       },
+      "System.Threading.RateLimiting/8.0.0": {},
       "xunit/2.9.3": {
         "dependencies": {
           "xunit.analyzers": "1.18.0",
@@ -1052,6 +1065,7 @@
       "xunit.runner.visualstudio/3.1.5": {},
       "AgroTech/1.0.0": {
         "dependencies": {
+          "AgroTech.Contracts": "1.0.0",
           "Microsoft.EntityFrameworkCore": "9.0.10",
           "Microsoft.Extensions.Diagnostics.HealthChecks.EntityFrameworkCore": "8.0.10",
           "OpenTelemetry.Exporter.Console": "1.15.1",
@@ -1061,6 +1075,7 @@
           "OpenTelemetry.Instrumentation.Http": "1.15.0",
           "OpenTelemetry.Instrumentation.Runtime": "1.8.1",
           "Oracle.EntityFrameworkCore": "9.23.26000",
+          "RabbitMQ.Client": "7.2.1",
           "Serilog.AspNetCore": "8.0.3",
           "Serilog.Sinks.Console": "5.0.1",
           "Serilog.Sinks.File": "5.0.0",
@@ -1070,6 +1085,14 @@
           "AgroTech.dll": {
             "assemblyVersion": "1.0.0",
             "fileVersion": ""
+          }
+        }
+      },
+      "AgroTech.Contracts/1.0.0": {
+        "runtime": {
+          "AgroTech.Contracts.dll": {
+            "assemblyVersion": "1.0.0",
+            "fileVersion": "1.0.0.0"
           }
         }
       }
@@ -1403,6 +1426,13 @@
       "path": "oracle.manageddataaccess.core/23.26.0",
       "hashPath": "oracle.manageddataaccess.core.23.26.0.nupkg.sha512"
     },
+    "RabbitMQ.Client/7.2.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-YKXEfg9fVQiTKgZlvIhAfPSFaamEgi8DsQmisCH0IAsU4FYLrtoguDrDj6JtJVGUt40QPnBLRH6fTQcAC4qsOg==",
+      "path": "rabbitmq.client/7.2.1",
+      "hashPath": "rabbitmq.client.7.2.1.nupkg.sha512"
+    },
     "Serilog/3.1.1": {
       "type": "package",
       "serviceable": true,
@@ -1592,6 +1622,13 @@
       "path": "system.text.json/9.0.10",
       "hashPath": "system.text.json.9.0.10.nupkg.sha512"
     },
+    "System.Threading.RateLimiting/8.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-7mu9v0QDv66ar3DpGSZHg9NuNcxDaaAcnMULuZlaTpP9+hwXhrxNGsF5GmLkSHxFdb5bBc1TzeujsRgTrPWi+Q==",
+      "path": "system.threading.ratelimiting/8.0.0",
+      "hashPath": "system.threading.ratelimiting.8.0.0.nupkg.sha512"
+    },
     "xunit/2.9.3": {
       "type": "package",
       "serviceable": true,
@@ -1649,6 +1686,11 @@
       "hashPath": "xunit.runner.visualstudio.3.1.5.nupkg.sha512"
     },
     "AgroTech/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "AgroTech.Contracts/1.0.0": {
       "type": "project",
       "serviceable": false,
       "sha512": ""

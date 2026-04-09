@@ -1,0 +1,48 @@
+services:
+  rabbitmq:
+    image: rabbitmq:4-management
+    container_name: agrotech-rabbitmq
+    hostname: agrotech-rabbitmq
+    restart: unless-stopped
+
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+      RABBITMQ_DEFAULT_VHOST: /
+
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+
+    stop_grace_period: 30s
+
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+      interval: 15s
+      timeout: 10s
+      retries: 5
+      start_period: 20s
+
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+        
+  sensor-simulator:
+    build:
+      context: ./infra/sensor-simulator
+    container_name: agrotech-sensor-simulator
+    restart: unless-stopped
+    env_file:
+      - ./infra/sensor-simulator/.env.sensor-simulator
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+volumes:
+  rabbitmq_data:

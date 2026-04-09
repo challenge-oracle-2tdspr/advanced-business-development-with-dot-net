@@ -7,6 +7,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AgroTech.UnitTests", "AgroT
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AgroTech.IntegrationTests", "AgroTech.IntegrationTests\AgroTech.IntegrationTests.csproj", "{72837D0E-2959-4A3B-AB87-3E436A90B6FA}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AgroTech.Worker.Alerts", "AgroTech.Worker.Alerts\AgroTech.Worker.Alerts.csproj", "{F3C17B3A-16FF-408D-B1A8-40DE4F59A2BE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AgroTech.Worker.Recommendations", "AgroTech.Worker.Recommendations\AgroTech.Worker.Recommendations.csproj", "{E2B75898-3032-4016-A53C-3CD759FF315C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AgroTech.Contracts", "AgroTech.Contracts\AgroTech.Contracts.csproj", "{C4098969-9AC2-4390-9DCD-24C87803AF21}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -25,5 +31,17 @@ Global
 		{72837D0E-2959-4A3B-AB87-3E436A90B6FA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{72837D0E-2959-4A3B-AB87-3E436A90B6FA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{72837D0E-2959-4A3B-AB87-3E436A90B6FA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F3C17B3A-16FF-408D-B1A8-40DE4F59A2BE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F3C17B3A-16FF-408D-B1A8-40DE4F59A2BE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F3C17B3A-16FF-408D-B1A8-40DE4F59A2BE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F3C17B3A-16FF-408D-B1A8-40DE4F59A2BE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E2B75898-3032-4016-A53C-3CD759FF315C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E2B75898-3032-4016-A53C-3CD759FF315C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E2B75898-3032-4016-A53C-3CD759FF315C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E2B75898-3032-4016-A53C-3CD759FF315C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C4098969-9AC2-4390-9DCD-24C87803AF21}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C4098969-9AC2-4390-9DCD-24C87803AF21}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C4098969-9AC2-4390-9DCD-24C87803AF21}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C4098969-9AC2-4390-9DCD-24C87803AF21}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

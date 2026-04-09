@@ -3,20 +3,25 @@ using AgroTech.Application.Exceptions;
 using AgroTech.Application.Interfaces;
 using AgroTech.Domain.Entities;
 using AgroTech.Domain.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using AgroTech.Contracts.Events;
+using AgroTech.Messaging;
 
 namespace AgroTech.Application.Services
 {
     public class SensorService : ISensorService
     {
         private readonly ISensorRepository _repository;
+        private readonly IEventPublisher _eventPublisher;
+        private readonly ICorrelationIdAccessor _correlationIdAccessor;
 
-        public SensorService(ISensorRepository repository)
+        public SensorService(
+            ISensorRepository repository,
+            IEventPublisher eventPublisher,
+            ICorrelationIdAccessor correlationIdAccessor)
         {
             _repository = repository;
+            _eventPublisher = eventPublisher;
+            _correlationIdAccessor = correlationIdAccessor;
         }
 
         public async Task<List<Guid>> AddAsync(IEnumerable<SensorDTO> dtos)
@@ -25,6 +30,7 @@ namespace AgroTech.Application.Services
                 throw new DomainException("A lista de sensores não pode ser vazia.");
 
             var ids = new List<Guid>();
+            var correlationId = _correlationIdAccessor.GetCorrelationId();
 
             foreach (var dto in dtos)
             {
@@ -50,11 +56,25 @@ namespace AgroTech.Application.Services
                 };
 
                 await _repository.AddAsync(sensor);
+
+                var sensorEvent = new SensorReadingCreatedEvent
+                {
+                    CorrelationId = correlationId,
+                    SensorId = sensor.Id,
+                    SensorName = sensor.Name,
+                    SensorType = sensor.Type,
+                    Value = Convert.ToDouble(sensor.Value),
+                    Timestamp = sensor.Timestamp,
+                    Source = "node-red"
+                };
+
+                await _eventPublisher.PublishSensorReadingCreatedAsync(sensorEvent);
+
                 ids.Add(sensorId);
             }
 
             return ids;
-        }   
+        }
 
         public async Task DeleteAsync(Guid id)
         {
@@ -118,6 +138,7 @@ namespace AgroTech.Application.Services
 
             await _repository.UpdateAsync(sensor);
         }
+
         public async Task<PagedResultDTO<SensorDTO>> SearchAsync(SensorSearchDTO searchDto)
         {
             var sensors = await _repository.GetAllAsync();

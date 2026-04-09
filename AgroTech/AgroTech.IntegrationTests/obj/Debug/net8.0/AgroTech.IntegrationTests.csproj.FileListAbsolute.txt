@@ -469,3 +469,6 @@
 /home/ruan/Área de Trabalho/advanced-business-development-with-dot-net/AgroTech/AgroTech.IntegrationTests/obj/Debug/net8.0/AgroTech.IntegrationTests.pdb
 /home/ruan/Área de Trabalho/advanced-business-development-with-dot-net/AgroTech/AgroTech.IntegrationTests/obj/Debug/net8.0/AgroTech.IntegrationTests.genruntimeconfig.cache
 /home/ruan/Área de Trabalho/advanced-business-development-with-dot-net/AgroTech/AgroTech.IntegrationTests/obj/Debug/net8.0/ref/AgroTech.IntegrationTests.dll
+/home/ruan/Área de Trabalho/advanced-business-development-with-dot-net/AgroTech/AgroTech.IntegrationTests/bin/Debug/net8.0/RabbitMQ.Client.dll
+/home/ruan/Área de Trabalho/advanced-business-development-with-dot-net/AgroTech/AgroTech.IntegrationTests/bin/Debug/net8.0/AgroTech.Contracts.dll
+/home/ruan/Área de Trabalho/advanced-business-development-with-dot-net/AgroTech/AgroTech.IntegrationTests/bin/Debug/net8.0/AgroTech.Contracts.pdb

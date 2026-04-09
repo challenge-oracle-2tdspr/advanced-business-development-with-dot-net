@@ -21,7 +21,10 @@ namespace AgroTech.IntegrationTests.Api
 
             // Act
             var response = await _client.GetAsync("/health");
+            var body = await response.Content.ReadAsStringAsync();
+            Console.WriteLine(body);
 
+            response.StatusCode.Should().Be(HttpStatusCode.OK);
             // Assert
             response.StatusCode.Should().Be(HttpStatusCode.OK);
 
@@ -58,7 +61,10 @@ namespace AgroTech.IntegrationTests.Api
 
             // Act
             var response = await _client.GetAsync("/health/ready");
+            var body = await response.Content.ReadAsStringAsync();
+            Console.WriteLine(body);
 
+            response.StatusCode.Should().Be(HttpStatusCode.OK);
             // Assert
             response.StatusCode.Should().Be(HttpStatusCode.OK);
 

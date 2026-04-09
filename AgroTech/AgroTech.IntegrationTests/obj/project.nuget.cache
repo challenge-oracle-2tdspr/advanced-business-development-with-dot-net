@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "XzPuHw/Gtik=",
+  "dgSpecHash": "yicks2dqEL4=",
   "success": true,
   "projectFilePath": "/home/ruan/Área de Trabalho/advanced-business-development-with-dot-net/AgroTech/AgroTech.IntegrationTests/AgroTech.IntegrationTests.csproj",
   "expectedPackageFiles": [
@@ -64,6 +64,7 @@
     "/home/ruan/.nuget/packages/opentelemetry.instrumentation.runtime/1.8.1/opentelemetry.instrumentation.runtime.1.8.1.nupkg.sha512",
     "/home/ruan/.nuget/packages/oracle.entityframeworkcore/9.23.26000/oracle.entityframeworkcore.9.23.26000.nupkg.sha512",
     "/home/ruan/.nuget/packages/oracle.manageddataaccess.core/23.26.0/oracle.manageddataaccess.core.23.26.0.nupkg.sha512",
+    "/home/ruan/.nuget/packages/rabbitmq.client/7.2.1/rabbitmq.client.7.2.1.nupkg.sha512",
     "/home/ruan/.nuget/packages/serilog/3.1.1/serilog.3.1.1.nupkg.sha512",
     "/home/ruan/.nuget/packages/serilog.aspnetcore/8.0.3/serilog.aspnetcore.8.0.3.nupkg.sha512",
     "/home/ruan/.nuget/packages/serilog.extensions.hosting/8.0.0/serilog.extensions.hosting.8.0.0.nupkg.sha512",
@@ -91,6 +92,7 @@
     "/home/ruan/.nuget/packages/system.security.cryptography.protecteddata/8.0.0/system.security.cryptography.protecteddata.8.0.0.nupkg.sha512",
     "/home/ruan/.nuget/packages/system.text.encodings.web/9.0.10/system.text.encodings.web.9.0.10.nupkg.sha512",
     "/home/ruan/.nuget/packages/system.text.json/9.0.10/system.text.json.9.0.10.nupkg.sha512",
+    "/home/ruan/.nuget/packages/system.threading.ratelimiting/8.0.0/system.threading.ratelimiting.8.0.0.nupkg.sha512",
     "/home/ruan/.nuget/packages/xunit/2.9.3/xunit.2.9.3.nupkg.sha512",
     "/home/ruan/.nuget/packages/xunit.abstractions/2.0.3/xunit.abstractions.2.0.3.nupkg.sha512",
     "/home/ruan/.nuget/packages/xunit.analyzers/1.18.0/xunit.analyzers.1.18.0.nupkg.sha512",
