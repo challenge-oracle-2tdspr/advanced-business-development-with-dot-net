@@ -1,251 +1,260 @@
 # AgroTech IoT API
 
-API desenvolvida em ASP.NET Core (.NET 8) com Clean Architecture para ingestão, processamento, armazenamento e consulta de dados de sensores IoT enviados via Node-RED.
+API e ecossistema de apoio para agricultura inteligente, desenvolvidos em **ASP.NET Core (.NET 8)** com **Clean Architecture**, integrando **Adafruit IO**, **Node-RED**, **Oracle**, **RabbitMQ** e **workers assíncronos** para alertas e recomendações.
 
 ---
 
 ## Sumário
 
-- [Visão Geral do Projeto](#visão-geral-do-projeto)
-- [Objetivo do Projeto](#objetivo-do-projeto)
-- [Escopo](#escopo)
-- [Requisitos Funcionais](#requisitos-funcionais)
-- [Requisitos Não Funcionais](#requisitos-não-funcionais)
-- [Arquitetura da Solução](#arquitetura-da-solução)
-- [Estrutura do Projeto](#estrutura-do-projeto)
-- [Entidade de Negócio](#entidade-de-negócio)
-- [Fluxo IoT com Node-RED](#fluxo-iot-com-node-red)
-- [Tecnologias Utilizadas](#tecnologias-utilizadas)
+- [Visão geral](#visão-geral)
+- [Objetivo do projeto](#objetivo-do-projeto)
+- [Escopo atual](#escopo-atual)
+- [Arquitetura atual](#arquitetura-atual)
+- [Fluxos do sistema](#fluxos-do-sistema)
+- [Sensores e tipos utilizados](#sensores-e-tipos-utilizados)
+- [Estrutura do projeto](#estrutura-do-projeto)
+- [Componentes da solução](#componentes-da-solução)
+- [Tecnologias utilizadas](#tecnologias-utilizadas)
 - [Endpoints da API](#endpoints-da-api)
+- [Health checks](#health-checks)
 - [HATEOAS](#hateoas)
-- [Health Checks](#health-checks)
-- [Logging Estruturado](#logging-estruturado)
+- [Logging estruturado](#logging-estruturado)
 - [Observabilidade com OpenTelemetry](#observabilidade-com-opentelemetry)
-- [Testes Automatizados](#testes-automatizados)
-- [Como Executar o Projeto](#como-executar-o-projeto)
-- [Como Executar as Migrations](#como-executar-as-migrations)
-- [Como Executar os Testes](#como-executar-os-testes)
-- [Exemplos de Requisição](#exemplos-de-requisição)
-- [Status Atual do Projeto](#status-atual-do-projeto)
-- [Autor](#autor)
+- [RabbitMQ](#rabbitmq)
+- [Workers](#workers)
+- [Node-RED](#node-red)
+- [Simulador Python + Adafruit IO](#simulador-python--adafruit-io)
+- [Credenciais e configurações necessárias](#credenciais-e-configurações-necessárias)
+- [Como executar o projeto](#como-executar-o-projeto)
+- [Scripts de automação](#scripts-de-automação)
+- [Migrations](#migrations)
+- [Testes automatizados](#testes-automatizados)
+- [Exemplos de requisição](#exemplos-de-requisição)
+- [Status atual do projeto](#status-atual-do-projeto)
 
-## Visão Geral do Projeto
+---
 
-O AgroTech IoT API é uma aplicação backend criada para receber leituras de sensores agrícolas e ambientais, processar esses dados e disponibilizá-los para consulta por meio de uma API REST.
+## Visão geral
 
-O foco do projeto é representar telemetria de sensores, e não cadastro fixo de dispositivos. Cada registro salvo no banco representa uma leitura recebida de um sensor em determinado momento.
+O **AgroTech IoT API** é o backend do ecossistema AgroTech, responsável por receber leituras de sensores agrícolas/ambientais, validá-las, persistí-las no Oracle e disponibilizá-las por API REST.
 
-O sistema foi construído seguindo os princípios de arquitetura limpa, separando responsabilidades entre as camadas de Domínio, Aplicação, Infraestrutura e Web.
+Além da ingestão síncrona, o projeto evoluiu para um fluxo assíncrono com **RabbitMQ** e dois workers:
 
-## Objetivo do Projeto
+- **AgroTech.Worker.Alerts**
+- **AgroTech.Worker.Recommendations**
 
-#### Uma API para:
+Também fazem parte do ambiente de desenvolvimento:
+
+- **Node-RED em Docker**, responsável por consumir dados MQTT do Adafruit IO e enviar leituras para a API;
+- **simulador Python em Docker**, responsável por gerar dados agrícolas realistas e publicar no Adafruit IO.
+
+> Importante: o sistema representa **leituras de telemetria**, não cadastro fixo de dispositivos. Cada registro salvo no banco representa uma nova leitura recebida em um determinado momento.
+
+---
+
+## Objetivo do projeto
+
+O projeto foi construído para:
 
 - receber dados de sensores IoT enviados via HTTP pelo Node-RED;
 - validar e processar essas leituras;
 - armazenar os dados em banco Oracle;
 - disponibilizar consultas com filtros, ordenação e paginação;
-- expor informações para uso futuro em dashboards e monitoramento;
-- implementar observabilidade, health checks, logs e testes automatizados.
+- publicar eventos de novas leituras no RabbitMQ;
+- processar alertas e recomendações de forma assíncrona;
+- preparar a base para consumo futuro por dashboards e Oracle APEX;
+- oferecer observabilidade, health checks, logs estruturados e testes automatizados.
 
-## Escopo
+---
+
+## Escopo atual
+
+O escopo atual contempla:
 
 - API REST para CRUD de leituras de sensores;
 - endpoint de busca com paginação, filtros e ordenação;
-- health checks da aplicação e do banco;
+- health checks da aplicação;
 - logging estruturado com Serilog;
 - tracing e métricas com OpenTelemetry;
 - testes unitários e de integração;
-- documentação de uso do sistema.
-
-
-## Requisitos Funcionais
-
-- Receber leituras de sensores em lote via HTTP.
-- Validar lista de sensores recebida.
-- Validar nome do sensor.
-- Validar tipo do sensor.
-- Converter o campo Type recebido como string numérica para inteiro.
-- Armazenar leituras no banco de dados.
-- Permitir consulta de todas as leituras.
-- Permitir consulta por identificador.
-- Permitir atualização de leitura.
-- Permitir remoção de leitura.
-- Permitir busca com:
-  - filtro por nome;
-  - filtro por tipo;
-  - filtro por valor mínimo;
-  - filtro por valor máximo;
-  - filtro por intervalo de datas;
-  - paginação;
-  - ordenação ascendente e descendente.
-- Expor links HATEOAS nos retornos da API.
-- Expor endpoints de health check.
-
-## Requisitos Não Funcionais
-
-- Aplicação desenvolvida em .NET 8.
-- Arquitetura baseada em Clean Architecture.
-- Persistência com Entity Framework Core e Oracle.
-- Documentação da API com Swagger.
-- Logging estruturado com Serilog.
-- Observabilidade com OpenTelemetry.
-- Testes automatizados com xUnit, Moq, FluentAssertions e WebApplicationFactory.
-- Organização em projetos separados para testes unitários e integração.
-- Nomenclatura padronizada de testes no formato:
-  - MetodoTestado_Cenario_ResultadoEsperado
+- RabbitMQ com exchange e filas de processamento assíncrono;
+- worker de alertas;
+- worker de recomendações;
+- simulador Python em Docker;
+- Node-RED em Docker;
+- documentação operacional do ambiente local.
 
 ---
 
-## Arquitetura da Solução
+## Arquitetura atual
 
-A aplicação foi estruturada com Clean Architecture, separando responsabilidades em camadas.
+Fluxo ponta a ponta do ambiente atual:
 
-### 1. Domínio
+```text
+Simulador Python -> Adafruit IO -> Node-RED -> API .NET -> Oracle -> RabbitMQ -> Workers
+```
 
-Responsável pelas entidades e contratos centrais do negócio.
+### Visão em camadas
 
-Contém:
-- Sensor
-- BaseEntity
-- IRepository<T>
-- ISensorRepository
-- SensorType
-
-### 2. Aplicação
-
-Responsável pelos casos de uso, regras de negócio, DTOs e serviços.
-
-Contém:
-- SensorService
-- ISensorService
-- SensorDTO
-- SensorSearchDTO
-- PagedResultDTO<T>
-- LinkDTO
-- DomainException
-
-### 3. Infraestrutura
-
-Responsável pela persistência e acesso a dados.
-
-Contém:
-- AgroTechDbContext
-- Repository<T>
-- SensorRepository
-- Migrations do EF Core
-
-### 4. Web
-
-Responsável por expor a API e recursos HTTP.
-
-Contém:
-- SensorsController
-- middleware de tratamento de exceções
-- configuração de Swagger
-- health checks
-- Serilog
-- OpenTelemetry
-- rotas MVC e API
+- **Domínio**: entidades e contratos centrais do negócio
+- **Aplicação**: regras de negócio, DTOs e serviços
+- **Infraestrutura**: acesso a dados, EF Core, Oracle e repositórios
+- **Web**: controllers REST, middleware, Swagger, views e recursos HTTP
+- **Mensageria**: publisher RabbitMQ na API
+- **Workers**: consumidores de alertas e recomendações
 
 ---
 
-## Estrutura do Projeto
+## Fluxos do sistema
+
+### Fluxo principal de ingestão
+
+```text
+Simulador / Sensores -> Adafruit IO -> Node-RED -> POST /api/sensors -> Oracle
+```
+
+### Fluxo assíncrono de eventos
+
+```text
+API .NET -> RabbitMQ (agrotech.events) -> agrotech.alerts.queue -> Worker Alerts
+                                       -> agrotech.recommendations.queue -> Worker Recommendations
+```
+
+### Situação atual dos workers
+
+Neste momento, os workers:
+
+- consomem mensagens do RabbitMQ;
+- aplicam regras de alerta e recomendação;
+- registram o resultado em log.
+
+> A persistência de alertas e recomendações no Oracle é o próximo passo natural da evolução do projeto.
+
+---
+
+## Sensores e tipos utilizados
+
+Os sensores atualmente padronizados no fluxo são:
+
+| Tipo | Nome |
+|---|---|
+| 11 | Temperatura do Ar |
+| 12 | Umidade do Ar |
+| 13 | Umidade do Solo |
+| 14 | pH do Solo |
+| 15 | Luminosidade |
+| 16 | Velocidade do Vento |
+| 17 | Chuva |
+| 18 | Temperatura do Solo |
+
+---
+
+## Estrutura do projeto
+
+Estrutura lógica atual:
 
 ```text
 AgroTech/
-├── AgroTech/
-│   ├── Program.cs
-│   ├── Program.Public.cs
-│   ├── appsettings.json
-│   ├── appsettings.Development.json
-│   ├── Migrations/
-│   ├── logs/
-│   ├── src/
-│   │   ├── Application/
-│   │   │   ├── DTOs/
-│   │   │   ├── Exceptions/
-│   │   │   ├── Interfaces/
-│   │   │   └── Services/
-│   │   ├── Domain/
-│   │   │   ├── Common/
-│   │   │   ├── Entities/
-│   │   │   ├── Enums/
-│   │   │   └── Interfaces/
-│   │   ├── Infrastructure/
-│   │   │   ├── Data/
-│   │   │   └── Repositories/
-│   │   └── Web/
-│   │       ├── Controllers/
-│   │       ├── Middleware/
-│   │       └── Views/
-│   └── README.md
-│
-├── AgroTech.UnitTests/
-│   └── Services/
-│       └── SensorServiceTests.cs
-│
-└── AgroTech.IntegrationTests/
-    ├── CustomWebApplicationFactory.cs
-    └── Api/
-        ├── HealthChecksIntegrationTests.cs
-        └── SensorsIntegrationTests.cs
+├── start-dev.sh
+├── stop-dev.sh
+├── start-dev.ps1
+├── stop-dev.ps1
+├── logs/
+├── .run/
+└── AgroTech/
+    ├── compose.yaml
+    ├── AgroTech/
+    │   ├── Program.cs
+    │   ├── Program.Public.cs
+    │   ├── appsettings.json
+    │   ├── appsettings.Development.json
+    │   ├── Migrations/
+    │   └── src/
+    │       ├── Application/
+    │       ├── Domain/
+    │       ├── Infrastructure/
+    │       └── Web/
+    ├── AgroTech.Contracts/
+    ├── AgroTech.Worker.Alerts/
+    ├── AgroTech.Worker.Recommendations/
+    ├── AgroTech.UnitTests/
+    ├── AgroTech.IntegrationTests/
+    └── infra/
+        ├── sensor-simulator/
+        │   ├── Dockerfile
+        │   ├── requirements.txt
+        │   ├── simulador_sensores_agrotech.py
+        │   ├── .env.sensor-simulator.example
+        │   └── .env.sensor-simulator
+        └── node-red/
+            └── data/
 ```
 
-## Entidade de Negócio
-### Sensor
+> Observação: os scripts `start-dev` e `stop-dev` ficam na **raiz externa** do repositório, enquanto o `compose.yaml` fica em `./AgroTech/compose.yaml`.
 
-A entidade Sensor representa uma leitura de telemetria.
+---
 
-#### Campos principais:
+## Componentes da solução
 
-- Id
-- Name
-- Type
-- Value
-- Timestamp
-- CreatedAt
-- UpdatedAt
+### 1. API .NET
 
-### Importante: 
-- O sistema não trabalha com cadastro fixo de sensor.
+Responsável por:
 
-- Cada linha salva no banco representa uma nova leitura recebida.
+- expor endpoints REST;
+- validar leituras recebidas;
+- persistir dados no Oracle;
+- publicar eventos no RabbitMQ;
+- expor health checks, logs e telemetria.
 
-### Fluxo IoT com Node-RED
+### 2. RabbitMQ
 
--> O Node-RED envia dados para a API por HTTP no formato JSON.
+Responsável por:
 
-#### Exemplo de payload
-```
-[
-  {
-    "name": "Temperatura",
-    "type": "1",
-    "value": 25.4,
-    "timestamp": "2026-04-07T10:00:00Z"
-  },
-  {
-    "name": "Umidade",
-    "type": "2",
-    "value": 60,
-    "timestamp": "2026-04-07T10:05:00Z"
-  }
-]
-```
+- desacoplar o fluxo de ingestão do processamento;
+- receber o evento `sensor.reading.created`;
+- encaminhar os eventos para:
+  - `agrotech.alerts.queue`
+  - `agrotech.recommendations.queue`
 
-### Fluxo
-1. Node-RED envia uma lista de leituras para POST /api/sensors
+### 3. Worker de Alerts
 
-2. A API valida os dados recebidos
+Responsável por:
 
-3. O serviço converte DTO para entidade
+- consumir `agrotech.alerts.queue`;
+- aplicar regras de alerta;
+- registrar alertas em log;
+- preparar a base para persistência futura no Oracle.
 
-4. Os registros são persistidos no Oracle
+### 4. Worker de Recommendations
 
-5. Os dados ficam disponíveis para consulta via endpoints REST
+Responsável por:
 
-#### Tecnologias Utilizadas
+- consumir `agrotech.recommendations.queue`;
+- aplicar regras de recomendação;
+- registrar recomendações em log;
+- preparar a base para persistência futura no Oracle.
+
+### 5. Node-RED
+
+Responsável por:
+
+- consumir o feed MQTT do Adafruit IO;
+- atualizar gauges do dashboard;
+- transformar os dados em payload compatível com a API;
+- enviar leituras para `POST /api/sensors`.
+
+### 6. Simulador Python
+
+Responsável por:
+
+- gerar dados agrícolas realistas;
+- simular periodicidade de leitura;
+- publicar um JSON consolidado no Adafruit IO via MQTT.
+
+---
+
+## Tecnologias utilizadas
+
 - .NET 8
 - ASP.NET Core Web API / MVC
 - Entity Framework Core
@@ -253,429 +262,679 @@ A entidade Sensor representa uma leitura de telemetria.
 - Swagger / Swashbuckle
 - Serilog
 - OpenTelemetry
+- RabbitMQ
+- Worker Service (.NET)
+- Docker / Docker Compose
+- Node-RED
+- Python
+- paho-mqtt
+- Adafruit IO
 - xUnit
 - Moq
 - FluentAssertions
 - Microsoft.AspNetCore.Mvc.Testing
-- EntityFrameworkCore.InMemory (somente nos testes de integração)
+- EntityFrameworkCore.InMemory (somente testes de integração)
+
+---
 
 ## Endpoints da API
 
 ### Base URL local
-```
+
+```text
 http://localhost:5081
 ```
+
 ### Swagger
-```
+
+```text
 http://localhost:5081/swagger
 ```
+
 ### 1. Listar todos os sensores
 
-```
+```http
 GET /api/sensors
 ```
 
-Retorna todas as leituras cadastradas.
+### 2. Buscar sensor por ID
 
-2. Buscar sensor por ID
-
-```
+```http
 GET /api/sensors/{id}
 ```
 
-#### Exemplo:
-```
+Exemplo:
+
+```http
 GET /api/sensors/11111111-1111-1111-1111-111111111111
 ```
-3. Criar sensores em lote
-```
+
+### 3. Criar sensores em lote
+
+```http
 POST /api/sensors
 ```
 
-#### Exemplo de body
-```
+Exemplo de body:
+
+```json
 [
   {
-    "name": "Temperatura",
-    "type": "1",
-    "value": 25.4,
-    "timestamp": "2026-04-07T10:00:00Z"
+    "name": "Temperatura do Ar",
+    "type": "11",
+    "value": 29.4,
+    "timestamp": "2026-04-09T12:00:00Z"
   },
   {
-    "name": "Umidade",
-    "type": "2",
-    "value": 60,
-    "timestamp": "2026-04-07T10:05:00Z"
+    "name": "Umidade do Ar",
+    "type": "12",
+    "value": 68,
+    "timestamp": "2026-04-09T12:00:00Z"
   }
 ]
 ```
-4. Atualizar sensor
-```
+
+### 4. Atualizar sensor
+
+```http
 PUT /api/sensors/{id}
 ```
 
-#### Exemplo de body
+Exemplo de body:
 
-```
+```json
 {
   "id": "11111111-1111-1111-1111-111111111111",
-  "name": "Temperatura Atualizada",
-  "type": "1",
-  "value": 28.9,
-  "timestamp": "2026-04-07T11:00:00Z"
+  "name": "Temperatura do Ar",
+  "type": "11",
+  "value": 30.2,
+  "timestamp": "2026-04-09T12:15:00Z"
 }
 ```
 
-5. Remover sensor
-```
+### 5. Remover sensor
+
+```http
 DELETE /api/sensors/{id}
 ```
 
-#### Exemplo:
-```
-DELETE /api/sensors/11111111-1111-1111-1111-111111111111
-```
-6. Buscar sensores com filtros, paginação e ordenação
-```
+### 6. Buscar sensores com filtros, paginação e ordenação
+
+```http
 GET /api/sensors/search
 ```
-- Parâmetros suportados
-- name
-- type
-- minValue
-- maxValue
-- startTimestamp
-- endTimestamp
-- orderBy
-- direction
-- page
-- pageSize
 
-#### Exemplo
+Parâmetros suportados:
 
+- `name`
+- `type`
+- `minValue`
+- `maxValue`
+- `startTimestamp`
+- `endTimestamp`
+- `orderBy`
+- `direction`
+- `page`
+- `pageSize`
+
+Exemplo:
+
+```http
+GET /api/sensors/search?name=temp&type=11&page=1&pageSize=10&orderBy=timestamp&direction=desc
 ```
-GET /api/sensors/search?name=temp&type=1&page=1&pageSize=10&orderBy=timestamp&direction=desc
-```
-### HATEOAS
 
-Os DTOs expostos pela API incluem links HATEOAS com:
+---
 
-- self
-- update
-- delete
-- search
+## Health checks
 
-#### Exemplo
-```
+A aplicação possui os endpoints:
+
+- `GET /health`
+- `GET /health/live`
+- `GET /health/ready`
+
+### O que é verificado
+
+- saúde da própria API (`self`)
+- conectividade com o banco (`oracle`)
+- disponibilidade de serviço externo configurado (`external_service`)
+
+### Uso recomendado
+
+- `/health`: visão completa
+- `/health/live`: API viva
+- `/health/ready`: API pronta para uso
+
+---
+
+## HATEOAS
+
+Os DTOs expostos pela API incluem links HATEOAS com relações como:
+
+- `self`
+- `update`
+- `delete`
+- `search`
+
+Exemplo:
+
+```json
 {
   "id": "11111111-1111-1111-1111-111111111111",
-  "name": "Temperatura",
-  "type": "1",
+  "name": "Temperatura do Ar",
+  "type": "11",
   "value": 25.4,
-  "timestamp": "2026-04-07T10:00:00Z",
+  "timestamp": "2026-04-09T10:00:00Z",
   "links": [
     {
       "rel": "self",
       "href": "/api/sensors/11111111-1111-1111-1111-111111111111",
       "method": "GET"
-    },
-    {
-      "rel": "update",
-      "href": "/api/sensors/11111111-1111-1111-1111-111111111111",
-      "method": "PUT"
-    },
-    {
-      "rel": "delete",
-      "href": "/api/sensors/11111111-1111-1111-1111-111111111111",
-      "method": "DELETE"
-    },
-    {
-      "rel": "search",
-      "href": "/api/sensors/search",
-      "method": "GET"
-    }
-  ]
-}
-```
-## Health Checks
-
-A aplicação possui endpoints de health check para monitoramento.
-
-### Endpoints disponíveis
-
-- GET /health
-- GET /health/live
-- GET /health/ready
-
-### O que é verificado
-
-- saúde da própria API (self)
-- conectividade com o banco (oracle)
-- disponibilidade de serviço externo configurado (external_service)
-
-### Como monitorar a aplicação
-
-- /health: visão completa da saúde da aplicação
-- /health/live: verifica se a API está viva
-- /health/ready: verifica se a API está pronta para uso, incluindo dependências
-
-Status possíveis:
-
-- Healthy: funcionamento normal
-- Degraded: funcionamento parcial ou configuração ausente
-- Unhealthy: falha de dependência ou indisponibilidade
-
-### Exemplo de resposta
-
-```json
-{
-  "status": "Healthy",
-  "totalDurationMs": 120,
-  "checks": [
-    {
-      "name": "self",
-      "status": "Healthy",
-      "description": "API está saudável",
-      "durationMs": 0.8
-    },
-    {
-      "name": "oracle",
-      "status": "Healthy",
-      "description": "Healthy",
-      "durationMs": 21.4
-    },
-    {
-      "name": "external_service",
-      "status": "Healthy",
-      "description": "Serviço externo disponível. StatusCode: 200",
-      "durationMs": 12.5
     }
   ]
 }
 ```
 
+---
 
-### Logging Estruturado
+## Logging estruturado
 
-O projeto utiliza Serilog com saída para:
+O projeto utiliza **Serilog** com saída para:
 
-- Console
-- Arquivo
+- console
+- arquivo
 
-#### Níveis utilizados
+### Níveis utilizados
 
 - Information
 - Warning
 - Error
 
-#### Onde há logs
+### Onde há logs
 
 - controllers
-- middleware de tratamento de exceções
+- middleware global de exceções
 - inicialização da aplicação
-- logs automáticos de requisição HTTP
+- request logging HTTP
+- publisher do RabbitMQ
+- workers
 
-#### Correlação de requisições
+### Correlação de requisições
 
-A API utiliza o header X-Correlation-ID para correlacionar requisições e logs.
+A API utiliza o header `X-Correlation-ID` para correlação de logs e respostas.
 
-Se o cliente enviar X-Correlation-ID, esse valor será reutilizado.
-Caso não envie, a aplicação gera um identificador automaticamente.
+- se o cliente enviar `X-Correlation-ID`, a API reutiliza;
+- se não enviar, a API gera automaticamente.
 
-O CorrelationId é incluído:
+O `CorrelationId` é incluído:
 
-- nos logs do Serilog
+- nos logs
 - no header da resposta
-- nas respostas de erro tratadas pelo middleware
+- nas respostas de erro
+- nos eventos publicados no RabbitMQ
 
-#### Diretório de logs
+### Diretório de logs
 
-AgroTech/logs/
+```text
+logs/
+```
 
-### Observabilidade com OpenTelemetry
+---
+
+## Observabilidade com OpenTelemetry
 
 A aplicação utiliza OpenTelemetry para tracing e métricas.
 
-#### Tracing configurado para
+### Tracing configurado para
+
 - ASP.NET Core
 - HttpClient
 - Entity Framework Core
-#### Métricas configuradas para
+
+### Métricas configuradas para
+
 - runtime
 - ASP.NET Core
 - HttpClient
-#### Export atual
+
+### Export atual
+
 - Console exporter
 
-### Testes Automatizados
+---
 
-O projeto possui testes organizados em dois projetos separados.
+## RabbitMQ
 
-1. Testes Unitários
+Topologia atual:
 
-#### Projeto:
+- **Exchange**: `agrotech.events`
+- **Tipo**: `topic`
+- **Routing key**: `sensor.reading.created`
+
+Filas:
+
+- `agrotech.alerts.queue`
+- `agrotech.recommendations.queue`
+
+### Funcionamento
+
+1. a API salva a leitura no Oracle;
+2. a API publica o evento `sensor.reading.created`;
+3. o RabbitMQ replica o evento para as filas configuradas;
+4. os workers consomem e processam as mensagens.
+
+---
+
+## Workers
+
+### AgroTech.Worker.Alerts
+
+Consome `agrotech.alerts.queue` e aplica regras como:
+
+- umidade do solo baixa;
+- chuva detectada;
+- vento alto;
+- pH fora da faixa ideal;
+- temperatura elevada.
+
+### AgroTech.Worker.Recommendations
+
+Consome `agrotech.recommendations.queue` e sugere ações como:
+
+- aumentar irrigação;
+- suspender irrigação por chuva;
+- adiar pulverização por vento;
+- revisar correção do solo;
+- reforçar monitoramento.
+
+> No estado atual, os workers registram resultados em log. A persistência em Oracle é um próximo passo.
+
+---
+
+## Node-RED
+
+O Node-RED é utilizado para:
+
+- consumir o feed MQTT do Adafruit IO;
+- atualizar gauges do dashboard;
+- converter os dados para o formato aceito pela API;
+- fazer `POST /api/sensors`.
+
+### Porta
+
+```text
+http://localhost:1880
 ```
-AgroTech.UnitTests
+
+### Importante: Node-RED em Docker
+
+Como o Node-RED roda em container e a API .NET roda no host com `dotnet run`, o nó `http request` deve usar:
+
+```text
+http://host.docker.internal:5081/api/sensors
 ```
 
-Cobrem principalmente:
+e **não** `http://localhost:5081/api/sensors`.
 
-- camada de Domínio
-- camada da Aplicação
-- validações do SensorService
-- cenários felizes e cenários de erro
+### Bootstrap do Node-RED
 
-2. Testes de Integração
+Na primeira execução:
 
-#### Projeto:
-```
-AgroTech.IntegrationTests
-```
+1. abra `http://localhost:1880`
+2. importe o flow do projeto
+3. configure o broker MQTT do Adafruit IO
+4. ajuste o `http request` para `host.docker.internal:5081`
+5. clique em **Deploy**
 
-#### Cobrem:
+Depois disso, o volume persistente mantém a configuração.
 
-- health checks
-- endpoints REST da API
-- busca
-- criação
-- atualização
-- remoção
-- fluxo HTTP completo com WebApplicationFactory
+---
 
-#### Os testes de integração utilizam:
-- WebApplicationFactory
-- CustomWebApplicationFactory
-- Collection Fixture
-- EntityFrameworkCore.InMemory
+## Simulador Python + Adafruit IO
 
-#### Resultado atual
-- 26 testes unitários
-- 13 testes de integração
+O simulador Python gera dados realistas de campo e publica no Adafruit IO via MQTT.
 
-Total:
+### Feed utilizado
 
-- 39 testes automatizados aprovados
+Crie no Adafruit IO:
 
-### Como executar somente os testes
+- **Name**: `AgroTech Sensores`
+- **Key**: `agrotech-sensores`
 
-#### Rodar todos os testes
-```bash
-dotnet test
-```
-#### Roder somente testes unitários
-```bash
-dotnet test ./AgroTech.UnitTests
-```
-#### Rodar somente integração
-```bash
-dotnet test ./AgroTech.IntegrationTests
+### Tópico MQTT
+
+```text
+<AIO_USERNAME>/feeds/agrotech-sensores
 ```
 
-#### Como Executar o Projeto
-1. Clonar o repositório
+### O que o simulador envia
 
-```bash
-git clone <URL_DO_REPOSITORIO>
-cd AgroTech
-```
-2. Restaurar dependências
-```bash
-dotnet restore
-```
-3. Configurar a connection string
+Um JSON consolidado com:
 
-No arquivo `AgroTech/appsettings.json` ou `AgroTech/appsettings.Development.json`, configure a connection string Oracle:
+- `temperatura_ar`
+- `temperatura_solo`
+- `umidade_ar`
+- `umidade_solo`
+- `ph_solo`
+- `luminosidade`
+- `velocidade_vento`
+- `chuva`
 
+### Arquivo de ambiente do simulador
+
+```text
+AgroTech/infra/sensor-simulator/.env.sensor-simulator
 ```
+
+Exemplo:
+
+```env
+AIO_USERNAME=ruan_gaspar
+AIO_KEY=SUA_AIO_KEY
+AIO_FEED_KEY=agrotech-sensores
+MQTT_HOST=io.adafruit.com
+MQTT_PORT=1883
+PUBLISH_INTERVAL_SECONDS=30
+SIMULATION_STEP_MINUTES=5
+```
+
+> Não versione a chave do Adafruit no repositório.
+
+---
+
+## Credenciais e configurações necessárias
+
+### Oracle
+
+A API precisa da connection string Oracle no `appsettings.json` ou `appsettings.Development.json`:
+
+```json
 {
   "ConnectionStrings": {
     "AgroTechOracle": "User Id=SEU_USUARIO;Password=SUA_SENHA;Data Source=SEU_ORACLE"
   }
 }
 ```
-4. Executar a aplicação
+
+### Adafruit IO
+
+Você precisa de:
+
+- `AIO_USERNAME`
+- `AIO_KEY`
+- `AIO_FEED_KEY=agrotech-sensores`
+
+### RabbitMQ local
+
+Credenciais padrão no ambiente local:
+
+- usuário: `guest`
+- senha: `guest`
+
+---
+
+## Como executar o projeto
+
+### Pré-requisitos
+
+- .NET 8 SDK
+- Docker
+- Docker Compose
+- conta no Adafruit IO
+- Oracle configurado
+- feed `agrotech-sensores` criado no Adafruit IO
+
+---
+
+## Scripts de automação
+
+### Linux / macOS
+
+Na raiz externa do repositório:
+
 ```bash
-dotnet run --project ./AgroTech
+./start-dev.sh
 ```
-5. Acessar no navegador
-- API: http://localhost:5081
-- Swagger: http://localhost:5081/swagger
-- Health: http://localhost:5081/health
-## Importante!
-Para ver o Dashboard funcionando, abra o NODE-RED na porta 8080 e importe o arquivo flows.json para seu fluxo, salve e teste clicando no nó inject. Em seguida veja o Dashboard web exibindo os dados.`
 
-### Como Executar as Migrations
-#### Criar migration
+Para parar:
+
 ```bash
-dotnet ef migrations add NomeDaMigration --project ./AgroTech
+./stop-dev.sh
 ```
-#### Aplicar migration
-```bash
-dotnet ef database update --project ./AgroTech
+
+### Windows / PowerShell
+
+Na raiz externa do repositório:
+
+```powershell
+.\start-dev.ps1
 ```
-### Migration atual
 
-O projeto já possui migration inicial para a tabela de sensores.
+Para parar:
 
-### Exemplos de requisição
+```powershell
+.\stop-dev.ps1
+```
 
-#### Criar sensores
+---
+
+## Execução manual
+
+### 1. Clonar o repositório
+
 ```bash
-curl -X POST "http://localhost:5081/api/sensors" \
-  -H "Content-Type: application/json" \
-  -d '[
+git clone <URL_DO_REPOSITORIO>
+cd AgroTech
+```
+
+### 2. Restaurar dependências
+
+```bash
+dotnet restore ./AgroTech
+```
+
+### 3. Subir containers
+
+```bash
+docker compose -f ./AgroTech/compose.yaml up -d --build rabbitmq sensor-simulator node-red
+```
+
+### 4. Subir a API
+
+```bash
+dotnet run --project ./AgroTech/AgroTech
+```
+
+### 5. Subir o Worker de Alerts
+
+```bash
+dotnet run --project ./AgroTech/AgroTech.Worker.Alerts
+```
+
+### 6. Subir o Worker de Recommendations
+
+```bash
+dotnet run --project ./AgroTech/AgroTech.Worker.Recommendations
+```
+
+### 7. Acessar serviços
+
+- API: `http://localhost:5081`
+- Swagger: `http://localhost:5081/swagger`
+- Health: `http://localhost:5081/health`
+- RabbitMQ Management: `http://localhost:15672`
+- Node-RED: `http://localhost:1880`
+
+---
+
+## Migrations
+
+### Criar migration
+
+```bash
+dotnet ef migrations add NomeDaMigration --project ./AgroTech/AgroTech
+```
+
+### Aplicar migration
+
+```bash
+dotnet ef database update --project ./AgroTech/AgroTech
+```
+
+> O projeto já possui migration inicial para a tabela de sensores.
+
+---
+
+## Testes automatizados
+
+O projeto possui dois grupos de testes:
+
+### 1. Testes unitários
+
+Projeto:
+
+```text
+AgroTech/AgroTech.UnitTests
+```
+
+Cobrem principalmente:
+
+- validações do `SensorService`
+- regras da camada de aplicação
+- cenários felizes e cenários de erro
+
+### 2. Testes de integração
+
+Projeto:
+
+```text
+AgroTech/AgroTech.IntegrationTests
+```
+
+Cobrem:
+
+- health checks
+- endpoints REST
+- busca
+- criação
+- atualização
+- remoção
+- fluxo HTTP com `WebApplicationFactory`
+
+### Ferramentas utilizadas
+
+- xUnit
+- Moq
+- FluentAssertions
+- WebApplicationFactory
+- CustomWebApplicationFactory
+- EntityFrameworkCore.InMemory
+
+### Situação atual
+
+- 26 testes unitários
+- 13 testes de integração
+- **39 testes aprovados**
+
+### Como executar os testes
+
+#### Rodar todos
+
+```bash
+dotnet test ./AgroTech
+```
+
+#### Rodar somente unitários
+
+```bash
+dotnet test ./AgroTech/AgroTech.UnitTests
+```
+
+#### Rodar somente integração
+
+```bash
+dotnet test ./AgroTech/AgroTech.IntegrationTests
+```
+
+---
+
+## Exemplos de requisição
+
+### Criar sensores
+
+```bash
+curl -X POST "http://localhost:5081/api/sensors"   -H "Content-Type: application/json"   -d '[
     {
-      "name": "Temperatura",
-      "type": "1",
-      "value": 25.4,
-      "timestamp": "2026-04-07T10:00:00Z"
+      "name": "Temperatura do Ar",
+      "type": "11",
+      "value": 29.4,
+      "timestamp": "2026-04-09T12:00:00Z"
     },
     {
-      "name": "Umidade",
-      "type": "2",
-      "value": 60,
-      "timestamp": "2026-04-07T10:05:00Z"
+      "name": "Umidade do Ar",
+      "type": "12",
+      "value": 68,
+      "timestamp": "2026-04-09T12:00:00Z"
     }
   ]'
-  ```
+```
 
-#### Buscar todos
+### Buscar todos
+
 ```bash
 curl "http://localhost:5081/api/sensors"
 ```
-#### Buscar por ID
+
+### Buscar por ID
+
 ```bash
 curl "http://localhost:5081/api/sensors/11111111-1111-1111-1111-111111111111"
 ```
-#### Buscar com filtro
+
+### Buscar com filtro
+
 ```bash
 curl "http://localhost:5081/api/sensors/search?name=temp&page=1&pageSize=10"
 ```
-#### Health
+
+### Health
+
 ```bash
 curl "http://localhost:5081/health"
 curl "http://localhost:5081/health/live"
 curl "http://localhost:5081/health/ready"
 ```
 
-## Observação Final
-Essa API é parte componente do projeto Agrotech. 
-Idealizado como uma solução para pequenos e médios agricultores, o Agrotech visa facilitar o manejo e plantio em zonas rurais, permitindo que usuários cadastrem suas propriedades e implementem sensores IoT diretamente em campo, realizando assim a coleta e análise de informações para tomada de decisões estratégicas na produção. 
+---
 
-Componentes do projeto:
-API .net realiza a integração de sensores IoT via Node-Red por protocolo MQTT ao Oracle.
+## Status atual do projeto
 
+Atualmente o projeto já possui:
 
-Fluxo 1: 
-```
--> Sensores -> Broker MQTT -> Node-Red (conversão para HTTP) -> API .net -> Banco de dados Oracle -> Oracle 23ai -> LLM Retorna sugestões de manejo ao agricultor (predição) -> Dashboard Exibido no frontend React ao user
-```  
-Fluxo 2:
-```
--> Frontend permite CRUD de informações (Cadastro de Usuário, Propriedade, Campo, etc) -> API Spring Boot Java recebe os dados -> Envia ao Banco Oracle 
-```
+- API REST em .NET 8 com Clean Architecture;
+- persistência em Oracle;
+- Node-RED em Docker;
+- simulador Python em Docker;
+- integração com Adafruit IO;
+- RabbitMQ em Docker;
+- publisher de eventos na API;
+- worker de alertas;
+- worker de recomendações;
+- health checks;
+- logs estruturados;
+- OpenTelemetry;
+- testes unitários e de integração.
 
+---
 
+## Autor
+Ruan Nunes Gaspar 
+RM 559567
 
+Rodrigo Paes Morales 
+RM 560209
 
+Fernando Nachtigall Tessmann 
+RM 559617 
 
+Projeto acadêmico/profissional da solução AgroTech.
