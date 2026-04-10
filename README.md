@@ -638,8 +638,6 @@ PUBLISH_INTERVAL_SECONDS=30
 SIMULATION_STEP_MINUTES=5
 ```
 
-> Não versione a chave do Adafruit no repositório.
-
 ---
 
 ## Credenciais e configurações necessárias
