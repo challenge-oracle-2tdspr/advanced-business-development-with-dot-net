@@ -170,3 +170,10 @@
 /home/ruan/Área de Trabalho/advanced-business-development-with-dot-net/AgroTech/AgroTech/bin/Debug/net8.0/RabbitMQ.Client.dll
 /home/ruan/Área de Trabalho/advanced-business-development-with-dot-net/AgroTech/AgroTech/bin/Debug/net8.0/AgroTech.Contracts.dll
 /home/ruan/Área de Trabalho/advanced-business-development-with-dot-net/AgroTech/AgroTech/bin/Debug/net8.0/AgroTech.Contracts.pdb
+/home/ruan/Área de Trabalho/advanced-business-development-with-dot-net/AgroTech/AgroTech/bin/Debug/net8.0/infra/node-red/data/.config.nodes.json
+/home/ruan/Área de Trabalho/advanced-business-development-with-dot-net/AgroTech/AgroTech/bin/Debug/net8.0/infra/node-red/data/.config.runtime.json
+/home/ruan/Área de Trabalho/advanced-business-development-with-dot-net/AgroTech/AgroTech/bin/Debug/net8.0/infra/node-red/data/.config.users.json
+/home/ruan/Área de Trabalho/advanced-business-development-with-dot-net/AgroTech/AgroTech/bin/Debug/net8.0/infra/node-red/data/flows.json
+/home/ruan/Área de Trabalho/advanced-business-development-with-dot-net/AgroTech/AgroTech/bin/Debug/net8.0/infra/node-red/data/flows_cred.json
+/home/ruan/Área de Trabalho/advanced-business-development-with-dot-net/AgroTech/AgroTech/bin/Debug/net8.0/infra/node-red/data/package-lock.json
+/home/ruan/Área de Trabalho/advanced-business-development-with-dot-net/AgroTech/AgroTech/bin/Debug/net8.0/infra/node-red/data/package.json

@@ -86,6 +86,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <Folder Include="infra\node-red\data\" />
       <Folder Include="wwwroot\images\" />
     </ItemGroup>
 
