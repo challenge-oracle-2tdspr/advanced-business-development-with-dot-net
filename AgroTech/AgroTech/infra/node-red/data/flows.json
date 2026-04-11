@@ -1,13 +1,5 @@
 [
     {
-        "id": "91e718608d638fb3",
-        "type": "tab",
-        "label": "Fluxo 1",
-        "disabled": false,
-        "info": "",
-        "env": []
-    },
-    {
         "id": "b44ab710a3bcd9ba",
         "type": "tab",
         "label": "Dados para API .NET",
@@ -304,7 +296,7 @@
         "statusVal": "",
         "statusType": "auto",
         "x": 690,
-        "y": 420,
+        "y": 440,
         "wires": []
     },
     {
@@ -492,12 +484,14 @@
         "once": false,
         "onceDelay": 0.1,
         "topic": "",
-        "payload": "{   \"temperatura_ar\": 27.4,   \"temperatura_solo\": 22.1,   \"umidade_ar\": 49,   \"umidade_solo\": 70,   \"ph_solo\": 5,   \"luminosidade\": 1200,   \"velocidade_vento\": 10,   \"chuva\": 3.4 }",
+        "payload": "{\"temperatura_ar\":36,\"temperatura_solo\":22.1,\"umidade_ar\":49,\"umidade_solo\":20,\"ph_solo\":5,\"luminosidade\":1200,\"velocidade_vento\":25,\"chuva\":1}",
         "payloadType": "json",
         "x": 90,
         "y": 340,
         "wires": [
-            []
+            [
+                "07c6bef410112441"
+            ]
         ]
     },
     {
