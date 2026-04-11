@@ -259,7 +259,7 @@
         "method": "POST",
         "ret": "obj",
         "paytoqs": "ignore",
-        "url": "http://host.docker.internal:5081/api/sensors",
+        "url": "http://api:8081/api/sensors",
         "tls": "",
         "persist": false,
         "proxy": "",
