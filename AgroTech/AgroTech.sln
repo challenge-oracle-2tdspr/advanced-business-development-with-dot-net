@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AgroTech.Worker.Recommendat
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AgroTech.Contracts", "AgroTech.Contracts\AgroTech.Contracts.csproj", "{C4098969-9AC2-4390-9DCD-24C87803AF21}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AgroTech.Worker.Readings", "AgroTech.Worker.Readings\AgroTech.Worker.Readings.csproj", "{B231D3CA-9BC3-4C05-84FD-E74B4690FDF2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -43,5 +45,9 @@ Global
 		{C4098969-9AC2-4390-9DCD-24C87803AF21}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C4098969-9AC2-4390-9DCD-24C87803AF21}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C4098969-9AC2-4390-9DCD-24C87803AF21}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B231D3CA-9BC3-4C05-84FD-E74B4690FDF2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B231D3CA-9BC3-4C05-84FD-E74B4690FDF2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B231D3CA-9BC3-4C05-84FD-E74B4690FDF2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B231D3CA-9BC3-4C05-84FD-E74B4690FDF2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

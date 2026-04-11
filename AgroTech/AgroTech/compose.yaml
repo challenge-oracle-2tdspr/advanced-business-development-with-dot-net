@@ -137,6 +137,29 @@ services:
         condition: service_healthy
       api:
         condition: service_started
+  worker-readings:
+    build:
+      context: ..
+      dockerfile: AgroTech.Worker.Readings/Dockerfile
+    container_name: agrotech-worker-readings
+    restart: unless-stopped
+    environment:
+      RabbitMq__Enabled: "true"
+      RabbitMq__HostName: rabbitmq
+      RabbitMq__Port: "5672"
+      RabbitMq__UserName: guest
+      RabbitMq__Password: guest
+      RabbitMq__VirtualHost: /
+      RabbitMq__ClientProvidedName: agrotech-worker-readings
+      RabbitMq__Exchange: agrotech.events
+      RabbitMq__Queue: agrotech.readings.queue
+      RabbitMq__RoutingKey: sensor.reading.created
 
+      OracleDatabase__ConnectionString: ${ORACLE_READINGS_CONNECTION_STRING}
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+      api:
+        condition: service_started
 volumes:
   rabbitmq_data:
