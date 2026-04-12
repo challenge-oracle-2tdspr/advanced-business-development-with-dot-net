@@ -1,3 +1,5 @@
+using AgroTech.Worker.Alerts.Models;
+using AgroTech.Worker.Alerts.Repositories;
 using System.Text;
 using System.Text.Json;
 using AgroTech.Contracts.Events;
@@ -12,21 +14,25 @@ namespace AgroTech.Worker.Alerts
     {
         private readonly ILogger<Worker> _logger;
         private readonly RabbitMqConsumerOptions _options;
+        private readonly IAlertEventRepository _alertRepository;
 
         private IConnection? _connection;
         private IChannel? _channel;
 
         private static readonly JsonSerializerOptions JsonOptions = new()
         {
-            PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+            PropertyNameCaseInsensitive = true
         };
 
         public Worker(
             ILogger<Worker> logger,
-            IOptions<RabbitMqConsumerOptions> options)
+            IOptions<RabbitMqConsumerOptions> options,
+            IAlertEventRepository alertRepository)
         {
             _logger = logger;
             _options = options.Value;
+            _alertRepository = alertRepository;
         }
 
         public override async Task StartAsync(CancellationToken cancellationToken)
@@ -115,7 +121,7 @@ namespace AgroTech.Worker.Alerts
                         return;
                     }
 
-                    ProcessAlert(sensorEvent);
+                    await ProcessAlertAsync(sensorEvent, json, stoppingToken);
 
                     await _channel.BasicAckAsync(ea.DeliveryTag, false);
                 }
@@ -138,60 +144,14 @@ namespace AgroTech.Worker.Alerts
             }
         }
 
-        private void ProcessAlert(SensorReadingCreatedEvent sensorEvent)
+        private async Task ProcessAlertAsync(
+            SensorReadingCreatedEvent sensorEvent,
+            string originalJson,
+            CancellationToken cancellationToken)
         {
-            string? message = null;
-            string severity = "Info";
+            var alertRecord = BuildAlertRecord(sensorEvent, originalJson);
 
-            switch (sensorEvent.SensorType)
-            {
-                case 13: // Umidade do Solo
-                    if (sensorEvent.Value < 25)
-                    {
-                        severity = "High";
-                        message = $"Umidade do solo crítica ({sensorEvent.Value}). Avaliar aumento de irrigação.";
-                    }
-                    else if (sensorEvent.Value < 40)
-                    {
-                        severity = "Medium";
-                        message = $"Umidade do solo moderada ({sensorEvent.Value}). Monitorar irrigação.";
-                    }
-                    break;
-
-                case 17: // Chuva
-                    if (sensorEvent.Value > 0)
-                    {
-                        severity = "High";
-                        message = $"Chuva detectada ({sensorEvent.Value}). Avaliar suspensão da irrigação.";
-                    }
-                    break;
-
-                case 16: // Velocidade do Vento
-                    if (sensorEvent.Value > 20)
-                    {
-                        severity = "High";
-                        message = $"Vento elevado ({sensorEvent.Value}). Evitar pulverização.";
-                    }
-                    break;
-
-                case 14: // pH do Solo
-                    if (sensorEvent.Value < 5.5 || sensorEvent.Value > 7.5)
-                    {
-                        severity = "High";
-                        message = $"pH do solo fora da faixa ideal ({sensorEvent.Value}). Avaliar correção do solo.";
-                    }
-                    break;
-
-                case 11: // Temperatura do Ar
-                    if (sensorEvent.Value > 35)
-                    {
-                        severity = "High";
-                        message = $"Temperatura do ar elevada ({sensorEvent.Value}). Possível estresse térmico.";
-                    }
-                    break;
-            }
-
-            if (message is null)
+            if (alertRecord is null)
             {
                 _logger.LogInformation(
                     "Sem alerta gerado. Sensor={SensorName}, Tipo={SensorType}, Valor={Value}, CorrelationId={CorrelationId}",
@@ -203,14 +163,147 @@ namespace AgroTech.Worker.Alerts
                 return;
             }
 
+            await _alertRepository.SaveAsync(alertRecord, cancellationToken);
+
             _logger.LogWarning(
-                "ALERTA [{Severity}] {Message} Sensor={SensorName}, Tipo={SensorType}, CorrelationId={CorrelationId}",
-                severity,
-                message,
+                "ALERTA [{Severity}] {Message} Sensor={SensorName}, Tipo={SensorType}, CorrelationId={CorrelationId}, EventKey={EventKey}",
+                alertRecord.Severity,
+                alertRecord.Message,
                 sensorEvent.SensorName,
                 sensorEvent.SensorType,
-                sensorEvent.CorrelationId);
+                sensorEvent.CorrelationId,
+                alertRecord.EventKey);
         }
+
+        private static AlertEventRecord? BuildAlertRecord(SensorReadingCreatedEvent sensorEvent, string originalJson)
+        {
+            string? ruleCode = null;
+            string? title = null;
+            string? message = null;
+            string severity = "INFO";
+            double? thresholdValue = null;
+
+            switch (sensorEvent.SensorType)
+            {
+                case 13: // Umidade do Solo
+                    if (sensorEvent.Value < 25)
+                    {
+                        ruleCode = "SOIL_MOISTURE_LOW_CRITICAL";
+                        title = "Umidade do solo crítica";
+                        severity = "CRITICAL";
+                        thresholdValue = 25;
+                        message = $"Umidade do solo crítica ({sensorEvent.Value}). Avaliar aumento de irrigação.";
+                    }
+                    else if (sensorEvent.Value < 40)
+                    {
+                        ruleCode = "SOIL_MOISTURE_LOW_WARNING";
+                        title = "Umidade do solo baixa";
+                        severity = "WARNING";
+                        thresholdValue = 40;
+                        message = $"Umidade do solo moderada ({sensorEvent.Value}). Monitorar irrigação.";
+                    }
+                    break;
+
+                case 17: // Chuva
+                    if (sensorEvent.Value > 0)
+                    {
+                        ruleCode = "RAIN_DETECTED";
+                        title = "Chuva detectada";
+                        severity = "WARNING";
+                        thresholdValue = 0;
+                        message = $"Chuva detectada ({sensorEvent.Value}). Avaliar suspensão da irrigação.";
+                    }
+                    break;
+
+                case 16: // Velocidade do Vento
+                    if (sensorEvent.Value > 20)
+                    {
+                        ruleCode = "HIGH_WIND";
+                        title = "Vento elevado";
+                        severity = "WARNING";
+                        thresholdValue = 20;
+                        message = $"Vento elevado ({sensorEvent.Value}). Evitar pulverização.";
+                    }
+                    break;
+
+                case 14: // pH do Solo
+                    if (sensorEvent.Value < 5.5 || sensorEvent.Value > 7.5)
+                    {
+                        ruleCode = "PH_OUT_OF_RANGE";
+                        title = "pH do solo fora da faixa ideal";
+                        severity = "WARNING";
+                        thresholdValue = sensorEvent.Value < 5.5 ? 5.5 : 7.5;
+                        message = $"pH do solo fora da faixa ideal ({sensorEvent.Value}). Avaliar correção do solo.";
+                    }
+                    break;
+
+                case 11: // Temperatura do Ar
+                    if (sensorEvent.Value > 35)
+                    {
+                        ruleCode = "AIR_TEMP_HIGH";
+                        title = "Temperatura do ar elevada";
+                        severity = "WARNING";
+                        thresholdValue = 35;
+                        message = $"Temperatura do ar elevada ({sensorEvent.Value}). Possível estresse térmico.";
+                    }
+                    break;
+            }
+
+            if (message is null || ruleCode is null || title is null)
+                return null;
+
+            var readingId = BuildReadingId(sensorEvent);
+            var eventKey = $"ALERT:{readingId}:{ruleCode}";
+
+            return new AlertEventRecord
+            {
+                EventKey = eventKey,
+                ReadingId = readingId,
+                CorrelationId = NullIfEmpty(sensorEvent.CorrelationId),
+                RuleCode = ruleCode,
+                Title = title,
+                Message = message,
+                Severity = severity,
+                Status = "OPEN",
+                FarmId = NullIfEmpty(sensorEvent.FarmId),
+                FieldId = NullIfEmpty(sensorEvent.FieldId),
+                ZoneId = NullIfEmpty(sensorEvent.ZoneId),
+                SensorId = sensorEvent.SensorId.ToString(),
+                SensorCode = NullIfEmpty(sensorEvent.SensorName),
+                SensorTypeId = sensorEvent.SensorType,
+                SensorTypeName = GetSensorTypeName(sensorEvent.SensorType),
+                MetricValue = sensorEvent.Value,
+                ThresholdValue = thresholdValue,
+                SourceName = NullIfEmpty(sensorEvent.Source),
+                OccurredAt = sensorEvent.Timestamp,
+                PayloadJson = originalJson
+            };
+        }
+
+        private static string BuildReadingId(SensorReadingCreatedEvent sensorEvent)
+        {
+            if (!string.IsNullOrWhiteSpace(sensorEvent.CorrelationId))
+                return sensorEvent.CorrelationId;
+
+            return $"{sensorEvent.SensorId:N}:{sensorEvent.SensorType}:{sensorEvent.Timestamp:O}";
+        }
+
+        private static string GetSensorTypeName(int sensorType) =>
+            sensorType switch
+            {
+                11 => "Temperatura do Ar",
+                12 => "Umidade do Ar",
+                13 => "Umidade do Solo",
+                14 => "pH do Solo",
+                15 => "Luminosidade",
+                16 => "Velocidade do Vento",
+                17 => "Chuva",
+                18 => "Temperatura do Solo",
+                _ => "Desconhecido"
+            };
+
+        private static string? NullIfEmpty(string? value) =>
+            string.IsNullOrWhiteSpace(value) ? null : value;
 
         public override async Task StopAsync(CancellationToken cancellationToken)
         {

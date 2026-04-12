@@ -2,6 +2,8 @@ using System.Text;
 using System.Text.Json;
 using AgroTech.Contracts.Events;
 using AgroTech.Worker.Recommendations.Configuration;
+using AgroTech.Worker.Recommendations.Models;
+using AgroTech.Worker.Recommendations.Repositories;
 using Microsoft.Extensions.Options;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
@@ -12,21 +14,25 @@ namespace AgroTech.Worker.Recommendations
     {
         private readonly ILogger<Worker> _logger;
         private readonly RabbitMqConsumerOptions _options;
+        private readonly IRecommendationEventRepository _recommendationRepository;
 
         private IConnection? _connection;
         private IChannel? _channel;
 
         private static readonly JsonSerializerOptions JsonOptions = new()
         {
-            PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+            PropertyNameCaseInsensitive = true
         };
 
         public Worker(
             ILogger<Worker> logger,
-            IOptions<RabbitMqConsumerOptions> options)
+            IOptions<RabbitMqConsumerOptions> options,
+            IRecommendationEventRepository recommendationRepository)
         {
             _logger = logger;
             _options = options.Value;
+            _recommendationRepository = recommendationRepository;
         }
 
         public override async Task StartAsync(CancellationToken cancellationToken)
@@ -115,7 +121,7 @@ namespace AgroTech.Worker.Recommendations
                         return;
                     }
 
-                    ProcessRecommendation(sensorEvent);
+                    await ProcessRecommendationAsync(sensorEvent, json, stoppingToken);
 
                     await _channel.BasicAckAsync(ea.DeliveryTag, false);
                 }
@@ -138,81 +144,14 @@ namespace AgroTech.Worker.Recommendations
             }
         }
 
-        private void ProcessRecommendation(SensorReadingCreatedEvent sensorEvent)
+        private async Task ProcessRecommendationAsync(
+            SensorReadingCreatedEvent sensorEvent,
+            string originalJson,
+            CancellationToken cancellationToken)
         {
-            string? recommendation = null;
-            string category = "Monitoramento";
+            var recommendationRecord = BuildRecommendationRecord(sensorEvent, originalJson);
 
-            switch (sensorEvent.SensorType)
-            {
-                case 13: // Umidade do Solo
-                    if (sensorEvent.Value < 25)
-                    {
-                        category = "Irrigação";
-                        recommendation = $"Aumentar irrigação em 15%. Umidade do solo em {sensorEvent.Value}.";
-                    }
-                    else if (sensorEvent.Value < 40)
-                    {
-                        category = "Irrigação";
-                        recommendation = $"Revisar plano de irrigação. Umidade do solo em {sensorEvent.Value}.";
-                    }
-                    break;
-
-                case 17: // Chuva
-                    if (sensorEvent.Value > 0)
-                    {
-                        category = "Irrigação";
-                        recommendation = $"Suspender irrigação temporariamente. Chuva detectada: {sensorEvent.Value}.";
-                    }
-                    break;
-
-                case 16: // Velocidade do Vento
-                    if (sensorEvent.Value > 20)
-                    {
-                        category = "Pulverização";
-                        recommendation = $"Adiar pulverização. Velocidade do vento em {sensorEvent.Value}.";
-                    }
-                    break;
-
-                case 14: // pH do Solo
-                    if (sensorEvent.Value < 5.5)
-                    {
-                        category = "Solo";
-                        recommendation = $"Avaliar correção com calagem. pH do solo em {sensorEvent.Value}.";
-                    }
-                    else if (sensorEvent.Value > 7.5)
-                    {
-                        category = "Solo";
-                        recommendation = $"Avaliar manejo para redução da alcalinidade. pH do solo em {sensorEvent.Value}.";
-                    }
-                    break;
-
-                case 11: // Temperatura do Ar
-                    if (sensorEvent.Value > 35)
-                    {
-                        category = "Clima";
-                        recommendation = $"Reforçar monitoramento hídrico e térmico. Temperatura do ar em {sensorEvent.Value}.";
-                    }
-                    break;
-
-                case 18: // Temperatura do Solo
-                    if (sensorEvent.Value > 30)
-                    {
-                        category = "Solo";
-                        recommendation = $"Monitorar aquecimento do solo e revisar manejo hídrico. Temperatura do solo em {sensorEvent.Value}.";
-                    }
-                    break;
-
-                case 15: // Luminosidade
-                    if (sensorEvent.Value > 900)
-                    {
-                        category = "Clima";
-                        recommendation = $"Avaliar impacto de alta luminosidade no manejo hídrico. Luminosidade em {sensorEvent.Value}.";
-                    }
-                    break;
-            }
-
-            if (recommendation is null)
+            if (recommendationRecord is null)
             {
                 _logger.LogInformation(
                     "Sem recomendação gerada. Sensor={SensorName}, Tipo={SensorType}, Valor={Value}, CorrelationId={CorrelationId}",
@@ -224,14 +163,214 @@ namespace AgroTech.Worker.Recommendations
                 return;
             }
 
+            await _recommendationRepository.SaveAsync(recommendationRecord, cancellationToken);
+
             _logger.LogInformation(
-                "RECOMMENDATION [{Category}] {Recommendation} Sensor={SensorName}, Tipo={SensorType}, CorrelationId={CorrelationId}",
-                category,
-                recommendation,
+                "RECOMMENDATION [{Category}] {Recommendation} Sensor={SensorName}, Tipo={SensorType}, CorrelationId={CorrelationId}, EventKey={EventKey}",
+                recommendationRecord.Category,
+                recommendationRecord.RecommendationText,
                 sensorEvent.SensorName,
                 sensorEvent.SensorType,
-                sensorEvent.CorrelationId);
+                sensorEvent.CorrelationId,
+                recommendationRecord.EventKey);
         }
+
+        private static RecommendationEventRecord? BuildRecommendationRecord(
+            SensorReadingCreatedEvent sensorEvent,
+            string originalJson)
+        {
+            string? ruleCode = null;
+            string? title = null;
+            string? recommendation = null;
+            string category = "Monitoramento";
+            string priority = "MEDIUM";
+            string? actionType = null;
+            string? suggestedValue = null;
+            string? relatedAlertEventKey = null;
+            DateTime? expiresAt = null;
+
+            var readingId = BuildReadingId(sensorEvent);
+
+            switch (sensorEvent.SensorType)
+            {
+                case 13: // Umidade do Solo
+                    if (sensorEvent.Value < 25)
+                    {
+                        category = "Irrigação";
+                        priority = "HIGH";
+                        actionType = "INCREASE_IRRIGATION";
+                        suggestedValue = "15%";
+                        ruleCode = "SOIL_MOISTURE_INCREASE_IRRIGATION";
+                        title = "Aumentar irrigação";
+                        recommendation = $"Aumentar irrigação em 15%. Umidade do solo em {sensorEvent.Value}.";
+                        relatedAlertEventKey = $"ALERT:{readingId}:SOIL_MOISTURE_LOW_CRITICAL";
+                    }
+                    else if (sensorEvent.Value < 40)
+                    {
+                        category = "Irrigação";
+                        priority = "MEDIUM";
+                        actionType = "REVIEW_IRRIGATION_PLAN";
+                        suggestedValue = "Revisar plano";
+                        ruleCode = "SOIL_MOISTURE_REVIEW_IRRIGATION";
+                        title = "Revisar irrigação";
+                        recommendation = $"Revisar plano de irrigação. Umidade do solo em {sensorEvent.Value}.";
+                        relatedAlertEventKey = $"ALERT:{readingId}:SOIL_MOISTURE_LOW_WARNING";
+                    }
+                    break;
+
+                case 17: // Chuva
+                    if (sensorEvent.Value > 0)
+                    {
+                        category = "Irrigação";
+                        priority = "HIGH";
+                        actionType = "SUSPEND_IRRIGATION";
+                        suggestedValue = "12h";
+                        ruleCode = "RAIN_SUSPEND_IRRIGATION";
+                        title = "Suspender irrigação temporariamente";
+                        recommendation = $"Suspender irrigação temporariamente. Chuva detectada: {sensorEvent.Value}.";
+                        relatedAlertEventKey = $"ALERT:{readingId}:RAIN_DETECTED";
+                        expiresAt = sensorEvent.Timestamp.AddHours(12);
+                    }
+                    break;
+
+                case 16: // Velocidade do Vento
+                    if (sensorEvent.Value > 20)
+                    {
+                        category = "Pulverização";
+                        priority = "HIGH";
+                        actionType = "POSTPONE_SPRAY";
+                        suggestedValue = "Adiar aplicação";
+                        ruleCode = "HIGH_WIND_POSTPONE_SPRAY";
+                        title = "Adiar pulverização";
+                        recommendation = $"Adiar pulverização. Velocidade do vento em {sensorEvent.Value}.";
+                        relatedAlertEventKey = $"ALERT:{readingId}:HIGH_WIND";
+                    }
+                    break;
+
+                case 14: // pH do Solo
+                    if (sensorEvent.Value < 5.5)
+                    {
+                        category = "Solo";
+                        priority = "HIGH";
+                        actionType = "SOIL_CORRECTION";
+                        suggestedValue = "Calagem";
+                        ruleCode = "LOW_PH_SOIL_CORRECTION";
+                        title = "Avaliar correção com calagem";
+                        recommendation = $"Avaliar correção com calagem. pH do solo em {sensorEvent.Value}.";
+                        relatedAlertEventKey = $"ALERT:{readingId}:PH_OUT_OF_RANGE";
+                    }
+                    else if (sensorEvent.Value > 7.5)
+                    {
+                        category = "Solo";
+                        priority = "HIGH";
+                        actionType = "SOIL_CORRECTION";
+                        suggestedValue = "Revisar alcalinidade";
+                        ruleCode = "HIGH_PH_REVIEW_MANAGEMENT";
+                        title = "Revisar manejo de alcalinidade";
+                        recommendation = $"Avaliar manejo para redução da alcalinidade. pH do solo em {sensorEvent.Value}.";
+                        relatedAlertEventKey = $"ALERT:{readingId}:PH_OUT_OF_RANGE";
+                    }
+                    break;
+
+                case 11: // Temperatura do Ar
+                    if (sensorEvent.Value > 35)
+                    {
+                        category = "Clima";
+                        priority = "MEDIUM";
+                        actionType = "REINFORCE_MONITORING";
+                        suggestedValue = "Monitoramento hídrico e térmico";
+                        ruleCode = "AIR_TEMP_REINFORCE_MONITORING";
+                        title = "Reforçar monitoramento hídrico";
+                        recommendation = $"Reforçar monitoramento hídrico e térmico. Temperatura do ar em {sensorEvent.Value}.";
+                        relatedAlertEventKey = $"ALERT:{readingId}:AIR_TEMP_HIGH";
+                    }
+                    break;
+
+                case 18: // Temperatura do Solo
+                    if (sensorEvent.Value > 30)
+                    {
+                        category = "Solo";
+                        priority = "MEDIUM";
+                        actionType = "REVIEW_WATER_MANAGEMENT";
+                        suggestedValue = "Revisar manejo hídrico";
+                        ruleCode = "SOIL_TEMP_REVIEW_WATER_MANAGEMENT";
+                        title = "Monitorar aquecimento do solo";
+                        recommendation = $"Monitorar aquecimento do solo e revisar manejo hídrico. Temperatura do solo em {sensorEvent.Value}.";
+                    }
+                    break;
+
+                case 15: // Luminosidade
+                    if (sensorEvent.Value > 900)
+                    {
+                        category = "Clima";
+                        priority = "MEDIUM";
+                        actionType = "REVIEW_WATER_MANAGEMENT";
+                        suggestedValue = "Avaliar manejo hídrico";
+                        ruleCode = "HIGH_LIGHT_REVIEW_WATER_MANAGEMENT";
+                        title = "Avaliar impacto de alta luminosidade";
+                        recommendation = $"Avaliar impacto de alta luminosidade no manejo hídrico. Luminosidade em {sensorEvent.Value}.";
+                    }
+                    break;
+            }
+
+            if (recommendation is null || ruleCode is null || title is null)
+                return null;
+
+            var eventKey = $"RECO:{readingId}:{ruleCode}";
+
+            return new RecommendationEventRecord
+            {
+                EventKey = eventKey,
+                ReadingId = readingId,
+                CorrelationId = NullIfEmpty(sensorEvent.CorrelationId),
+                RelatedAlertEventKey = relatedAlertEventKey,
+                RuleCode = ruleCode,
+                Title = title,
+                RecommendationText = recommendation,
+                Priority = priority,
+                Status = "OPEN",
+                Category = category,
+                ActionType = actionType,
+                SuggestedValue = suggestedValue,
+                FarmId = NullIfEmpty(sensorEvent.FarmId),
+                FieldId = NullIfEmpty(sensorEvent.FieldId),
+                ZoneId = NullIfEmpty(sensorEvent.ZoneId),
+                SensorId = sensorEvent.SensorId.ToString(),
+                SensorCode = NullIfEmpty(sensorEvent.SensorName),
+                SensorTypeId = sensorEvent.SensorType,
+                SensorTypeName = GetSensorTypeName(sensorEvent.SensorType),
+                MetricValue = sensorEvent.Value,
+                SourceName = NullIfEmpty(sensorEvent.Source),
+                OccurredAt = sensorEvent.Timestamp,
+                ExpiresAt = expiresAt,
+                PayloadJson = originalJson
+            };
+        }
+
+        private static string BuildReadingId(SensorReadingCreatedEvent sensorEvent)
+        {
+            if (!string.IsNullOrWhiteSpace(sensorEvent.CorrelationId))
+                return sensorEvent.CorrelationId;
+
+            return $"{sensorEvent.SensorId:N}:{sensorEvent.SensorType}:{sensorEvent.Timestamp:O}";
+        }
+
+        private static string GetSensorTypeName(int sensorType) =>
+            sensorType switch
+            {
+                11 => "Temperatura do Ar",
+                12 => "Umidade do Ar",
+                13 => "Umidade do Solo",
+                14 => "pH do Solo",
+                15 => "Luminosidade",
+                16 => "Velocidade do Vento",
+                17 => "Chuva",
+                18 => "Temperatura do Solo",
+                _ => "Desconhecido"
+            };
+
+        private static string? NullIfEmpty(string? value) =>
+            string.IsNullOrWhiteSpace(value) ? null : value;
 
         public override async Task StopAsync(CancellationToken cancellationToken)
         {

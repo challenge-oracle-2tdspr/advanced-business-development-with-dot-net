@@ -49,13 +49,117 @@ services:
       TZ: America/Sao_Paulo
     volumes:
       - ./infra/node-red/data:/data
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
     logging:
       driver: "json-file"
       options:
         max-size: "10m"
         max-file: "3"
 
+  api:
+    build:
+      context: ..
+      dockerfile: AgroTech/Dockerfile
+    container_name: agrotech-api
+    restart: unless-stopped
+    ports:
+      - "5081:8081"
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_URLS: http://0.0.0.0:8081
+
+      ConnectionStrings__AgroTechOracle: ${ORACLE_API_CONNECTION_STRING}
+      HealthChecks__ExternalServiceUrl: http://node-red:1880
+
+      RabbitMq__Enabled: "true"
+      RabbitMq__HostName: rabbitmq
+      RabbitMq__Port: "5672"
+      RabbitMq__UserName: guest
+      RabbitMq__Password: guest
+      RabbitMq__VirtualHost: /
+      RabbitMq__ClientProvidedName: agrotech-api.publisher
+      RabbitMq__Exchange: agrotech.events
+      RabbitMq__AlertsQueue: agrotech.alerts.queue
+      RabbitMq__RecommendationsQueue: agrotech.recommendations.queue
+      RabbitMq__SensorReadingCreatedRoutingKey: sensor.reading.created
+      RabbitMq__Source: node-red
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+      node-red:
+        condition: service_started
+      
+  worker-alerts:
+    build:
+      context: ..
+      dockerfile: AgroTech.Worker.Alerts/Dockerfile
+    container_name: agrotech-worker-alerts
+    restart: unless-stopped
+    environment:
+      RabbitMq__Enabled: "true"
+      RabbitMq__HostName: rabbitmq
+      RabbitMq__Port: "5672"
+      RabbitMq__UserName: guest
+      RabbitMq__Password: guest
+      RabbitMq__VirtualHost: /
+      RabbitMq__ClientProvidedName: agrotech-worker-alerts
+      RabbitMq__Exchange: agrotech.events
+      RabbitMq__Queue: agrotech.alerts.queue
+      RabbitMq__RoutingKey: sensor.reading.created
+
+      OracleDatabase__ConnectionString: ${ORACLE_ALERTS_CONNECTION_STRING}
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+      api:
+        condition: service_started
+  
+  worker-recommendations:
+    build:
+      context: ..
+      dockerfile: AgroTech.Worker.Recommendations/Dockerfile
+    container_name: agrotech-worker-recommendations
+    restart: unless-stopped
+    environment:
+      RabbitMq__Enabled: "true"
+      RabbitMq__HostName: rabbitmq
+      RabbitMq__Port: "5672"
+      RabbitMq__UserName: guest
+      RabbitMq__Password: guest
+      RabbitMq__VirtualHost: /
+      RabbitMq__ClientProvidedName: agrotech-worker-recommendations
+      RabbitMq__Exchange: agrotech.events
+      RabbitMq__Queue: agrotech.recommendations.queue
+      RabbitMq__RoutingKey: sensor.reading.created
+
+      OracleDatabase__ConnectionString: ${ORACLE_RECOMMENDATIONS_CONNECTION_STRING}
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+      api:
+        condition: service_started
+  worker-readings:
+    build:
+      context: ..
+      dockerfile: AgroTech.Worker.Readings/Dockerfile
+    container_name: agrotech-worker-readings
+    restart: unless-stopped
+    environment:
+      RabbitMq__Enabled: "true"
+      RabbitMq__HostName: rabbitmq
+      RabbitMq__Port: "5672"
+      RabbitMq__UserName: guest
+      RabbitMq__Password: guest
+      RabbitMq__VirtualHost: /
+      RabbitMq__ClientProvidedName: agrotech-worker-readings
+      RabbitMq__Exchange: agrotech.events
+      RabbitMq__Queue: agrotech.readings.queue
+      RabbitMq__RoutingKey: sensor.reading.created
+
+      OracleDatabase__ConnectionString: ${ORACLE_READINGS_CONNECTION_STRING}
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+      api:
+        condition: service_started
 volumes:
   rabbitmq_data:
