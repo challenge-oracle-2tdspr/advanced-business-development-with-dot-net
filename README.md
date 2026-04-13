@@ -38,10 +38,11 @@ API e ecossistema de apoio para agricultura inteligente, desenvolvidos em **ASP.
 
 O **AgroTech IoT API** é o backend do ecossistema AgroTech, responsável por receber leituras de sensores agrícolas/ambientais, validá-las, persistí-las no Oracle e disponibilizá-las por API REST.
 
-Além da ingestão síncrona, o projeto evoluiu para um fluxo assíncrono com **RabbitMQ** e dois workers:
+Além da ingestão síncrona, o projeto evoluiu para um fluxo assíncrono com **RabbitMQ** e três workers:
 
 - **AgroTech.Worker.Alerts**
 - **AgroTech.Worker.Recommendations**
+- **AgroTech.Worker.Readings**
 
 Também fazem parte do ambiente de desenvolvimento:
 
@@ -127,8 +128,7 @@ Neste momento, os workers:
 - consomem mensagens do RabbitMQ;
 - aplicam regras de alerta e recomendação;
 - registram o resultado em log.
-
-> A persistência de alertas e recomendações no Oracle é o próximo passo natural da evolução do projeto.
+- persistem alertas, recomendações e leituras no Oracle 
 
 ---
 
@@ -177,6 +177,7 @@ AgroTech/
     ├── AgroTech.Contracts/
     ├── AgroTech.Worker.Alerts/
     ├── AgroTech.Worker.Recommendations/
+    ├── AgroTech.Worker.Readings/
     ├── AgroTech.UnitTests/
     ├── AgroTech.IntegrationTests/
     └── infra/
@@ -223,7 +224,7 @@ Responsável por:
 - consumir `agrotech.alerts.queue`;
 - aplicar regras de alerta;
 - registrar alertas em log;
-- preparar a base para persistência futura no Oracle.
+- persistir no Oracle.
 
 ### 4. Worker de Recommendations
 
@@ -232,9 +233,19 @@ Responsável por:
 - consumir `agrotech.recommendations.queue`;
 - aplicar regras de recomendação;
 - registrar recomendações em log;
-- preparar a base para persistência futura no Oracle.
+- persistir no Oracle.
 
-### 5. Node-RED
+### 5. Worker de Readings
+
+Responsável por:
+
+- consumir `agrotech.readings.queue`;
+- aplicar regras de leitura;
+- registrar leituras em log;
+- persistir no Oracle.
+
+
+### 6. Node-RED
 
 Responsável por:
 
@@ -243,7 +254,7 @@ Responsável por:
 - transformar os dados em payload compatível com a API;
 - enviar leituras para `POST /api/sensors`.
 
-### 6. Simulador Python
+### 7. Simulador Python
 
 Responsável por:
 
@@ -566,25 +577,14 @@ O Node-RED é utilizado para:
 http://localhost:1880
 ```
 
-### Importante: Node-RED em Docker
-
-Como o Node-RED roda em container e a API .NET roda no host com `dotnet run`, o nó `http request` deve usar:
-
-```text
-http://host.docker.internal:5081/api/sensors
-```
-
-e **não** `http://localhost:5081/api/sensors`.
-
 ### Bootstrap do Node-RED
 
 Na primeira execução:
 
 1. abra `http://localhost:1880`
-2. importe o flow do projeto
-3. configure o broker MQTT do Adafruit IO
-4. ajuste o `http request` para `host.docker.internal:5081`
-5. clique em **Deploy**
+2. configure o broker MQTT do Adafruit IO
+3. ajuste o `username` para seu username do adafruit io e `api key` para sua chave de api criada no site adafruit io
+4. clique em **Deploy**
 
 Depois disso, o volume persistente mantém a configuração.
 
