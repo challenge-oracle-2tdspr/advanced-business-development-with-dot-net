@@ -51,6 +51,11 @@ Também fazem parte do ambiente de desenvolvimento:
 
 > Importante: o sistema representa **leituras de telemetria**, não cadastro fixo de dispositivos. Cada registro salvo no banco representa uma nova leitura recebida em um determinado momento.
 
+`Abaixo, um diagrama para ilustrar o fluxo:`
+
+<img src="./agrotech-diagrama-tecnologia/diagrama-tecnologia-agrotech.jpg">
+
+
 ---
 
 ## Objetivo do projeto
