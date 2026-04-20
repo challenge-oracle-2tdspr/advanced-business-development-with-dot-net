@@ -5,7 +5,7 @@ API e ecossistema de apoio para agricultura inteligente, desenvolvidos em **ASP.
 
 [![AgroTech Demo & Test API ASP .NET CORE](https://img.youtube.com/vi/1T_w2M-NjsE/0.jpg)](https://youtu.be/1T_w2M-NjsE)
 
-## Confia o vídeo de apresentação geral do projeto no YouTube:
+## Confira o vídeo de apresentação geral do projeto no YouTube:
 
 [![AgroTech Commercial Presentation](https://img.youtube.com/vi/zkBlN1dhXJc/0.jpg)](https://youtu.be/zkBlN1dhXJc)
 
