@@ -2,7 +2,10 @@
 
 API e ecossistema de apoio para agricultura inteligente, desenvolvidos em **ASP.NET Core (.NET 8)** com **Clean Architecture**, integrando **Adafruit IO**, **Node-RED**, **Oracle**, **RabbitMQ** e **workers assíncronos** para alertas e recomendações.
 
----
+## Confia o vídeo de apresentação do projeto no Youtube:
+
+[![AgroTech Commercial Presentation](https://img.youtube.com/vi/zkBlN1dhXJc/0.jpg)](https://youtu.be/zkBlN1dhXJc)
+
 
 ## Sumário
 
