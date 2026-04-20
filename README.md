@@ -1,8 +1,11 @@
 # AgroTech IoT API
 
 API e ecossistema de apoio para agricultura inteligente, desenvolvidos em **ASP.NET Core (.NET 8)** com **Clean Architecture**, integrando **Adafruit IO**, **Node-RED**, **Oracle**, **RabbitMQ** e **workers assíncronos** para alertas e recomendações.
+## Confira o vídeo de apresentação da API .NET no YouTube
 
-## Confia o vídeo de apresentação do projeto no Youtube:
+[![AgroTech Demo & Test API ASP .NET CORE](https://img.youtube.com/vi/1T_w2M-NjsE/0.jpg)](https://youtu.be/1T_w2M-NjsE)
+
+## Confia o vídeo de apresentação geral do projeto no YouTube:
 
 [![AgroTech Commercial Presentation](https://img.youtube.com/vi/zkBlN1dhXJc/0.jpg)](https://youtu.be/zkBlN1dhXJc)
 
