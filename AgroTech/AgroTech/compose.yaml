@@ -11,6 +11,7 @@ services:
       RABBITMQ_DEFAULT_USER: guest
       RABBITMQ_DEFAULT_PASS: guest
       RABBITMQ_DEFAULT_VHOST: /
+      
     volumes:
       - rabbitmq_data:/var/lib/rabbitmq
     stop_grace_period: 30s
@@ -65,10 +66,15 @@ services:
       - "5081:8081"
     environment:
       ASPNETCORE_ENVIRONMENT: Development
-      ASPNETCORE_URLS: http://0.0.0.0:8081
+      ASPNETCORE_URLS: "http://0.0.0.0:8081"
 
       ConnectionStrings__AgroTechOracle: ${ORACLE_API_CONNECTION_STRING}
       HealthChecks__ExternalServiceUrl: http://node-red:1880
+      
+      Jwt__Issuer: AgroTech.Api
+      Jwt__Audience: AgroTech.Client
+      Jwt__Key: AgroTech.Super.Chave.JWT.2026.Com.No.Minimo.32.Caracteres
+      Jwt__ExpiresInMinutes: "60"
 
       RabbitMq__Enabled: "true"
       RabbitMq__HostName: rabbitmq

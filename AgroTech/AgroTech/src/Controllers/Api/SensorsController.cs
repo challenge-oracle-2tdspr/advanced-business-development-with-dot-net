@@ -1,9 +1,11 @@
+using Microsoft.AspNetCore.Authorization;
 using AgroTech.Application.DTOs;
 using AgroTech.Application.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AgroTech.Web.Controllers.Api
 {
+    [Authorize]
     [ApiController]
     [Route("api/sensors")]
     public class SensorsController : ControllerBase
@@ -17,6 +19,7 @@ namespace AgroTech.Web.Controllers.Api
             _logger = logger;
         }
 
+        [AllowAnonymous]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<SensorDTO>>> GetAll()
         {
@@ -32,6 +35,7 @@ namespace AgroTech.Web.Controllers.Api
             return Ok(sensors); 
         }
 
+        [AllowAnonymous]
         [HttpGet("{id:guid}")]
         public async Task<ActionResult<SensorDTO>> GetById(Guid id)
         {
@@ -96,6 +100,7 @@ namespace AgroTech.Web.Controllers.Api
             return NoContent();
         }
         
+        [AllowAnonymous]
         [HttpGet("search")]
         public async Task<ActionResult<PagedResultDTO<SensorDTO>>> Search([FromQuery] SensorSearchDTO searchDto)
         {
