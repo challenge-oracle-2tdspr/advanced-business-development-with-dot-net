@@ -1,3 +1,5 @@
+name: agrotech
+
 services:
   rabbitmq:
     image: rabbitmq:4-management
@@ -11,7 +13,6 @@ services:
       RABBITMQ_DEFAULT_USER: guest
       RABBITMQ_DEFAULT_PASS: guest
       RABBITMQ_DEFAULT_VHOST: /
-      
     volumes:
       - rabbitmq_data:/var/lib/rabbitmq
     stop_grace_period: 30s
@@ -56,6 +57,24 @@ services:
         max-size: "10m"
         max-file: "3"
 
+  mongodb:
+    image: mongo:7
+    container_name: agrotech-mongodb
+    restart: unless-stopped
+    volumes:
+      - mongodb_data:/data/db
+    healthcheck:
+      test: ["CMD", "mongosh", "--quiet", "--eval", "db.adminCommand('ping').ok"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 20s
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
   api:
     build:
       context: ..
@@ -70,11 +89,15 @@ services:
 
       ConnectionStrings__AgroTechOracle: ${ORACLE_API_CONNECTION_STRING}
       HealthChecks__ExternalServiceUrl: http://node-red:1880
-      
+
       Jwt__Issuer: AgroTech.Api
       Jwt__Audience: AgroTech.Client
       Jwt__Key: AgroTech.Super.Chave.JWT.2026.Com.No.Minimo.32.Caracteres
       Jwt__ExpiresInMinutes: "60"
+
+      MongoDb__ConnectionString: mongodb://mongodb:27017
+      MongoDb__DatabaseName: AgroTechDb
+      MongoDb__SensorReadingsCollectionName: SensorReadings
 
       RabbitMq__Enabled: "true"
       RabbitMq__HostName: rabbitmq
@@ -93,7 +116,9 @@ services:
         condition: service_healthy
       node-red:
         condition: service_started
-      
+      mongodb:
+        condition: service_healthy
+
   worker-alerts:
     build:
       context: ..
@@ -111,14 +136,13 @@ services:
       RabbitMq__Exchange: agrotech.events
       RabbitMq__Queue: agrotech.alerts.queue
       RabbitMq__RoutingKey: sensor.reading.created
-
       OracleDatabase__ConnectionString: ${ORACLE_ALERTS_CONNECTION_STRING}
     depends_on:
       rabbitmq:
         condition: service_healthy
       api:
         condition: service_started
-  
+
   worker-recommendations:
     build:
       context: ..
@@ -136,13 +160,13 @@ services:
       RabbitMq__Exchange: agrotech.events
       RabbitMq__Queue: agrotech.recommendations.queue
       RabbitMq__RoutingKey: sensor.reading.created
-
       OracleDatabase__ConnectionString: ${ORACLE_RECOMMENDATIONS_CONNECTION_STRING}
     depends_on:
       rabbitmq:
         condition: service_healthy
       api:
         condition: service_started
+
   worker-readings:
     build:
       context: ..
@@ -160,12 +184,13 @@ services:
       RabbitMq__Exchange: agrotech.events
       RabbitMq__Queue: agrotech.readings.queue
       RabbitMq__RoutingKey: sensor.reading.created
-
       OracleDatabase__ConnectionString: ${ORACLE_READINGS_CONNECTION_STRING}
     depends_on:
       rabbitmq:
         condition: service_healthy
       api:
         condition: service_started
+
 volumes:
   rabbitmq_data:
+  mongodb_data:

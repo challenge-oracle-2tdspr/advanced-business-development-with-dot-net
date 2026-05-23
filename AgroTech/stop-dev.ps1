@@ -10,7 +10,8 @@ $PidFiles = @(
     (Join-Path $ScriptDir ".run/agrotech-api.pid"),
     (Join-Path $ScriptDir ".run/agrotech-worker-alerts.pid"),
     (Join-Path $ScriptDir ".run/agrotech-worker-recommendations.pid"),
-    (Join-Path $ScriptDir ".run/agrotech-worker-readings.pid")
+    (Join-Path $ScriptDir ".run/agrotech-worker-readings.pid"),
+    (Join-Path $ScriptDir ".run/agrotech-mongodb.pid")
 )
 
 foreach ($file in $PidFiles) {
@@ -36,6 +37,7 @@ docker compose -f $ComposeFile stop `
   api `
   worker-alerts `
   worker-recommendations `
-  worker-readings
+  worker-readings`
+  mongodb
 
 Write-Host "Ambiente parado."

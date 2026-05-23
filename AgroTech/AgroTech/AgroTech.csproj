@@ -72,6 +72,7 @@
         <PrivateAssets>all</PrivateAssets>
       </PackageReference>
       <PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks.EntityFrameworkCore" Version="8.0.10" />
+      <PackageReference Include="MongoDB.Driver" Version="3.8.1" />
       <PackageReference Include="OpenTelemetry.Exporter.Console" Version="1.15.1" />
       <PackageReference Include="OpenTelemetry.Extensions.Hosting" Version="1.15.1" />
       <PackageReference Include="OpenTelemetry.Instrumentation.AspNetCore" Version="1.15.1" />

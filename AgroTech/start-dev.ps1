@@ -15,7 +15,8 @@ docker compose -f $ComposeFile up -d --build `
   api `
   worker-alerts `
   worker-recommendations `
-  worker-readings
+  worker-readings `
+  mongodb
 
 Write-Host ""
 Write-Host "Ambiente iniciado."
@@ -32,6 +33,7 @@ Write-Host "  - api"
 Write-Host "  - worker-alerts"
 Write-Host "  - worker-recommendations"
 Write-Host "  - worker-readings"
+Write-Host "  - mongodb"
 Write-Host ""
 Write-Host "Logs úteis:"
 Write-Host "  docker compose -f `"$ComposeFile`" logs -f api"
@@ -40,6 +42,7 @@ Write-Host "  docker compose -f `"$ComposeFile`" logs -f worker-recommendations"
 Write-Host "  docker compose -f `"$ComposeFile`" logs -f worker-readings"
 Write-Host "  docker compose -f `"$ComposeFile`" logs -f node-red"
 Write-Host "  docker compose -f `"$ComposeFile`" logs -f sensor-simulator"
+Write-Host "  docker compose -f `"$ComposeFile`" logs -f mongodb"
 Write-Host ""
 Write-Host "Status:"
 docker compose -f $ComposeFile ps

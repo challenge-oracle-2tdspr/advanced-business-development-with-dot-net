@@ -1,6 +1,12 @@
 # AgroTech IoT API
 
 API e ecossistema de apoio para agricultura inteligente, desenvolvidos em **ASP.NET Core (.NET 8)** com **Clean Architecture**, integrando **Adafruit IO**, **Node-RED**, **Oracle**, **RabbitMQ** e **workers assíncronos** para alertas e recomendações.
+
+O projeto também implementa:
+
+- **Autenticação e autorização com JWT**, protegendo os endpoints da API;
+- **Persistência adicional em MongoDB** para armazenar leituras de sensores com alta velocidade e escalabilidade.
+
 ## Confira o vídeo de apresentação da API .NET no YouTube
 
 [![AgroTech Demo & Test API ASP .NET CORE](https://img.youtube.com/vi/1T_w2M-NjsE/0.jpg)](https://youtu.be/1T_w2M-NjsE)
@@ -21,6 +27,8 @@ API e ecossistema de apoio para agricultura inteligente, desenvolvidos em **ASP.
 - [Estrutura do projeto](#estrutura-do-projeto)
 - [Componentes da solução](#componentes-da-solução)
 - [Tecnologias utilizadas](#tecnologias-utilizadas)
+- [Autenticação com JWT](#autenticação-com-jwt)
+- [MongoDB para persistência de leituras](#mongodb-para-persistência-de-leituras)
 - [Endpoints da API](#endpoints-da-api)
 - [Health checks](#health-checks)
 - [HATEOAS](#hateoas)
@@ -278,6 +286,9 @@ Responsável por:
 ## Tecnologias utilizadas
 
 - .NET 8
+- JSON Web Token (JWT)
+- MongoDB
+- MongoDB.Driver
 - ASP.NET Core Web API / MVC
 - Entity Framework Core
 - Oracle Entity Framework Core Provider
@@ -311,6 +322,15 @@ http://localhost:5081
 
 ```text
 http://localhost:5081/swagger
+```
+### `Importante!`
+O GET api/sensors não carrega no swagger porque a interface tem problemas para renderizar payload grande, conforme a documentação sobre Swagger UI. Mas a busca paginada na web com o endpoint abaixo funciona: 
+```
+http://localhost:5081/api/sensors/search?page=1&pageSize=5 
+```
+Ou comando curl via terminal, se quiser ver todos os dados até o momento:
+```
+curl -i http://localhost:5081/api/sensors
 ```
 
 ### 1. Listar todos os sensores
@@ -426,6 +446,137 @@ A aplicação possui os endpoints:
 - `/health`: visão completa
 - `/health/live`: API viva
 - `/health/ready`: API pronta para uso
+
+---
+
+## Autenticação com JWT
+
+A API utiliza **JSON Web Token (JWT)** para autenticação e autorização dos endpoints.
+
+### Configuração das variáveis de ambiente
+
+No `appsettings.json` ou `appsettings.Development.json`:
+
+```json
+{
+  "Jwt": {
+    "Issuer": "AgroTech.Api",
+    "Audience": "AgroTech.Client",
+    "Key": "AgroTech.Super.Chave.JWT.2026.Com.No.Minimo.32.Caracteres",
+    "ExpiresInMinutes": "60"
+  }
+}
+```
+
+### Como obter um token
+
+1. Chame um endpoint de login (se existente) ou crie um token manualmente para testes;
+2. Ou use um token pré-gerado para o usuário `admin` com role `Admin`.
+
+### Como usar o token nas requisições
+
+Inclua o header `Authorization` com o esquema Bearer:
+
+```http
+Authorization: Bearer <SEU_TOKEN_JWT>
+```
+
+Exemplo com curl:
+
+```bash
+curl -X POST "http://localhost:5081/api/sensors" \
+  -H "accept: */*" \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..." \
+  -H "Content-Type: application/json" \
+  -d '[
+    {
+      "name": "Sensor de Umidade - Teste",
+      "type": "1",
+      "value": 42.5,
+      "timestamp": "2026-05-23T01:26:00.000Z"
+    }
+  ]'
+```
+
+### Endpoints protegidos
+
+Todos os endpoints de sensores (`/api/sensors`) estão protegidos e exigem um token JWT válido para serem acessados.
+
+---
+## MongoDB para persistência de leituras
+
+Além do Oracle, a API utiliza **MongoDB** para persistir leituras de sensores com alta velocidade e escalabilidade, especialmente adequado para dados de telemetria de sensores IoT.
+
+### Configuração
+
+No `appsettings.json` ou `appsettings.Development.json`:
+
+```json
+{
+  "ConnectionStrings": {
+    "AgroTechOracle": "User Id=rm559567;Password=141197;Data Source=oracle.fiap.com.br:1521/ORCL"
+  },
+  "MongoDb": {
+    "ConnectionString": "mongodb://mongodb:27017",
+    "DatabaseName": "AgroTechDb",
+    "SensorReadingsCollectionName": "SensorReadings"
+  }
+}
+```
+
+### Estrutura do documento no MongoDB
+
+Cada leitura de sensor persistida no MongoDB segue esta estrutura:
+
+```json
+{
+  "_id": "e64b31e9-d6c5-4462-be52-d4a8de5d9061",
+  "SensorId": "f4ae02ee-67d7-4a56-a779-15efdbe2148c",
+  "SensorName": "Sensor de Umidade - Teste",
+  "SensorType": "1",
+  "Value": 42.5,
+  "Timestamp": "2026-05-23T01:26:00.000Z",
+  "CreatedAt": "2026-05-23T01:47:20.701Z",
+  "Source": "api",
+  "CorrelationId": "28926ff9-6ba8-45c1-86e8-bccdefccb446"
+}
+```
+
+### Banco e coleção utilizados
+
+- **Banco:** `AgroTechDb`
+- **Coleção:** `SensorReadings`
+
+### Como acessar o MongoDB localmente
+
+Acesse o container do MongoDB via shell:
+
+```bash
+docker exec -it agrotech-mongodb mongosh
+```
+
+Dentro do shell:
+
+```javascript
+show dbs
+use AgroTechDb
+show collections
+db.SensorReadings.find().sort({ _id: -1 }).limit(10).pretty()
+```
+
+Filtra por nome de sensor:
+
+```javascript
+db.SensorReadings.find({ SensorName: "Sensor de Umidade - Teste" }).pretty()
+```
+
+### Como o MongoDB se encaixa no fluxo
+
+1. O Node-RED ou simulador envia leituras para `POST /api/sensors`;
+2. A API valida e autentica a requisição com JWT;
+3. A leitura é persistida no **Oracle** (principal) e no **MongoDB** (alta velocidade/escalabilidade);
+4. A API publica evento no **RabbitMQ**;
+5. Os workers consomem e processam alertas e recomendações.
 
 ---
 
@@ -933,7 +1084,9 @@ Atualmente o projeto já possui:
 - logs estruturados;
 - OpenTelemetry;
 - testes unitários e de integração.
-
+- autenticação com JWT;
+- persistência em MongoDB;
+- health checks para MongoDB;
 ---
 
 ## Autor

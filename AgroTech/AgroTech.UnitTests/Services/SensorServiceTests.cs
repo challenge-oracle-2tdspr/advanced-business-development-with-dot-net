@@ -1,9 +1,13 @@
+using Microsoft.Extensions.Logging;
+using Moq;
 using AgroTech.Application.DTOs;
 using AgroTech.Application.Exceptions;
+using AgroTech.Application.Interfaces;
 using AgroTech.Application.Services;
 using AgroTech.Domain.Entities;
 using AgroTech.Domain.Interfaces;
 using AgroTech.Contracts.Events;
+using AgroTech.Infrastructure.Mongo.Documents;
 using AgroTech.Messaging;
 using FluentAssertions;
 using Moq;
@@ -12,16 +16,20 @@ namespace AgroTech.UnitTests.Services
 {
     public class SensorServiceTests
     {
+        private readonly Mock<ISensorReadingMongoRepository> _mongoRepositoryMock;
         private readonly Mock<ISensorRepository> _sensorRepositoryMock;
         private readonly Mock<IEventPublisher> _eventPublisherMock;
         private readonly Mock<ICorrelationIdAccessor> _correlationIdAccessorMock;
+        private readonly Mock<ILogger<SensorService>> _loggerMock;
         private readonly SensorService _sensorService;
 
         public SensorServiceTests()
         {
+            _mongoRepositoryMock = new Mock<ISensorReadingMongoRepository>();
             _sensorRepositoryMock = new Mock<ISensorRepository>();
             _eventPublisherMock = new Mock<IEventPublisher>();
             _correlationIdAccessorMock = new Mock<ICorrelationIdAccessor>();
+            _loggerMock = new Mock<ILogger<SensorService>>();
 
             _correlationIdAccessorMock
                 .Setup(x => x.GetCorrelationId())
@@ -32,8 +40,13 @@ namespace AgroTech.UnitTests.Services
                     It.IsAny<SensorReadingCreatedEvent>(),
                     It.IsAny<CancellationToken>()))
                 .Returns(Task.CompletedTask);
-
+            _mongoRepositoryMock
+                .Setup(x => x.AddAsync(It.IsAny<SensorReadingDocument>(), It.IsAny<CancellationToken>()))
+                .Returns(Task.CompletedTask);
+            
             _sensorService = new SensorService(
+                _mongoRepositoryMock.Object,
+                _loggerMock.Object,
                 _sensorRepositoryMock.Object,
                 _eventPublisherMock.Object,
                 _correlationIdAccessorMock.Object);

@@ -1,3 +1,6 @@
+using AgroTech.Infrastructure.Mongo.Repositories;
+using MongoDB.Driver;
+using Microsoft.Extensions.Options;
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
@@ -72,6 +75,7 @@ builder.Services.AddDbContext<AgroTechDbContext>(options =>
 builder.Services.AddScoped<ISensorRepository, SensorRepository>();
 builder.Services.AddScoped<ISensorService, SensorService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<ISensorReadingMongoRepository, SensorReadingMongoRepository>();
 
 builder.Services.AddControllersWithViews()
     .AddRazorOptions(options =>
@@ -124,6 +128,31 @@ builder.Services.AddScoped<ICorrelationIdAccessor, HttpCorrelationIdAccessor>();
 
 builder.Services.Configure<JwtOptions>(
     builder.Configuration.GetSection(JwtOptions.SectionName));
+
+builder.Services.Configure<MongoDbOptions>(
+    builder.Configuration.GetSection(MongoDbOptions.SectionName));
+
+builder.Services.AddSingleton<IMongoClient>(sp =>
+{
+    var options = sp.GetRequiredService<IOptions<MongoDbOptions>>().Value;
+
+    if (string.IsNullOrWhiteSpace(options.ConnectionString))
+        throw new InvalidOperationException("MongoDb:ConnectionString não configurada.");
+
+    return new MongoClient(options.ConnectionString);
+});
+
+builder.Services.AddScoped(sp =>
+{
+    var options = sp.GetRequiredService<IOptions<MongoDbOptions>>().Value;
+    var client = sp.GetRequiredService<IMongoClient>();
+
+    if (string.IsNullOrWhiteSpace(options.DatabaseName))
+        throw new InvalidOperationException("MongoDb:DatabaseName não configurado.");
+
+    return client.GetDatabase(options.DatabaseName);
+});
+
 var jwtSection = builder.Configuration.GetSection(JwtOptions.SectionName);
 var jwtOptions = jwtSection.Get<JwtOptions>()
                  ?? throw new InvalidOperationException("Configuração JWT não encontrada.");

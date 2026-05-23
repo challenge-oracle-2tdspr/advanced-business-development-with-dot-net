@@ -185,3 +185,9 @@
 /home/ruan/Área de Trabalho/advanced-business-development-with-dot-net/AgroTech/AgroTech/bin/Debug/net8.0/Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
 /home/ruan/Área de Trabalho/advanced-business-development-with-dot-net/AgroTech/AgroTech/bin/Debug/net8.0/Microsoft.IdentityModel.Tokens.dll
 /home/ruan/Área de Trabalho/advanced-business-development-with-dot-net/AgroTech/AgroTech/bin/Debug/net8.0/System.IdentityModel.Tokens.Jwt.dll
+/home/ruan/Área de Trabalho/advanced-business-development-with-dot-net/AgroTech/AgroTech/bin/Debug/net8.0/DnsClient.dll
+/home/ruan/Área de Trabalho/advanced-business-development-with-dot-net/AgroTech/AgroTech/bin/Debug/net8.0/MongoDB.Bson.dll
+/home/ruan/Área de Trabalho/advanced-business-development-with-dot-net/AgroTech/AgroTech/bin/Debug/net8.0/MongoDB.Driver.dll
+/home/ruan/Área de Trabalho/advanced-business-development-with-dot-net/AgroTech/AgroTech/bin/Debug/net8.0/SharpCompress.dll
+/home/ruan/Área de Trabalho/advanced-business-development-with-dot-net/AgroTech/AgroTech/bin/Debug/net8.0/Snappier.dll
+/home/ruan/Área de Trabalho/advanced-business-development-with-dot-net/AgroTech/AgroTech/bin/Debug/net8.0/ZstdSharp.dll

@@ -1,24 +1,32 @@
 using AgroTech.Application.DTOs;
 using AgroTech.Application.Exceptions;
 using AgroTech.Application.Interfaces;
+using AgroTech.Contracts.Events;
 using AgroTech.Domain.Entities;
 using AgroTech.Domain.Interfaces;
-using AgroTech.Contracts.Events;
+using AgroTech.Infrastructure.Mongo.Documents;
 using AgroTech.Messaging;
+using Microsoft.Extensions.Logging;
 
 namespace AgroTech.Application.Services
 {
     public class SensorService : ISensorService
     {
+        private readonly ISensorReadingMongoRepository _mongoRepository;
         private readonly ISensorRepository _repository;
         private readonly IEventPublisher _eventPublisher;
         private readonly ICorrelationIdAccessor _correlationIdAccessor;
+        private readonly ILogger<SensorService> _logger;
 
         public SensorService(
+            ISensorReadingMongoRepository mongoRepository,
+            ILogger<SensorService> logger,
             ISensorRepository repository,
             IEventPublisher eventPublisher,
             ICorrelationIdAccessor correlationIdAccessor)
         {
+            _mongoRepository = mongoRepository;
+            _logger = logger;
             _repository = repository;
             _eventPublisher = eventPublisher;
             _correlationIdAccessor = correlationIdAccessor;
@@ -57,6 +65,10 @@ namespace AgroTech.Application.Services
 
                 await _repository.AddAsync(sensor);
 
+                _logger.LogInformation(
+                    "Persistindo leitura no MongoDB. SensorId={SensorId}, Name={SensorName}, CorrelationId={CorrelationId}",
+                    sensor.Id, sensor.Name, correlationId);
+
                 var sensorEvent = new SensorReadingCreatedEvent
                 {
                     CorrelationId = correlationId,
@@ -69,6 +81,39 @@ namespace AgroTech.Application.Services
                 };
 
                 await _eventPublisher.PublishSensorReadingCreatedAsync(sensorEvent);
+
+                var sensorReadingDocument = new SensorReadingDocument
+                {
+                    SensorId = sensor.Id,
+                    SensorName = sensor.Name,
+                    SensorType = sensor.Type.ToString(),
+                    Value = sensor.Value,
+                    Timestamp = sensor.Timestamp.Kind == DateTimeKind.Utc
+                        ? sensor.Timestamp
+                        : sensor.Timestamp.ToUniversalTime(),
+                    CreatedAt = DateTime.UtcNow,
+                    Source = "api",
+                    CorrelationId = correlationId
+                };
+
+                try
+                {
+                    await _mongoRepository.AddAsync(sensorReadingDocument);
+
+                    _logger.LogInformation(
+                        "Leitura persistida no MongoDB com sucesso. SensorId={SensorId}",
+                        sensor.Id);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(
+                        ex,
+                        "Erro ao persistir leitura no MongoDB. SensorId={SensorId}, CorrelationId={CorrelationId}",
+                        sensor.Id,
+                        correlationId);
+
+                    throw;
+                }
 
                 ids.Add(sensorId);
             }
@@ -142,7 +187,6 @@ namespace AgroTech.Application.Services
         public async Task<PagedResultDTO<SensorDTO>> SearchAsync(SensorSearchDTO searchDto)
         {
             var sensors = await _repository.GetAllAsync();
-
             var query = sensors.AsQueryable();
 
             if (!string.IsNullOrWhiteSpace(searchDto.Name))
