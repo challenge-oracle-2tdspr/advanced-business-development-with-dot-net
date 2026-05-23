@@ -196,7 +196,7 @@
         "type": "function",
         "z": "b44ab710a3bcd9ba",
         "name": "Função ",
-        "func": "let data = msg.payload;\n\nglobal.set('ultimoDadoSensor', data);\n\nlet agora = new Date().toISOString();\n\nfunction toNumber(v) {\n    const n = Number(v);\n    return Number.isFinite(n) ? n : 0;\n}\n\nlet msgTempAr = { payload: toNumber(data.temperatura_ar) };\nlet msgUmidAr = { payload: toNumber(data.umidade_ar) };\nlet msgUmidSolo = { payload: toNumber(data.umidade_solo) };\nlet msgPhSolo = { payload: toNumber(data.ph_solo) };\nlet msgLuminosidade = { payload: toNumber(data.luminosidade) };\nlet msgVelocidadeVento = { payload: toNumber(data.velocidade_vento) };\nlet msgChuva = { payload: toNumber(data.chuva) };\nlet msgTempSolo = { payload: toNumber(data.temperatura_solo) };\n\nlet msgHttp = {\n    payload: [\n        {\n            name: \"Temperatura do Ar\",\n            type: \"11\",\n            value: toNumber(data.temperatura_ar),\n            timestamp: agora\n        },\n        {\n            name: \"Umidade do Ar\",\n            type: \"12\",\n            value: toNumber(data.umidade_ar),\n            timestamp: agora\n        },\n        {\n            name: \"Umidade do Solo\",\n            type: \"13\",\n            value: toNumber(data.umidade_solo),\n            timestamp: agora\n        },\n        {\n            name: \"pH do Solo\",\n            type: \"14\",\n            value: toNumber(data.ph_solo),\n            timestamp: agora\n        },\n        {\n            name: \"Luminosidade\",\n            type: \"15\",\n            value: toNumber(data.luminosidade),\n            timestamp: agora\n        },\n        {\n            name: \"Velocidade do Vento\",\n            type: \"16\",\n            value: toNumber(data.velocidade_vento),\n            timestamp: agora\n        },\n        {\n            name: \"Chuva\",\n            type: \"17\",\n            value: toNumber(data.chuva),\n            timestamp: agora\n        },\n        {\n            name: \"Temperatura do Solo\",\n            type: \"18\",\n            value: toNumber(data.temperatura_solo),\n            timestamp: agora\n        }\n    ],\n    headers: {\n        \"Content-Type\": \"application/json\"\n    }\n};\n\nreturn [\n    msgTempAr,\n    msgUmidAr,\n    msgUmidSolo,\n    msgPhSolo,\n    msgLuminosidade,\n    msgVelocidadeVento,\n    msgChuva,\n    msgTempSolo,\n    msgHttp\n];",
+        "func": "let data = msg.payload;\n\nglobal.set('ultimoDadoSensor', data);\n\nlet agora = new Date().toISOString();\n\nfunction toNumber(v) {\n    const n = Number(v);\n    return Number.isFinite(n) ? n : 0;\n}\nlet token = global.get(\"apiToken\");\n\nlet headers = {\n  \"Content-Type\": \"application/json\"\n};\n\nif (token) {\n  headers[\"Authorization\"] = \"Bearer \" + token;\n}\n\nlet msgTempAr = { payload: toNumber(data.temperatura_ar) };\nlet msgUmidAr = { payload: toNumber(data.umidade_ar) };\nlet msgUmidSolo = { payload: toNumber(data.umidade_solo) };\nlet msgPhSolo = { payload: toNumber(data.ph_solo) };\nlet msgLuminosidade = { payload: toNumber(data.luminosidade) };\nlet msgVelocidadeVento = { payload: toNumber(data.velocidade_vento) };\nlet msgChuva = { payload: toNumber(data.chuva) };\nlet msgTempSolo = { payload: toNumber(data.temperatura_solo) };\n\nlet msgHttp = {\n    payload: [\n        {\n            name: \"Temperatura do Ar\",\n            type: \"11\",\n            value: toNumber(data.temperatura_ar),\n            timestamp: agora\n        },\n        {\n            name: \"Umidade do Ar\",\n            type: \"12\",\n            value: toNumber(data.umidade_ar),\n            timestamp: agora\n        },\n        {\n            name: \"Umidade do Solo\",\n            type: \"13\",\n            value: toNumber(data.umidade_solo),\n            timestamp: agora\n        },\n        {\n            name: \"pH do Solo\",\n            type: \"14\",\n            value: toNumber(data.ph_solo),\n            timestamp: agora\n        },\n        {\n            name: \"Luminosidade\",\n            type: \"15\",\n            value: toNumber(data.luminosidade),\n            timestamp: agora\n        },\n        {\n            name: \"Velocidade do Vento\",\n            type: \"16\",\n            value: toNumber(data.velocidade_vento),\n            timestamp: agora\n        },\n        {\n            name: \"Chuva\",\n            type: \"17\",\n            value: toNumber(data.chuva),\n            timestamp: agora\n        },\n        {\n            name: \"Temperatura do Solo\",\n            type: \"18\",\n            value: toNumber(data.temperatura_solo),\n            timestamp: agora\n        }\n    ],\n    headers: {\n        \"Content-Type\": \"application/json\"\n    }\n};\n\nreturn [\n    msgTempAr,\n    msgUmidAr,\n    msgUmidSolo,\n    msgPhSolo,\n    msgLuminosidade,\n    msgVelocidadeVento,\n    msgChuva,\n    msgTempSolo,\n    msgHttp\n];",
         "outputs": 9,
         "timeout": 0,
         "noerr": 0,
@@ -259,7 +259,7 @@
         "method": "POST",
         "ret": "obj",
         "paytoqs": "ignore",
-        "url": "http://0.0.0.0:api/sensors",
+        "url": "http://api:8081/api/sensors",
         "tls": "",
         "persist": false,
         "proxy": "",
@@ -790,6 +790,132 @@
         "className": "",
         "x": 640,
         "y": 300,
+        "wires": []
+    },
+    {
+        "id": "de045a9d57ae2173",
+        "type": "inject",
+        "z": "b44ab710a3bcd9ba",
+        "name": "LoginRequestJWT",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": true,
+        "onceDelay": "3000",
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 110,
+        "y": 580,
+        "wires": [
+            [
+                "7f81b0c5c593a910"
+            ]
+        ]
+    },
+    {
+        "id": "7f81b0c5c593a910",
+        "type": "function",
+        "z": "b44ab710a3bcd9ba",
+        "name": "LoginTry",
+        "func": "msg.headers = {\n  \"Content-Type\": \"application/json\"\n};\n\nmsg.payload = {\n  \"username\": \"admin\",\n  \"password\": \"123456\"\n};\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 340,
+        "y": 580,
+        "wires": [
+            [
+                "b5d523b146069b6b"
+            ]
+        ]
+    },
+    {
+        "id": "b5d523b146069b6b",
+        "type": "http request",
+        "z": "b44ab710a3bcd9ba",
+        "name": "LoginRequestHTTP",
+        "method": "POST",
+        "ret": "obj",
+        "paytoqs": "ignore",
+        "url": "http://api:8081/api/auth/login",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [],
+        "x": 570,
+        "y": 580,
+        "wires": [
+            [
+                "1ca93ae1fcede5eb",
+                "9f8210d88654b727"
+            ]
+        ]
+    },
+    {
+        "id": "1ca93ae1fcede5eb",
+        "type": "function",
+        "z": "b44ab710a3bcd9ba",
+        "name": "TokenSave",
+        "func": "if (msg.payload && msg.payload.token) {\n  global.set(\"apiToken\", msg.payload.token);\n  global.set(\"apiTokenExpiresAt\", msg.payload.expiresAt || null);\n  node.status({ fill: \"green\", shape: \"dot\", text: \"token salvo\" });\n} else {\n  node.status({ fill: \"red\", shape: \"ring\", text: \"token não encontrado\" });\n  node.error(\"Resposta de login sem token\", msg);\n}\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 790,
+        "y": 580,
+        "wires": [
+            [
+                "38dde4bc27db1bf4"
+            ]
+        ]
+    },
+    {
+        "id": "9f8210d88654b727",
+        "type": "debug",
+        "z": "b44ab710a3bcd9ba",
+        "name": "debug 8",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 720,
+        "y": 680,
+        "wires": []
+    },
+    {
+        "id": "38dde4bc27db1bf4",
+        "type": "debug",
+        "z": "b44ab710a3bcd9ba",
+        "name": "debug 9",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 940,
+        "y": 680,
         "wires": []
     }
 ]
