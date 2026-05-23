@@ -56,11 +56,19 @@ namespace AgroTech.Web.Controllers.Api
         }
 
         [HttpPost]
-        public async Task<ActionResult> Create([FromBody] List<SensorDTO> dtos)
+        public async Task<ActionResult> Create([FromBody] List<CreateSensorDTO> dtos)
         {
             _logger.LogInformation("Recebendo lote de sensores com {Count} itens.", dtos.Count);
 
-            var ids = await _sensorService.AddAsync(dtos);
+            var sensorDtos = dtos.Select(dto => new SensorDTO
+            {
+                Name = dto.Name,
+                Type = dto.Type,
+                Value = dto.Value,
+                Timestamp = dto.Timestamp
+            }).ToList();
+
+            var ids = await _sensorService.AddAsync(sensorDtos);
 
             _logger.LogInformation("Lote de sensores salvo com sucesso. {Count} registros criados.", ids.Count);
 
