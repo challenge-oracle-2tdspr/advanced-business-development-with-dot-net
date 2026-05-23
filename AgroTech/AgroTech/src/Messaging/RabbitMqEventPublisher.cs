@@ -185,6 +185,14 @@ namespace AgroTech.Messaging
                 arguments: null,
                 cancellationToken: cancellationToken);
 
+            await channel.QueueDeclareAsync(
+                queue: _options.ReadingsQueue,
+                durable: true,
+                exclusive: false,
+                autoDelete: false,
+                arguments: null,
+                cancellationToken: cancellationToken);
+
             await channel.QueueBindAsync(
                 queue: _options.AlertsQueue,
                 exchange: _options.Exchange,
@@ -194,6 +202,13 @@ namespace AgroTech.Messaging
 
             await channel.QueueBindAsync(
                 queue: _options.RecommendationsQueue,
+                exchange: _options.Exchange,
+                routingKey: _options.SensorReadingCreatedRoutingKey,
+                arguments: null,
+                cancellationToken: cancellationToken);
+
+            await channel.QueueBindAsync(
+                queue: _options.ReadingsQueue,
                 exchange: _options.Exchange,
                 routingKey: _options.SensorReadingCreatedRoutingKey,
                 arguments: null,

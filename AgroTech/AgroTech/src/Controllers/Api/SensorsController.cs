@@ -1,3 +1,4 @@
+using Swashbuckle.AspNetCore.Annotations;
 using Microsoft.AspNetCore.Authorization;
 using AgroTech.Application.DTOs;
 using AgroTech.Application.Interfaces;
@@ -99,14 +100,24 @@ namespace AgroTech.Web.Controllers.Api
 
             return NoContent();
         }
-        
+
         [AllowAnonymous]
         [HttpGet("search")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [SwaggerOperation(
+            Summary = "Busca paginada de sensores",
+            Description = "Endpoint recomendado para consulta de sensores com filtros, ordenação e paginação."
+        )]
         public async Task<ActionResult<PagedResultDTO<SensorDTO>>> Search([FromQuery] SensorSearchDTO searchDto)
         {
             _logger.LogInformation(
                 "Buscando sensores com filtros: Name={Name}, Type={Type}, MinValue={MinValue}, MaxValue={MaxValue}, Page={Page}, PageSize={PageSize}",
-                searchDto.Name, searchDto.Type, searchDto.MinValue, searchDto.MaxValue, searchDto.Page, searchDto.PageSize);
+                searchDto.Name,
+                searchDto.Type,
+                searchDto.MinValue,
+                searchDto.MaxValue,
+                searchDto.Page,
+                searchDto.PageSize);
 
             var result = await _sensorService.SearchAsync(searchDto);
 
@@ -115,7 +126,10 @@ namespace AgroTech.Web.Controllers.Api
                 item.Links = GenerateLinks(item.Id);
             }
 
-            _logger.LogInformation("Busca retornou {Count} sensores na página {Page}.", result.Items.Count(), result.Page);
+            _logger.LogInformation(
+                "Busca retornou {Count} sensores na página {Page}.",
+                result.Items.Count(),
+                result.Page);
 
             return Ok(result);
         }

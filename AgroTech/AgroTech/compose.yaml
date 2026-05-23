@@ -109,6 +109,7 @@ services:
       RabbitMq__Exchange: agrotech.events
       RabbitMq__AlertsQueue: agrotech.alerts.queue
       RabbitMq__RecommendationsQueue: agrotech.recommendations.queue
+      RabbitMq__ReadingsQueue: agrotech.readings.queue
       RabbitMq__SensorReadingCreatedRoutingKey: sensor.reading.created
       RabbitMq__Source: node-red
     depends_on:

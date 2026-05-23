@@ -130,14 +130,15 @@ Simulador Python -> Adafruit IO -> Node-RED -> API .NET -> Oracle -> RabbitMQ ->
 ### Fluxo principal de ingestão
 
 ```text
-Simulador / Sensores -> Adafruit IO -> Node-RED -> POST /api/sensors -> Oracle
+Simulador / Sensores -> Adafruit IO -> Node-RED -> POST /api/sensors -> Oracle + MongoDB
 ```
 
 ### Fluxo assíncrono de eventos
 
 ```text
-API .NET -> RabbitMQ (agrotech.events) -> agrotech.alerts.queue -> Worker Alerts
+API .NET -> RabbitMQ (agrotech.events) -> agrotech.alerts.queue         -> Worker Alerts
                                        -> agrotech.recommendations.queue -> Worker Recommendations
+                                       -> agrotech.readings.queue        -> Worker Readings
 ```
 
 ### Situação atual dos workers
@@ -145,9 +146,9 @@ API .NET -> RabbitMQ (agrotech.events) -> agrotech.alerts.queue -> Worker Alerts
 Neste momento, os workers:
 
 - consomem mensagens do RabbitMQ;
-- aplicam regras de alerta e recomendação;
-- registram o resultado em log.
-- persistem alertas, recomendações e leituras no Oracle 
+- aplicam regras de alerta, recomendação e leitura;
+- registram o resultado em log;
+- persistem alertas, recomendações e leituras no Oracle.
 
 ---
 
@@ -296,6 +297,7 @@ Responsável por:
 - Serilog
 - OpenTelemetry
 - RabbitMQ
+- RabbitMQ.Client
 - Worker Service (.NET)
 - Docker / Docker Compose
 - Node-RED
@@ -307,7 +309,6 @@ Responsável por:
 - FluentAssertions
 - Microsoft.AspNetCore.Mvc.Testing
 - EntityFrameworkCore.InMemory (somente testes de integração)
-
 ---
 
 ## Endpoints da API
@@ -688,13 +689,92 @@ Filas:
 
 - `agrotech.alerts.queue`
 - `agrotech.recommendations.queue`
+- `agrotech.readings.queue`
 
 ### Funcionamento
 
 1. a API salva a leitura no Oracle;
 2. a API publica o evento `sensor.reading.created`;
-3. o RabbitMQ replica o evento para as filas configuradas;
+3. o RabbitMQ replica o evento para as três filas configuradas;
 4. os workers consomem e processam as mensagens.
+
+### Visão do fluxo
+
+```text
+API .NET -> RabbitMQ (agrotech.events, topic)
+              -> agrotech.alerts.queue         -> Worker Alerts
+              -> agrotech.recommendations.queue -> Worker Recommendations
+              -> agrotech.readings.queue        -> Worker Readings
+```
+
+### Acesso ao RabbitMQ Management
+
+Na máquina local:
+
+```text
+http://localhost:15672
+```
+
+Usuário padrão: `guest`  
+Senha padrão: `guest`
+
+Aqui você pode:
+
+- ver as filas criadas;
+- verificar os bindings da exchange `agrotech.events`;
+- monitorar mensagens, produtores e consumidores;
+- inspecionar o conteúdo das mensagens.
+
+---
+
+## Validação do fluxo assíncrono
+
+Para validar o fluxo completo de mensageria:
+
+1. Suba o ambiente:
+
+```bash
+./start-dev.sh
+# ou
+.\start-dev.ps1
+```
+
+2. Crie sensores via API:
+
+```bash
+curl -X POST "http://localhost:5081/api/sensors" \
+  -H "accept: */*" \
+  -H "Authorization: Bearer SEU_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '[
+    {
+      "name": "Sensor de Umidade - Teste Fila Readings",
+      "type": "13",
+      "value": 43.7,
+      "timestamp": "2026-05-23T02:20:00.000Z"
+    }
+  ]'
+```
+
+3. Verifique os logs dos workers:
+
+```bash
+docker compose logs --tail 100 worker-alerts
+docker compose logs --tail 100 worker-recommendations
+docker compose logs --tail 100 worker-readings
+```
+
+4. Acesse o RabbitMQ Management:
+
+```text
+http://localhost:15672
+```
+
+Confira:
+
+- filas `agrotech.alerts.queue`, `agrotech.recommendations.queue` e `agrotech.readings.queue`;
+- exchange `agrotech.events` com bindings para as 3 filas;
+- mensagens publicadas e consumidas.
 
 ---
 
@@ -720,8 +800,18 @@ Consome `agrotech.recommendations.queue` e sugere ações como:
 - revisar correção do solo;
 - reforçar monitoramento.
 
-> No estado atual, os workers registram resultados em log. A persistência em Oracle é um próximo passo.
+### AgroTech.Worker.Readings
 
+Consome `agrotech.readings.queue` e registra leituras de sensores, aplicando regras de processamento e persistindo no Oracle.
+
+### Estado atual dos workers
+
+No estado atual, os workers:
+
+- consomem mensagens do RabbitMQ;
+- aplicam regras de alerta, recomendação e leitura;
+- registram o resultado em log;
+- persistem alertas, recomendações e leituras no Oracle.
 ---
 
 ## Node-RED
@@ -1073,6 +1163,7 @@ Atualmente o projeto já possui:
 
 - API REST em .NET 8 com Clean Architecture;
 - persistência em Oracle;
+- persistência adicional em MongoDB para leituras de sensores;
 - Node-RED em Docker;
 - simulador Python em Docker;
 - integração com Adafruit IO;
@@ -1080,13 +1171,18 @@ Atualmente o projeto já possui:
 - publisher de eventos na API;
 - worker de alertas;
 - worker de recomendações;
+- worker de readings;
+- 3 filas no RabbitMQ:
+  - `agrotech.alerts.queue`
+  - `agrotech.recommendations.queue`
+  - `agrotech.readings.queue`
+- exchange `agrotech.events` (topic) com bindings para as 3 filas;
 - health checks;
 - logs estruturados;
 - OpenTelemetry;
-- testes unitários e de integração.
-- autenticação com JWT;
-- persistência em MongoDB;
-- health checks para MongoDB;
+- testes unitários e de integração;
+- autenticação com JWT.
+
 ---
 
 ## Autor
