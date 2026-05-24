@@ -806,14 +806,14 @@
                 "vt": "str"
             }
         ],
-        "repeat": "",
+        "repeat": "1800",
         "crontab": "",
         "once": true,
-        "onceDelay": "3000",
+        "onceDelay": "10",
         "topic": "",
         "payload": "",
         "payloadType": "date",
-        "x": 110,
+        "x": 120,
         "y": 580,
         "wires": [
             [

@@ -1,5 +1,11 @@
+using AgroTech.Application.Interfaces;
+using Microsoft.AspNetCore.TestHost;
 using AgroTech.Domain.Entities;
+using AgroTech.Domain.Interfaces;
 using AgroTech.Infrastructure.Data;
+using AgroTech.Messaging;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
@@ -19,7 +25,7 @@ namespace AgroTech.IntegrationTests
 
         protected override void ConfigureWebHost(IWebHostBuilder builder)
         {
-            builder.UseEnvironment("Testing");
+            builder.UseEnvironment("Development");
 
             builder.ConfigureAppConfiguration((context, config) =>
             {
@@ -55,6 +61,33 @@ namespace AgroTech.IntegrationTests
                         _databaseInitialized = true;
                     }
                 }
+            });
+
+            builder.ConfigureTestServices(services =>
+            {
+                services.RemoveAll<IEventPublisher>();
+                services.RemoveAll<ISensorReadingMongoRepository>();
+
+                services.AddSingleton<IEventPublisher, FakeEventPublisher>();
+                services.AddSingleton<ISensorReadingMongoRepository, FakeSensorReadingMongoRepository>();
+
+                services.AddAuthentication(options =>
+                {
+                    options.DefaultAuthenticateScheme = TestAuthHandler.AuthenticationScheme;
+                    options.DefaultChallengeScheme = TestAuthHandler.AuthenticationScheme;
+                    options.DefaultScheme = TestAuthHandler.AuthenticationScheme;
+                })
+                .AddScheme<AuthenticationSchemeOptions, TestAuthHandler>(
+                    TestAuthHandler.AuthenticationScheme,
+                    options => { });
+
+                services.AddAuthorization(options =>
+                {
+                    options.DefaultPolicy = new AuthorizationPolicyBuilder(
+                        TestAuthHandler.AuthenticationScheme)
+                        .RequireAuthenticatedUser()
+                        .Build();
+                });
             });
         }
 
