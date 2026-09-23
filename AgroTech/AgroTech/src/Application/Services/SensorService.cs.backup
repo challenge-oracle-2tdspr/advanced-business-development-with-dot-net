@@ -63,7 +63,7 @@ namespace AgroTech.Application.Services
                     CreatedAt = DateTime.UtcNow
                 };
 
-                //await _repository.AddAsync(sensor);
+                await _repository.AddAsync(sensor);
 
                 _logger.LogInformation(
                     "Persistindo leitura no MongoDB. SensorId={SensorId}, Name={SensorName}, CorrelationId={CorrelationId}",

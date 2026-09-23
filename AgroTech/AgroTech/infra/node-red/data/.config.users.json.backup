@@ -15,8 +15,28 @@
             },
             "tours": {
                 "welcome": "4.1.8"
+            },
+            "dialog": {
+                "export": {
+                    "pretty": true,
+                    "json-view": false
+                }
             }
         },
-        "menu-menu-item-palette": false
+        "menu-menu-item-palette": true,
+        "debug": {
+            "filter": "filterSelected",
+            "filteredNodes": [
+                "38dde4bc27db1bf4",
+                "9f8210d88654b727",
+                "9f02b557c819cb77",
+                "419a141519759af0",
+                "ec82102dabe0a87c",
+                "22cab4050e1be57d",
+                "645494bcbe092e66",
+                "9f0cb12c272b0e10",
+                "23e29527c5a3cfc8"
+            ]
+        }
     }
 }

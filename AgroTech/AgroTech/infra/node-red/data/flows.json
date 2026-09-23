@@ -196,8 +196,8 @@
         "type": "function",
         "z": "b44ab710a3bcd9ba",
         "name": "Função ",
-        "func": "let data = msg.payload;\n\nglobal.set('ultimoDadoSensor', data);\n\nlet agora = new Date().toISOString();\n\nfunction toNumber(v) {\n    const n = Number(v);\n    return Number.isFinite(n) ? n : 0;\n}\n\nlet token = global.get(\"apiToken\");\n\nlet msgTempAr = { payload: toNumber(data.temperatura_ar) };\nlet msgUmidAr = { payload: toNumber(data.umidade_ar) };\nlet msgUmidSolo = { payload: toNumber(data.umidade_solo) };\nlet msgPhSolo = { payload: toNumber(data.ph_solo) };\nlet msgLuminosidade = { payload: toNumber(data.luminosidade) };\nlet msgVelocidadeVento = { payload: toNumber(data.velocidade_vento) };\nlet msgChuva = { payload: toNumber(data.chuva) };\nlet msgTempSolo = { payload: toNumber(data.temperatura_solo) };\n\nlet headers = {\n    \"Content-Type\": \"application/json\"\n};\n\nif (token) {\n    headers[\"Authorization\"] = \"Bearer \" + token;\n}\n\nlet msgHttp = {\n    payload: [\n        {\n            name: \"Temperatura do Ar\",\n            type: \"11\",\n            value: toNumber(data.temperatura_ar),\n            timestamp: agora\n        },\n        {\n            name: \"Umidade do Ar\",\n            type: \"12\",\n            value: toNumber(data.umidade_ar),\n            timestamp: agora\n        },\n        {\n            name: \"Umidade do Solo\",\n            type: \"13\",\n            value: toNumber(data.umidade_solo),\n            timestamp: agora\n        },\n        {\n            name: \"pH do Solo\",\n            type: \"14\",\n            value: toNumber(data.ph_solo),\n            timestamp: agora\n        },\n        {\n            name: \"Luminosidade\",\n            type: \"15\",\n            value: toNumber(data.luminosidade),\n            timestamp: agora\n        },\n        {\n            name: \"Velocidade do Vento\",\n            type: \"16\",\n            value: toNumber(data.velocidade_vento),\n            timestamp: agora\n        },\n        {\n            name: \"Chuva\",\n            type: \"17\",\n            value: toNumber(data.chuva),\n            timestamp: agora\n        },\n        {\n            name: \"Temperatura do Solo\",\n            type: \"18\",\n            value: toNumber(data.temperatura_solo),\n            timestamp: agora\n        }\n    ],\n    headers: headers\n};\n\nreturn [\n    msgTempAr,\n    msgUmidAr,\n    msgUmidSolo,\n    msgPhSolo,\n    msgLuminosidade,\n    msgVelocidadeVento,\n    msgChuva,\n    msgTempSolo,\n    msgHttp\n];",
-        "outputs": 9,
+        "func": "let data = msg.payload;\n\nglobal.set('ultimoDadoSensor', data);\n\nlet agora = new Date().toISOString();\n\nfunction toNumber(v) {\n    const n = Number(v);\n    return Number.isFinite(n) ? n : 0;\n}\n\n// Converte ADC do sensor de umidade do solo para porcentagem\n// ADC 0    = 100%\n// ADC 4095 = 0%\n//function umidadeSoloPercentual(adc) {\n//    const valor = toNumber(adc);\n\n//    let percentual = 100 - ((valor / 4095) * 100);\n\n//    percentual = Math.max(0, Math.min(100, percentual));\n\n//    return Number(percentual.toFixed(1));\n//}\n\nlet temperaturaAr = toNumber(data.temperatura_ar);\nlet umidadeAr = toNumber(data.umidade_ar);\n//let umidadeSolo = umidadeSoloPercentual(data.umidade_solo);\nlet umidadeSolo = toNumber(data.umidade_solo);\nlet luminosidade = toNumber(data.luminosidade);\n\n// =========================\n// DASHBOARD\n// =========================\n\nlet msgTempAr = {\n    payload: temperaturaAr\n};\n\nlet msgUmidAr = {\n    payload: umidadeAr\n};\n\nlet msgUmidSolo = {\n    payload: umidadeSolo\n};\n\nlet msgLuminosidade = {\n    payload: luminosidade\n};\n\n// =========================\n// API\n// =========================\n\nlet headers = {\n    \"Content-Type\": \"application/json\"\n};\n\nlet token = global.get(\"apiToken\");\n\nif (token) {\n    headers[\"Authorization\"] = \"Bearer \" + token;\n}\n\nlet msgHttp = {\n    payload: [\n        {\n            name: \"Temperatura do Ar\",\n            type: \"11\",\n            value: temperaturaAr,\n            timestamp: agora\n        },\n        {\n            name: \"Umidade do Ar\",\n            type: \"12\",\n            value: umidadeAr,\n            timestamp: agora\n        },\n        {\n            name: \"Umidade do Solo\",\n            type: \"13\",\n            value: umidadeSolo,\n            timestamp: agora\n        },\n        {\n            name: \"Luminosidade\",\n            type: \"15\",\n            value: luminosidade,\n            timestamp: agora\n        }\n    ],\n    headers: headers\n};\n\nreturn [\n    msgTempAr,\n    msgUmidAr,\n    msgUmidSolo,\n    msgLuminosidade,\n    msgHttp\n];",
+        "outputs": 5,
         "timeout": 0,
         "noerr": 0,
         "initialize": "",
@@ -216,19 +216,7 @@
                 "b625339f22554e96"
             ],
             [
-                "1250338a3ae85d5e"
-            ],
-            [
                 "b99c37b89e3dd59c"
-            ],
-            [
-                "c10331de2d2abd73"
-            ],
-            [
-                "571000d50cfbadc7"
-            ],
-            [
-                "47d0dd51e556bfda"
             ],
             [
                 "1adcd2db54875017"
@@ -484,7 +472,7 @@
         "once": false,
         "onceDelay": 0.1,
         "topic": "",
-        "payload": "{\"temperatura_ar\":36,\"temperatura_solo\":22.1,\"umidade_ar\":49,\"umidade_solo\":20,\"ph_solo\":5,\"luminosidade\":1200,\"velocidade_vento\":25,\"chuva\":1}",
+        "payload": "{\"temperatura_ar\":24.7,\"umidade_ar\":58.3,\"umidade_solo\":2850,\"luminosidade\":1}",
         "payloadType": "json",
         "x": 90,
         "y": 340,
@@ -677,7 +665,7 @@
         "diff": false,
         "className": "",
         "x": 620,
-        "y": 180,
+        "y": 140,
         "wires": []
     },
     {
@@ -704,8 +692,8 @@
         "seg2": "",
         "diff": false,
         "className": "",
-        "x": 640,
-        "y": 220,
+        "x": 1000,
+        "y": 120,
         "wires": []
     },
     {
@@ -732,8 +720,8 @@
         "seg2": "",
         "diff": false,
         "className": "",
-        "x": 610,
-        "y": 140,
+        "x": 990,
+        "y": 160,
         "wires": []
     },
     {
@@ -760,8 +748,8 @@
         "seg2": "",
         "diff": false,
         "className": "",
-        "x": 590,
-        "y": 260,
+        "x": 970,
+        "y": 200,
         "wires": []
     },
     {
@@ -788,8 +776,8 @@
         "seg2": "",
         "diff": false,
         "className": "",
-        "x": 640,
-        "y": 300,
+        "x": 1020,
+        "y": 240,
         "wires": []
     },
     {
